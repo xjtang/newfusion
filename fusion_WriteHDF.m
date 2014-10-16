@@ -125,12 +125,12 @@ function fusion_WriteHDF(main)
             FUS09SWIR = int16(FUS09SWIR);
 
             % write HDF file
-            [~] = writeHDF([main.output.fusion,HDFFile.name],10,FUS09BLU);
-            [~] = writeHDF([main.output.fusion,HDFFile.name],11,FUS09GRE);
-            [~] = writeHDF([main.output.fusion,HDFFile.name],12,FUS09RED);
-            [~] = writeHDF([main.output.fusion,HDFFile.name],13,FUS09NIR);
-            [~] = writeHDF([main.output.fusion,HDFFile.name],14,FUS09NIR2);
-            [~] = writeHDF([main.output.fusion,HDFFile.name],15,FUS09SWIR);
+            [~] = writeHDF([main.output.fusion,HDFFile.name],9,FUS09BLU);
+            [~] = writeHDF([main.output.fusion,HDFFile.name],10,FUS09GRE);
+            [~] = writeHDF([main.output.fusion,HDFFile.name],11,FUS09RED);
+            [~] = writeHDF([main.output.fusion,HDFFile.name],12,FUS09NIR);
+            [~] = writeHDF([main.output.fusion,HDFFile.name],13,FUS09NIR2);
+            [~] = writeHDF([main.output.fusion,HDFFile.name],14,FUS09SWIR);
 
             if BRDFlag == 1
             
@@ -142,8 +142,8 @@ function fusion_WriteHDF(main)
                 FUSB9NIR(MOD09SUBB.MODLine,MOD09SUBB.MODSamp) = MOD09SUBB.FUSB9NIR;        
                 FUSB9NIR = int16(FUSB9NIR);
 
-                [~] = writeHDF([main.output.fusion,HDFFile.name],12,FUSB9RED);
-                [~] = writeHDF([main.output.fusion,HDFFile.name],13,FUSB9NIR);
+                [~] = writeHDF([main.output.fusion,HDFFile.name],11,FUSB9RED);
+                [~] = writeHDF([main.output.fusion,HDFFile.name],12,FUSB9NIR);
             
             end
             
