@@ -132,7 +132,7 @@ function main = fusion_Inputs()
         % ETM geo information
         main.etm.sample = 1:img.dim(1);
         main.etm.line = (1:img.dim(2))';
-        main.etm.band = [1:5,7];
+        main.etm.band = img.bands;
         main.etm.utm = img.utm;
         main.etm.ulNorth = img.ul(2);
         main.etm.ulEast = img.ul(1);
