@@ -100,27 +100,27 @@ function fusion_WriteHDF(main)
             % Transform
             Dims = size(hdfread([main.output.fusion,HDFFile.name],[num2str(main.set.res),'m Surface Reflectance Band 1']));
 
-            FUS09BLU = ones(Dims)*10001;
+            FUS09BLU = ones(Dims)*(-9999);
             FUS09BLU(MOD09SUB.MODLine,MOD09SUB.MODSamp) = MOD09SUB.FUS09BLU;        
             FUS09BLU = int16(FUS09BLU);
 
-            FUS09GRE = ones(Dims)*10001;
+            FUS09GRE = ones(Dims)*(-9999);
             FUS09GRE(MOD09SUB.MODLine,MOD09SUB.MODSamp) = MOD09SUB.FUS09GRE;        
             FUS09GRE = int16(FUS09GRE);
 
-            FUS09RED = ones(Dims)*10001;
+            FUS09RED = ones(Dims)*(-9999);
             FUS09RED(MOD09SUB.MODLine,MOD09SUB.MODSamp) = MOD09SUB.FUS09RED;        
             FUS09RED = int16(FUS09RED);
 
-            FUS09NIR = ones(Dims)*10001;
+            FUS09NIR = ones(Dims)*(-9999);
             FUS09NIR(MOD09SUB.MODLine,MOD09SUB.MODSamp) = MOD09SUB.FUS09NIR;        
             FUS09NIR = int16(FUS09NIR);
             
-            FUS09NIR2 = ones(Dims)*10001;
+            FUS09NIR2 = ones(Dims)*(-9999);
             FUS09NIR2(MOD09SUB.MODLine,MOD09SUB.MODSamp) = MOD09SUB.FUS09NIR2;        
             FUS09NIR2 = int16(FUS09NIR2);
 
-            FUS09SWIR = ones(Dims)*10001;
+            FUS09SWIR = ones(Dims)*(-9999);
             FUS09SWIR(MOD09SUB.MODLine,MOD09SUB.MODSamp) = MOD09SUB.FUS09SWIR;        
             FUS09SWIR = int16(FUS09SWIR);
 
@@ -134,11 +134,11 @@ function fusion_WriteHDF(main)
 
             if BRDFlag == 1
             
-                FUSB9RED = ones(Dims)*10001;
+                FUSB9RED = ones(Dims)*(-9999);
                 FUSB9RED(MOD09SUBB.MODLine,MOD09SUBB.MODSamp) = MOD09SUBB.FUSB9RED;        
                 FUSB9RED = int16(FUSB9RED);
 
-                FUSB9NIR = ones(Dims)*10001;
+                FUSB9NIR = ones(Dims)*(-9999);
                 FUSB9NIR(MOD09SUBB.MODLine,MOD09SUBB.MODSamp) = MOD09SUBB.FUSB9NIR;        
                 FUSB9NIR = int16(FUSB9NIR);
 
