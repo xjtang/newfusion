@@ -43,8 +43,8 @@ function dateList = getDateList(path)
     % loop through all files
     for i = 1:numel(fileList)
         name = fileList(i).name;
-        dChar = regexp(name,'A\d\d\d\d\d\d\d');
-        dateList(i) = str2num(name((dChar+1):(dChar+8)));
+        dChar = regexp(name,'\d\d\d\d\d\d\d');
+        dateList(i) = str2num(name(dChar(1):(dChar(1)+6)));
     end
 
     % make the list unique
