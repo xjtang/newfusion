@@ -46,11 +46,11 @@ function [jiDim,jiUL,resolu,ZC,bands,interleave] = envihdrread(filename)
     geo_char = geo_char';
     geo_str = strread(geo_char,'%s');
 
-    indx_samples = strmatch('samples',geo_str)+1;
-    indx_lines = strmatch('lines',geo_str)+1;
-    indx_bands = strmatch('bands',geo_str)+1;
-    indx_datatype = strmatch('data',geo_str)+2;
-    indx_interleave = strmatch('interleave',geo_str)+1;
+    indx_samples = strmatch('samples',geo_str)+2;
+    indx_lines = strmatch('lines',geo_str)+2;
+    indx_bands = strmatch('bands',geo_str)+2;
+    indx_datatype = strmatch('data',geo_str)+3;
+    indx_interleave = strmatch('interleave',geo_str)+2;
     indx_xUL = strmatch('map',geo_str)+6;
     indx_yUL = strmatch('map',geo_str)+7;
     indx_xreso = strmatch('map',geo_str)+8;
