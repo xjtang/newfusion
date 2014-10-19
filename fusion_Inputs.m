@@ -133,21 +133,22 @@ function main = fusion_Inputs()
         % ETM geo information
         main.etm.sample = 1:img.dim(1);
         main.etm.line = (1:img.dim(2))';
+        main.etm.res = img.res
         main.etm.band = img.bands;
         main.etm.utm = img.utm;
         main.etm.ulNorth = img.ul(2);
         main.etm.ulEast = img.ul(1);
-        main.etm.lrNorth = main.etm.ulNorth-30*main.etm.line(end);
-        main.etm.lrEast = main.etm.ulEast+30*main.etm.sample(end);
+        main.etm.lrNorth = main.etm.ulNorth-main.etm.res(2)*main.etm.line(end);
+        main.etm.lrEast = main.etm.ulEast+main.etm.res(1)*main.etm.sample(end);
         main.etm.interleave = img.itl;
         % ETM subsetting information (discard data on the edge);
         main.etm.discard = [floor(main.etm.sample(end)*main.set.dis) floor(main.etm.line(end)*main.set.dis)];
         main.etm.subSample = (main.etm.discard(1)+1):(main.etm.sample(end)-main.etm.discard(1));
         main.etm.subLine = ((main.etm.discard(2)+1):(main.etm.line(end)-main.etm.discard(2)))';
-        main.etm.subULNorth = main.etm.ulNorth-30*main.etm.subLine(1);
-        main.etm.subULEast = main.etm.ulEast+30*main.etm.subSample(1);
-        main.etm.subLRNorth = main.etm.ulNorth-30*main.etm.subLine(end);
-        main.etm.subLREast = main.etm.ulEast+30*main.etm.subSample(end);
+        main.etm.subULNorth = main.etm.ulNorth-main.etm.res(2)*main.etm.subLine(1);
+        main.etm.subULEast = main.etm.ulEast+main.etm.res(1)*main.etm.subSample(1);
+        main.etm.subLRNorth = main.etm.ulNorth-main.etm.res(2)*main.etm.subLine(end);
+        main.etm.subLREast = main.etm.ulEast+main.etm.res(1)*main.etm.subSample(end);
         
         % date information
         % dates of MODIS swath images used for this study
