@@ -122,8 +122,12 @@ function fusion_BRDF(main)
         writeHDF(File.MODBRDF,11,int16(CoeffNIR));
         
         % resample to Landsat size using gdal
-        gdalCommand = ['gdal_translate',''];
-        % system(gdalCommand);
+        extent = []
+        source = []
+        destin = []
+        gdalCommand = ['gdalwarp -t_srs ''+proj=utm +zone=','11',' +datum=WGS84'' -te ',extent,...
+            ' -tr ',main.etm.res(1),' ',main.etm.res(2),' ',source,' ',destin];
+        system(gdalCommand);
 
         % display message and end timer
         disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
