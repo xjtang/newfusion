@@ -35,6 +35,7 @@ function main = fusion_Inputs()
     
     % load module
     system('module load hdf/4.2.5');
+    system('module load gdal');
     
     % set up project main path
     main.path = '/projectnb/landsat/projects/fusion/test_field/data/';
