@@ -119,7 +119,7 @@ function main = fusion_Inputs()
         % resolution (500 or 250)
         main.set.res = 500;
         % discard ratio of Landsat image (% image discarded on the edge)
-        main.set.dis = 0.1;
+        main.set.dis = 0;
         
     % image properties
         % grab the first ETM file
@@ -133,7 +133,7 @@ function main = fusion_Inputs()
         % ETM geo information
         main.etm.sample = 1:img.dim(1);
         main.etm.line = (1:img.dim(2))';
-        main.etm.res = img.res
+        main.etm.res = img.res;
         main.etm.band = img.bands;
         main.etm.utm = img.utm;
         main.etm.ulNorth = img.ul(2);
