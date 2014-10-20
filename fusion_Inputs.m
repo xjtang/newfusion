@@ -31,7 +31,7 @@
 function main = fusion_Inputs()
 
     % add the fusion package to system path
-    addpath(genpath('/projectnb/landsat/projects/fusion/fusion_6.1'));
+    addpath(genpath('/projectnb/landsat/projects/fusion/operational/fusion_6.1'));
     
     % load module
     system('module load hdf/4.2.5');
