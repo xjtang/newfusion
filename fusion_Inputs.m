@@ -31,14 +31,14 @@
 function main = fusion_Inputs()
 
     % add the fusion package to system path
-    addpath(genpath('/projectnb/landsat/projects/fusion/test_field/fusion_6.1'));
+    addpath(genpath('/projectnb/landsat/projects/fusion/fusion_6.1'));
     
     % load module
     system('module load hdf/4.2.5');
     system('module load gdal');
     
     % set up project main path
-    main.path = '/projectnb/landsat/projects/fusion/test_field/data/';
+    main.path = '/projectnb/landsat/projects/fusion/srb_site/';
     
     % set input data location
         % main inputs:
