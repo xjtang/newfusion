@@ -34,7 +34,7 @@ echo "=========================================================="
 # Run the bash script
 sp='./bsh/fusion_Submit.sh'
 chmod u+x $sp
-$sp
+$sp $1 $2 $3 $4 $5 $6
 
 echo "=========================================================="
 echo "Finished on : $(date)"
