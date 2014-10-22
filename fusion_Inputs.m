@@ -8,7 +8,15 @@
 % Created On: 9/16/2013
 % Last Update: 10/14/2014
 %
-% Input Arguments: NA
+% Input Arguments: 
+%   iDate (String) - main path to the data.
+%   iBRDF (Integer) - 0: BRDF off; 1: BRDF on.
+%   iRes (Integer) - resolusion 500/250.
+%   iDis (Double) - Percenatble of data discarded at the edge of Landsat
+%       image (0.1 as 10%).
+%   iSub (Vector, Interger) - process a subset of the data.
+%       e.g. [1 50] means divide into 50 parts and process the 1st. 
+%       [0 0] means do all in one job.
 % 
 % Output Arguments: 
 %   mainInputs (Structure) - main inputs for the whole fusion process
@@ -28,7 +36,24 @@
 %
 %----------------------------------------------------------------
 %
-function main = fusion_Inputs()
+function main = fusion_Inputs(iData,iBRDF,iRes,iDis,iSub)
+
+    % check input argument
+    if ~exist('iSub', 'var')
+        iSub = [0,0];
+    end
+    if ~exist('iDis', 'var')
+        iDis = 0.1;
+    end
+    if ~exist('iRes', 'var')
+        iRes = 500;
+    end
+    if ~exist('iBRDF', 'var')
+        iBRDF = 0;
+    end
+    if ~exist('iData', 'var')
+        iData = '/projectnb/landsat/projects/fusion/srb_site/';
+    end
 
     % add the fusion package to system path
     addpath(genpath('/projectnb/landsat/projects/fusion/operational/fusion_6.1'));
@@ -38,7 +63,7 @@ function main = fusion_Inputs()
     system('module load gdal');
     
     % set up project main path
-    main.path = '/projectnb/landsat/projects/fusion/srb_site/';
+    main.path = iData;
     
     % set input data location
         % main inputs:
@@ -115,11 +140,11 @@ function main = fusion_Inputs()
           
     % settings and parameters
         % apply BRDF correction or not
-        main.set.brdf = 0;
+        main.set.brdf = iBRDF;
         % resolution (500 or 250)
-        main.set.res = 500;
+        main.set.res = iRes;
         % discard ratio of Landsat image (% image discarded on the edge)
-        main.set.dis = 0;
+        main.set.dis = iDis;
         
     % image properties
         % grab the first ETM file
@@ -159,6 +184,24 @@ function main = fusion_Inputs()
         main.date.grid = getDateList(main.input.grid);
         % dates of the BRDF data used for this study
         main.date.brdf = getDateList(main.input.brdf);
+    
+    % divide into parts
+        if min(iSub>0)
+        
+            % calculate begining and ending
+            total = numel(main.date.swath);
+            piece = floor(total/iSub(2));
+            start = 1+piece*(iSub(1)-1);
+            if iSub(1)<iSub(2)
+                stop = start+piece-1;
+            else
+                stop = total;
+            end
+            
+            % subset dates to be processed
+            main.date.swath = main.date.swath(start:stop);
+            
+        end
     
     % done
 
