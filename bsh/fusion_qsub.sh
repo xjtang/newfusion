@@ -32,7 +32,7 @@ echo "Task index number : $SGE_TASK_ID"
 echo "=========================================================="
 
 # Run the bash script
-sp='./bsh/fusion_Submit.sh'
+sp='./fusion_Submit.sh'
 chmod u+x $sp
 $sp $1 $2 $3 $4 $5 $6
 
