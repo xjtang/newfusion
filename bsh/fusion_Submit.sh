@@ -4,7 +4,7 @@
 
 # cd $1
 
-matlab -nodisplay -nojvm << MATLAB_ENV
+matlab -nodisplay -nojvm -singleCompThread << MATLAB_ENV
 main = fusion_Inputs()
 fusion_Fusion(main)
 quit
