@@ -150,15 +150,15 @@ function main = fusion_Inputs()
         main.etm.subLRNorth = main.etm.ulNorth-main.etm.res(2)*main.etm.subLine(end);
         main.etm.subLREast = main.etm.ulEast+main.etm.res(1)*main.etm.subSample(end);
         
-        % date information
-        % dates of MODIS swath images used for this study
-        main.date.swath = getDateList(main.input.swath);
-        % dates of Landsat synthetic images used for this study
-        main.date.etm = getDateList(main.input.etm);
-        % dates of the MODIS gridded images used for this study
-        main.date.grid = getDateList(main.input.grid);
-        % dates of the BRDF data used for this study
-        main.date.brdf = getDateList(main.input.brdf);
+    % date information
+    % dates of MODIS swath images used for this study
+    main.date.swath = getDateList(main.input.swath);
+    % dates of Landsat synthetic images used for this study
+    main.date.etm = getDateList(main.input.etm);
+    % dates of the MODIS gridded images used for this study
+    main.date.grid = getDateList(main.input.grid);
+    % dates of the BRDF data used for this study
+    main.date.brdf = getDateList(main.input.brdf);
     
     % done
 
