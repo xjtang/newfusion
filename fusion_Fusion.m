@@ -63,7 +63,7 @@ function fusion_Fusion(main)
     tic;
     
     % loop through all etm images
-    for I_Day=1:numel(main.date.etm)
+    for I_Day=1:numel(main.date.swath)
         
         % get date information of all images
         Day = main.date.etm(I_Day);
