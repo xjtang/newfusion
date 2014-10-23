@@ -66,7 +66,7 @@ function fusion_Fusion(main)
     for I_Day=1:numel(main.date.swath)
         
         % get date information of all images
-        Day = main.date.etm(I_Day);
+        Day = main.date.swath(I_Day);
         DayStr = num2str(Day);
 
         % check if result already exist
