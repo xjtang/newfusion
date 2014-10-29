@@ -92,8 +92,8 @@ function fusion_Fusion(main)
         ETMGRE = ETM(:,:,2);
         ETMRED = ETM(:,:,3);
         ETMNIR = ETM(:,:,4);
-        ETMNIR2 = ETM(:,:,5);
-        ETMSWIR = ETM(:,:,6);
+        ETMSWIR = ETM(:,:,5);
+        ETMSWIR2 = ETM(:,:,6);
 
         % find MOD09SUB files
         File.MOD09SUB = dir([main.output.modsub,'MOD09SUB.',num2str(main.set.res),'*',DayStr,'*']);
@@ -116,8 +116,8 @@ function fusion_Fusion(main)
             MOD09SUB.FUS09GRE = etm2swath(ETMGRE,MOD09SUB,ETMGeo);
             MOD09SUB.FUS09RED = etm2swath(ETMRED,MOD09SUB,ETMGeo);
             MOD09SUB.FUS09NIR = etm2swath(ETMNIR,MOD09SUB,ETMGeo);
-            MOD09SUB.FUS09NIR2 = etm2swath(ETMNIR2,MOD09SUB,ETMGeo);
             MOD09SUB.FUS09SWIR = etm2swath(ETMSWIR,MOD09SUB,ETMGeo);
+            MOD09SUB.FUS09SWIR2 = etm2swath(ETMSWIR2,MOD09SUB,ETMGeo);
 
             % get QA data
             MOD09SUBF = swathInterpQA(MOD09SUB);
