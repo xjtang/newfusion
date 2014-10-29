@@ -130,8 +130,8 @@ function fusion_SwathSub(main)
                     MOD09SUB.MOD09GRE = MOD09GRE(MOD09SUB.MODLine,MOD09SUB.MODSamp);
                     MOD09SWIR = double(hdfread([main.input.swath,File.MOD09(I_TIME).name],[num2str(main.set.res),'m Surface Reflectance Band 6']));
                     MOD09SWIR2 = double(hdfread([main.input.swath,File.MOD09(I_TIME).name],[num2str(main.set.res),'m Surface Reflectance Band 7']));
-                    MOD09SUB.MOD09NIR2 = MOD09NIR2(MOD09SUB.MODLine,MOD09SUB.MODSamp);
                     MOD09SUB.MOD09SWIR = MOD09SWIR(MOD09SUB.MODLine,MOD09SUB.MODSamp);
+                    MOD09SUB.MOD09SWIR2 = MOD09SWIR2(MOD09SUB.MODLine,MOD09SUB.MODSamp);
                 end
                 
                 % get swath QA
