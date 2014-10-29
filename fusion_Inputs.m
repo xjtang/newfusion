@@ -56,7 +56,7 @@ function main = fusion_Inputs(iData,iBRDF,iRes,iDis,iSub)
     end
 
     % add the fusion package to system path
-    addpath(genpath('/projectnb/landsat/projects/fusion/operational/fusion_6.1'));
+    addpath(genpath(fileparts(mfilename('fullpath'))));
     
     % load module
     system('module load hdf/4.2.5');
