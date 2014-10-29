@@ -80,6 +80,10 @@ function fusion_BRDF(main)
         % read parameters of red and nir band for brdf correction
         ParamRED = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band1'));
         ParamNIR = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band2'));
+        ParamBLU = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band3'));
+        ParamGRE = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band4'));
+        ParamSWIR = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band6'));
+        ParamSWIR2 = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band7'));
 
         % read sensor geometry information
         VZA1km = double(hdfread([main.input.grid,File.MOD09GA.name],'SensorZenith_1'));
@@ -88,10 +92,18 @@ function fusion_BRDF(main)
         SAA1km = double(hdfread([main.input.grid,File.MOD09GA.name],'SolarAzimuth_1'));
 
         % clean up the parameters
+        ParamBLU(ParamBLU>30000) = nan;
+        ParamBLU = ParamBLU/1000;
+        ParamGRE(ParamGRE>30000) = nan;
+        ParamGRE = ParamGRE/1000;
         ParamRED(ParamRED>30000) = nan;
         ParamRED = ParamRED/1000;
         ParamNIR(ParamNIR>30000) = nan;
         ParamNIR = ParamNIR/1000;
+        ParamSWIR(ParamSWIR>30000) = nan;
+        ParamSWIR = ParamSWIR/1000;
+        ParamSWIR2(ParamSWIR2>30000) = nan;
+        ParamSWIR2 = ParamSWIR2/1000;
 
         % clean up sensor geometry
         VZA1km(VZA1km<-30000) = nan; 
@@ -109,6 +121,14 @@ function fusion_BRDF(main)
         RAA500 = mod(abs(SAA500-VAA500),180);
 
         % brdf coefficient calculation
+        ReflBLU = brdffoward(ParamBLU(:,:,1),ParamBLU(:,:,2),ParamBLU(:,:,3),SZA500,VZA500,RAA500);
+        NadirReflBLU = brdffoward(ParamBLU(:,:,1),ParamBLU(:,:,2),ParamBLU(:,:,3),SZA500,zeros(2400),zeros(2400));
+        CoeffBLU = ReflBLU./NadirReflBLU*1000;
+
+        ReflGRE = brdffoward(ParamGRE(:,:,1),ParamGRE(:,:,2),ParamGRE(:,:,3),SZA500,VZA500,RAA500);
+        NadirReflGRE = brdffoward(ParamGRE(:,:,1),ParamGRE(:,:,2),ParamGRE(:,:,3),SZA500,zeros(2400),zeros(2400));
+        CoeffGRE = ReflGRE./NadirReflGRE*1000;
+        
         ReflRED = brdffoward(ParamRED(:,:,1),ParamRED(:,:,2),ParamRED(:,:,3),SZA500,VZA500,RAA500);
         NadirReflRED = brdffoward(ParamRED(:,:,1),ParamRED(:,:,2),ParamRED(:,:,3),SZA500,zeros(2400),zeros(2400));
         CoeffRED = ReflRED./NadirReflRED*1000;
@@ -116,18 +136,30 @@ function fusion_BRDF(main)
         ReflNIR = brdffoward(ParamNIR(:,:,1),ParamNIR(:,:,2),ParamNIR(:,:,3),SZA500,VZA500,RAA500);
         NadirReflNIR = brdffoward(ParamNIR(:,:,1),ParamNIR(:,:,2),ParamNIR(:,:,3),SZA500,zeros(2400),zeros(2400));
         CoeffNIR = ReflNIR./NadirReflNIR*1000;
+        
+        ReflSWIR = brdffoward(ParamSWIR(:,:,1),ParamSWIR(:,:,2),ParamSWIR(:,:,3),SZA500,VZA500,RAA500);
+        NadirReflSWIR = brdffoward(ParamSWIR(:,:,1),ParamSWIR(:,:,2),ParamSWIR(:,:,3),SZA500,zeros(2400),zeros(2400));
+        CoeffSWIR = ReflSWIR./NadirReflSWIR*1000;
+
+        ReflSWIR2 = brdffoward(ParamSWIR2(:,:,1),ParamSWIR2(:,:,2),ParamSWIR2(:,:,3),SZA500,VZA500,RAA500);
+        NadirReflSWIR2 = brdffoward(ParamSWIR2(:,:,1),ParamSWIR2(:,:,2),ParamSWIR2(:,:,3),SZA500,zeros(2400),zeros(2400));
+        CoeffSWIR2 = ReflSWIR2./NadirReflSWIR2*1000;
 
         % save BRDF Coefficient to MOD09BRDF
+        writeHDF(File.MODBRDF,12,int16(CoeffBLU));
+        writeHDF(File.MODBRDF,13,int16(CoeffGRE));
         writeHDF(File.MODBRDF,10,int16(CoeffRED));
         writeHDF(File.MODBRDF,11,int16(CoeffNIR));
+        writeHDF(File.MODBRDF,15,int16(CoeffSWIR));
+        writeHDF(File.MODBRDF,16,int16(CoeffSWIR2));
         
         % resample to Landsat size using gdal
-        extent = []
-        source = []
-        destin = []
-        gdalCommand = ['gdalwarp -t_srs ''+proj=utm +zone=','11',' +datum=WGS84'' -te ',extent,...
-            ' -tr ',main.etm.res(1),' ',main.etm.res(2),' ',source,' ',destin];
-        system(gdalCommand);
+        % extent = []
+        % source = []
+        % destin = []
+        % gdalCommand = ['gdalwarp -t_srs ''+proj=utm +zone=','11',' +datum=WGS84'' -te ',extent,...
+        %     ' -tr ',main.etm.res(1),' ',main.etm.res(2),' ',source,' ',destin];
+        % system(gdalCommand);
 
         % display message and end timer
         disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
