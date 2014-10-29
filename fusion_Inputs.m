@@ -125,6 +125,11 @@ function main = fusion_Inputs(iData,iBRDF,iRes,iDis,iSub)
         if exist(main.output.modsubbrdf,'dir') == 0 
             mkdir([main.path 'MOD09SUBBRDF'])
         end
+        % fused synthetic MODISimage with BRDF correction
+        main.output.fusionbrdf = [main.path 'FUS09B/'];
+        if exist(main.output.fusionbrdf,'dir') == 0 
+            mkdir([main.path 'FUS09B'])
+        end
     
         % from gridding process
         % gridded fusion result
