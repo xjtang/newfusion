@@ -62,6 +62,10 @@ function fusion_BRDF(main)
         % create output file
         ori = [main.input.grid File.MOD09GA.name];
         des = [main.output.modBRDF 'MODBRDF.A' DayStr '.hdf'];
+        if exist(des,'file')>0 
+            disp([des ' already exist, skip one'])
+            continue;
+        end
         system(['cp ',ori,' ',des]);
         File.MODBRDF = [main.output.modBRDF,'MODBRDF.A',DayStr,'.hdf'];
 
