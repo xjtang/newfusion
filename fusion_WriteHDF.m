@@ -129,8 +129,8 @@ function fusion_WriteHDF(main)
             [~] = writeHDF([main.output.fusion,HDFFile.name],12,FUS09GRE);
             [~] = writeHDF([main.output.fusion,HDFFile.name],9,FUS09RED);
             [~] = writeHDF([main.output.fusion,HDFFile.name],10,FUS09NIR);
-            [~] = writeHDF([main.output.fusion,HDFFile.name],15,FUS09SWIR);
-            [~] = writeHDF([main.output.fusion,HDFFile.name],16,FUS09SWIR2);
+            [~] = writeHDF([main.output.fusion,HDFFile.name],14,FUS09SWIR);
+            [~] = writeHDF([main.output.fusion,HDFFile.name],15,FUS09SWIR2);
 
             if BRDFlag == 1
             
