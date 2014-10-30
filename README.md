@@ -15,6 +15,20 @@ The current fusion tool supports MODIS Terra in 500m resolution only without BRD
 Content
 ------
 
+Main Scripts:
+
+fusion_Inputs - Intilize the main input structure for other processes  
+fusion_BRDF - Generate BRDF correction coefficients  
+fusion_SwathSub - Create subset of the MODIS swath based on geolocation of Landsat images  
+fusion_Fusion - The main fusion process
+fusion_FusionBRDF - The main fusion process with BRDF correction
+fusion_WriteHDF - Write the final outputs to new HDF files
+
+core - some key functions that will be used by the main scripts
+
+ext - some external functions written by other authors
+
+bash - bash scripts for running fusion in qshell
 
 
 Data
@@ -22,18 +36,20 @@ Data
 
 Required:
 
-MOD09 - MODIS Terra Surface Reflectance 5m L2 Swath
-MOD09GA - MODIS Terra Surface Reflectance Daily L2G 500m and 1km Gridded Data
-MCD43A1 - MODIS BRDF/Albedo Model Parameters Product
-MOD09ETM - Synthetic Landsat ETM image 
+MOD09 - MODIS Terra Surface Reflectance 5m L2 Swath  
+MOD09GA - MODIS Terra Surface Reflectance Daily L2G 500m and 1km Gridded Data  
+MCD43A1 - MODIS BRDF/Albedo Model Parameters Product  
+MOD09ETM - Synthetic Landsat ETM image   
 
 Optional:
 
-MOD09GQ - MODIS Terra Surface Reflectance Daily L2G 250m Gridded Data
+MOD09GQ - MODIS Terra Surface Reflectance Daily L2G 250m Gridded Data  
 MOD03 - MODIS Geolocation Data Set
 
 Instruction
 ------
+
+Preparing
 
 - Download required input data and allocate enough disk space for output
 - Organize all input data in one folder with original folders and file names (such as MOD09, MOD09GA)
@@ -55,10 +71,10 @@ See the comments in each script for detailed instructions including description 
 Requirements
 ------
 
-MATLAB (r2011b or higher)
-gdal (1.9.2 or higher)
-hdf (4.2.5 or higher)
-bash (4.1.2 or higher)
+MATLAB (r2011b or higher)  
+gdal (1.9.2 or higher)  
+hdf (4.2.5 or higher)  
+bash (4.1.2 or higher)  
 
 Publications
 ------
