@@ -27,7 +27,7 @@
 #!/bin/bash
 
 # load module
-module load gdal
+module load gdal/1.10.0
 
 # make temp folder
 if [ ! -d ./temp/ ]; then
