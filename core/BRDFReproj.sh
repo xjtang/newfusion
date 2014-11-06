@@ -29,6 +29,9 @@
 # load module
 module load gdal/1.10.0
 
+# move to uotput directory
+cd $(dirname $9)
+
 # make temp folder
 if [ ! -d ./temp/ ]; then
     mkdir ./temp
@@ -53,6 +56,8 @@ cd ./temp/
 gdal_merge.py -o $9 -of ENVI -init 10000 -n 10000 -separate ./BRDFCoef_band1.tif ./BRDFCoef_band2.tif ./BRDFCoef_band3.tif ./BRDFCoef_band4.tif ./BRDFCoef_band5.tif ./BRDFCoef_band7.tif
 
 # delete temp file
+cd ../
+rm -r ./temp
 
 echo 'done!'
 
