@@ -72,7 +72,7 @@ Requirements
 ------
 
 MATLAB (r2011b or higher)  
-gdal (1.9.2 or higher)  
+gdal (1.10.0 or higher)  
 hdf (4.2.5 or higher)  
 bash (4.1.2 or higher)  
 
