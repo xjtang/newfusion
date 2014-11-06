@@ -35,7 +35,7 @@ if [ ! -d ./temp/ ]; then
 fi
 
 # grab inputs
-file="'"$1"'"
+file='"'$1'"'
 zone=$2
 extent=$3' '$4' '$5' '$6
 res=$7' '$8
