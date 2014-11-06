@@ -162,7 +162,7 @@ function fusion_BRDF(main)
         system('cd ./core/');
         File.ETMBRDF = [main.output.etmBRDF,'ETMBRDF.A',DayStr];
         system(['./BRDFReproj.sh ',File.MODBRDF,' ',main.etm.utm,' ',main.etm.subULEast,' ',main.etm.subLRNorth,' '...
-            ,main.etm.subLREast,' ',main.etm.subULNorth,' ',main.etm.res(1),' ',main.etm.res(2),' 'File.ETMBRDF]);
+            ,main.etm.subLREast,' ',main.etm.subULNorth,' ',main.etm.res(1),' ',main.etm.res(2),' ',File.ETMBRDF]);
 
         % display message and end timer
         disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
