@@ -53,7 +53,7 @@ gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4
 
 # stack results
 cd ./temp/
-gdal_merge.py -o $9 -of ENVI -init 10000 -n 10000 -separate ./BRDFCoef_band1.tif ./BRDFCoef_band2.tif ./BRDFCoef_band3.tif ./BRDFCoef_band4.tif ./BRDFCoef_band5.tif ./BRDFCoef_band7.tif
+gdal_merge.py -o $9 -of ENVI -init 1000 -n 1000 -separate ./BRDFCoef_band1.tif ./BRDFCoef_band2.tif ./BRDFCoef_band3.tif ./BRDFCoef_band4.tif ./BRDFCoef_band5.tif ./BRDFCoef_band7.tif
 
 # delete temp file
 cd ../
