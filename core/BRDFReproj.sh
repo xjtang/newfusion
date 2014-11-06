@@ -35,8 +35,8 @@ fi
 # grab inputs
 file = "'"$1"'"
 zone = $2
-extent = echo ${$3[*]}
-res = echo ${$4[*]}
+extent = $3 $4 $5 $6
+res = echo $7 $8
 
 # reproject all bands
 gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b03_1 ./temp/BRDFCoef_band1.tif
@@ -47,7 +47,7 @@ gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4
 gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b07_1 ./temp/BRDFCoef_band7.tif
 
 # stack results
-gdal_merge.py -o $5 -of ENVI -init 10000 -n 10000 -separete ./BRDFCoef_band1.tif ./BRDFCoef_band2.tif ./BRDFCoef_band3.tif ./BRDFCoef_band4.tif ./BRDFCoef_band5.tif ./BRDFCoef_band7.tif
+gdal_merge.py -o $9 -of ENVI -init 10000 -n 10000 -separete ./BRDFCoef_band1.tif ./BRDFCoef_band2.tif ./BRDFCoef_band3.tif ./BRDFCoef_band4.tif ./BRDFCoef_band5.tif ./BRDFCoef_band7.tif
 
 # delete temp file
 
