@@ -113,7 +113,7 @@ function main = fusion_Inputs(iData,iBRDF,iRes,iDis,iSub)
         % BRDF parameters at Landsat scale
         main.output.etmBRDF = [main.path 'ETMBRDF/'];
         if exist(main.output.change,'dir') == 0 
-            mkdir([main.path 'FUSCHG'])
+            mkdir([main.path 'ETMBRDF'])
         end
         % BRDF coefficients grabbed from the BRDF product
         main.output.modBRDF = [main.path 'MOD09B/'];
