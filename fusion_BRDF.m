@@ -158,12 +158,11 @@ function fusion_BRDF(main)
         writeHDF(File.MODBRDF,16,int16(CoeffSWIR2));
         
         % resample to Landsat size using gdal
-        % extent = []
-        % source = []
-        % destin = []
-        % gdalCommand = ['gdalwarp -t_srs ''+proj=utm +zone=','11',' +datum=WGS84'' -te ',extent,...
-        %     ' -tr ',main.etm.res(1),' ',main.etm.res(2),' ',source,' ',destin];
-        % system(gdalCommand);
+        system(['cd ',fileparts(mfilename('fullpath'))]);
+        system('cd ./core/');
+        File.ETMBRDF = [main.output.etmBRDF,'ETMBRDF.A',DayStr];
+        system(['./BRDFReproj.sh ',File.MODBRDF,' ',main.etm.utm,' ',main.etm.subULEast,' ',main.etm.subLRNorth,' '...
+            ,main.etm.subLREast,' ',main.etm.subULNorth,' ',main.etm.res(1),' ',main.etm.res(2),' 'File.ETMBRDF]);
 
         % display message and end timer
         disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
