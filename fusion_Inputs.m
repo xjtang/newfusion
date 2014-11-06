@@ -60,7 +60,7 @@ function main = fusion_Inputs(iData,iBRDF,iRes,iDis,iSub)
     
     % load module
     system('module load hdf/4.2.5');
-    system('module load gdal');
+    system('module load gdal/1.10.0');
     
     % set up project main path
     main.path = iData;
