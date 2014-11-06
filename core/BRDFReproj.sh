@@ -35,10 +35,10 @@ if [ ! -d ./temp/ ]; then
 fi
 
 # grab inputs
-file = "'"$1"'"
-zone = $2
-extent = $3 $4 $5 $6
-res = echo $7 $8
+file="'"$1"'"
+zone=$2
+extent=$3 $4 $5 $6
+res=echo $7 $8
 
 # reproject all bands
 gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b03_1 ./temp/BRDFCoef_band1.tif
