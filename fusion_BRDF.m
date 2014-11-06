@@ -58,11 +58,12 @@ function fusion_BRDF(main)
         % find input files
         File.MOD09GA = dir([main.input.grid,'MOD09GA.A',DayStr,'*']);
         File.MCD43A1 = dir([main.input.brdf,'MCD43A1.A',BRDFDayStr,'*']);
+        File.ETMBRDF = [main.output.etmBRDF,'ETMBRDF.A',DayStr];
         
         % create output file
         ori = [main.input.grid File.MOD09GA.name];
         des = [main.output.modBRDF 'MODBRDF.A' DayStr '.hdf'];
-        if exist(des,'file')>0 
+        if exist(des,'file')>0 & exist(File.ETMBRDF,'file')>0
             disp([des ' already exist, skip one'])
             continue;
         end
@@ -158,10 +159,9 @@ function fusion_BRDF(main)
         writeHDF(File.MODBRDF,16,int16(CoeffSWIR2));
         
         % resample to Landsat size using gdal
-        system(['cd ',fileparts(mfilename('fullpath'))]);
-        system('cd ./core/');
-        File.ETMBRDF = [main.output.etmBRDF,'ETMBRDF.A',DayStr];
-        system(['./BRDFReproj.sh ',File.MODBRDF,' ',num2str(main.etm.utm),' ',num2str(main.etm.subULEast),' ',...
+        bash = [fileparts(mfilename('fullpath')),'/core/BRDFReproj.sh'];
+        system(['chmod u+x ',bash]);
+        system([bash,' ',File.MODBRDF,' ',num2str(main.etm.utm),' ',num2str(main.etm.subULEast),' ',...
             num2str(main.etm.subLRNorth),' ',num2str(main.etm.subLREast),' ',num2str(main.etm.subULNorth),' ',...
             num2str(main.etm.res(1)),' ',num2str(main.etm.res(2)),' ',File.ETMBRDF]);
 
