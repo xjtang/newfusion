@@ -175,10 +175,10 @@ function main = fusion_Inputs(iData,iBRDF,iRes,iDis,iSub)
         main.etm.discard = [floor(main.etm.sample(end)*main.set.dis) floor(main.etm.line(end)*main.set.dis)];
         main.etm.subSample = (main.etm.discard(1)+1):(main.etm.sample(end)-main.etm.discard(1));
         main.etm.subLine = ((main.etm.discard(2)+1):(main.etm.line(end)-main.etm.discard(2)))';
-        main.etm.subULNorth = main.etm.ulNorth-main.etm.res(2)*main.etm.subLine(1);
-        main.etm.subULEast = main.etm.ulEast+main.etm.res(1)*main.etm.subSample(1);
-        main.etm.subLRNorth = main.etm.ulNorth-main.etm.res(2)*main.etm.subLine(end);
-        main.etm.subLREast = main.etm.ulEast+main.etm.res(1)*main.etm.subSample(end);
+        main.etm.subULNorth = main.etm.ulNorth-main.etm.res(2)*main.etm.discard(2);
+        main.etm.subULEast = main.etm.ulEast-main.etm.res(1)*main.etm.discard(1);
+        main.etm.subLRNorth = main.etm.lrNorth-main.etm.res(2)*main.etm.discard(2);
+        main.etm.subLREast = main.etm.lrEast-main.etm.res(1)*main.etm.discard(1);
         
     % date information
         % dates of MODIS swath images used for this study
