@@ -38,6 +38,11 @@
 %
 function fusion_BRDFusion(main)
 
+    % check if BRDF option is checked
+    if main.set.brdf = 0
+        return
+    end
+
     [Samp,Line] = meshgrid(main.etm.sample,main.etm.line);
     ETMGeo.Northing = main.etm.ulNorth-Line*30+15;
     ETMGeo.Easting = main.etm.ulEast +Samp*30-15;
@@ -54,42 +59,58 @@ function fusion_BRDFusion(main)
     tic;
     
     % loop through all etm images
-    for I_Day = 1:numel(main.date.etm)
+    for I_Day = 1:numel(main.date.swath)
         
         % get date information of all images
         Day = main.date.etm(I_Day);
-        DayStr = [num2str(year(Day)),num2str(Day-datenum(year(Day),1,1)+1,'%03d')];
+        DayStr = num2str(Day);
+
+        % check if result already exist
+        File.Check = dir([main.output.modsubbrdf '*' DayStr '*']);
+        if numel(File.Check) >= 1
+            disp([DayStr ' already exist, skip this date.']);
+            continue;
+        end
+        
+        % read ETM
+        File.ETM = dir([main.input.etm,'*',DayStr,'*.hdr']);
+        if  numel(File.ETM) ~= 1
+            disp(['Cannot find ETM for Julian Day: ', DayStr]);     
+            continue;
+        end
 
         % find ETM BRDF files
-        File.ETMBRDF = dir([main.output.etmBRDF,'ETMBRDF.A',DayStr,'*']);
+        File.ETMBRDF = dir([main.output.etmBRDF,'ETMBRDF_A',DayStr,'*']);
         if  numel(File.ETMBRDF)~=1
             disp(['ETM for Julian Day: ', DayStr]);
             continue;
         end   
 
         % read brdf coefficients
-        ETMBRDFRED = double(hdfread([main.output.etmBRDF,File.ETMBRDF.name],'sur_refl_b01_1'));
-        ETMBRDFNIR = double(hdfread([main.output.etmBRDF,File.ETMBRDF.name],'sur_refl_b02_1'));
-        ETMBRDFRED(ETMBRDFRED<=0) = nan;
-        ETMBRDFRED = ETMBRDFRED/1000;
-        ETMBRDFNIR(ETMBRDFNIR<=0) = nan;
-        ETMBRDFNIR = ETMBRDFNIR/1000;
+        ETMBRDF = multibandread([main.output.etmBRDF,File.ETMBRDF.name],...
+            [numel(main.etm.line),numel(mainetm.sample),main.etm.band],'int16',0,'bsq','ieee-le');
+        ETMBRDF(ETMBRDF<=0) = nan;
+        ETMBRDF = ETMBRDF/1000;
 
         % read ETM
-        File.ETM = dir([main.output.etmBRDF,'pred',DayStr]);
+        File.ETM = dir([main.input.etm,'*',DayStr,'*.hdr']);
         if  numel(File.ETM) ~= 1
-            error(['ETM for Julian Day: ', DayStr]);      
+            disp(['Cannot find ETM for Julian Day: ', DayStr]);     
+            continue;
         end
-        ETM = multibandread([main.output.etmBRDF,File.ETM.name],...
-            [numel(ETMGeo.Line),numel(ETMGeo.Samp),numel(main.etm.band)],'int16',0,main.etm.interleave,'ieee-le');
-        
-        % clean up etm data
+
+        ETM = multibandread([main.input.etm,File.ETM.name(1:(length(File.ETM.name)-4))],...
+            [numel(main.etm.line),numel(main.etm.sample),main.etm.band],'int16',0,main.etm.interleave,'ieee-le');
         ETM(ETM>10000) = nan;
         ETM(ETM<1) = nan;
         
         % apply brdf coefficients
-        ETMRED = ETM(:,:,3).*ETMBRDFRED;
-        ETMNIR = ETM(:,:,4).*ETMBRDFNIR;
+        ETMBLU = ETM(:,:,1).*ETMBRDF(:,:,1);
+        ETMGRE = ETM(:,:,2).*ETMBRDF(:,:,2);
+        ETMRED = ETM(:,:,3).*ETMBRDF(:,:,3);
+        ETMNIR = ETM(:,:,4).*ETMBRDF(:,:,4);
+        ETMSWIR = ETM(:,:,5).*ETMBRDF(:,:,5);
+        ETMSWIR2 = ETM(:,:,6).*ETMBRDF(:,:,6);
 
         % find modsub
         File.MOD09SUB = dir([main.output.modsub,'MOD09SUB.',num2str(main.set.res),'*',DayStr,'*']);
@@ -108,8 +129,12 @@ function fusion_BRDFusion(main)
             MOD09SUB = load([main.output.modsub,File.MOD09SUB(I_TIME).name]);
 
             % fusion
+            MOD09SUB.FUSB9BLU = etm2swath(ETMBLU,MOD09SUB,ETMGeo);
+            MOD09SUB.FUSB9GRE = etm2swath(ETMGRE,MOD09SUB,ETMGeo);
             MOD09SUB.FUSB9RED = etm2swath(ETMRED,MOD09SUB,ETMGeo);
             MOD09SUB.FUSB9NIR = etm2swath(ETMNIR,MOD09SUB,ETMGeo);
+            MOD09SUB.FUSB9SWIR = etm2swath(ETMSWIR,MOD09SUB,ETMGeo);
+            MOD09SUB.FUSB9SWIR2 = etm2swath(ETMSWIR2,MOD09SUB,ETMGeo);
 
             % save
             save([main.output.modsubbrdf,'MOD09SUBFB.',RESSTR,'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
