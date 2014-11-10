@@ -23,8 +23,9 @@
 #----------------------------------------------------------------
 
 # sourcing
-source('https://raw.githubusercontent.com/xjtang/rTools/master/text_tools.R')
-source('https://raw.githubusercontent.com/xjtang/rTools/master/web_tools.R')
+script <- getURL('https://raw.githubusercontent.com/xjtang/rTools/master/web_tools.R',ssl.verifypeer=F)
+eval(parse(text=script),envir=.GlobalEnv)
+sourceURL('https://raw.githubusercontent.com/xjtang/rTools/master/text_tools.R')
 
 # library
 library(RCurl)
