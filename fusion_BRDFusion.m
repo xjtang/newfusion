@@ -137,7 +137,7 @@ function fusion_BRDFusion(main)
             MOD09SUB.FUSB9SWIR2 = etm2swath(ETMSWIR2,MOD09SUB,ETMGeo);
 
             % save
-            save([main.output.modsubbrdf,'MOD09SUBFB.',RESSTR,'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
+            save([main.output.modsubbrdf,'MOD09SUBFB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
             disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
         end
     end
