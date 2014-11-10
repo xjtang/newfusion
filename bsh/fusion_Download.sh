@@ -32,9 +32,7 @@ echo "Task index number : $SGE_TASK_ID"
 echo "=========================================================="
 
 # Run the bash script
-module load R
 R --slave --vanilla --quiet --no-save  <<EEE
-install.packages("RCurl",repos="http://cran.rstudio.com/")
 source('https://raw.githubusercontent.com/xjtang/fusion/master/tool/swath_download.R')
 swathDownload($1,$2)
 EEE
