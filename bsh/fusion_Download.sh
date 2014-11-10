@@ -33,6 +33,7 @@ echo "=========================================================="
 
 # Run the bash script
 R --slave --vanilla --quiet --no-save  <<EEE
+library('RCurl')
 script <- getURL('https://raw.githubusercontent.com/xjtang/rTools/master/web_tools.R',ssl.verifypeer=F)
 eval(parse(text=script),envir=.GlobalEnv)
 sourceURL('https://raw.githubusercontent.com/xjtang/fusion/master/tool/swath_download.R')
