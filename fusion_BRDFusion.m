@@ -39,7 +39,7 @@
 function fusion_BRDFusion(main)
 
     % check if BRDF option is checked
-    if main.set.brdf = 0
+    if main.set.brdf == 0
         return
     end
 
