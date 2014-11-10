@@ -30,6 +30,8 @@ ext - some external functions written by other authors
 
 bash - bash scripts for running fusion in qshell
 
+tool - some small tools for pre- / post- fusion analysis  
+
 
 Data
 ------
@@ -71,10 +73,16 @@ See the comments in each script for detailed instructions including description 
 Requirements
 ------
 
+For main functions:  
 MATLAB (r2011b or higher)  
 gdal (1.10.0 or higher)  
 hdf (4.2.5 or higher)  
 bash (4.1.2 or higher)  
+
+For some minor fucstions:  
+R (2.15.2 or higher)  
+RCurl Package (1.95-4.3 or higher)
+
 
 Publications
 ------
