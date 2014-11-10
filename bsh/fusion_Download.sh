@@ -34,7 +34,7 @@ echo "=========================================================="
 # Run the bash script
 R --slave --vanilla --quiet --no-save  <<EEE
 source('https://raw.githubusercontent.com/xjtang/fusion/master/tool/swath_download.R')
-swathDownload($1,$2)
+swathDownload('$1','$2')
 EEE
 
 echo "=========================================================="
