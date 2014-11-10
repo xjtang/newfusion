@@ -80,14 +80,14 @@ function fusion_BRDFusion(main)
         end
 
         % find ETM BRDF files
-        File.ETMBRDF = dir([main.output.etmBRDF,'ETMBRDF_A',DayStr,'*']);
+        File.ETMBRDF = dir([main.output.etmBRDF,'ETMBRDF_A',DayStr,'*.hdr']);
         if  numel(File.ETMBRDF)~=1
-            disp(['ETM for Julian Day: ', DayStr]);
+            disp(['Cannot find ETMBRDF for Julian Day: ', DayStr]);
             continue;
         end   
 
         % read brdf coefficients
-        ETMBRDF = multibandread([main.output.etmBRDF,File.ETMBRDF.name],...
+        ETMBRDF = multibandread([main.output.etmBRDF,File.ETMBRDF.name(1:(length(File.ETMBRDF.name)-4))],...
             [numel(main.etm.line),numel(mainetm.sample),main.etm.band],'int16',0,'bsq','ieee-le');
         ETMBRDF(ETMBRDF<=0) = nan;
         ETMBRDF = ETMBRDF/1000;
