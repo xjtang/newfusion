@@ -120,10 +120,10 @@ function fusion_Fusion(main)
             MOD09SUB.FUS09SWIR2 = etm2swath(ETMSWIR2,MOD09SUB,ETMGeo);
 
             % get QA data
-            MOD09SUBF = swathInterpQA(MOD09SUB);
+            MOD09SUB = swathInterpQA(MOD09SUB);
 
             % save
-            save([main.output.modsubf,'MOD09SUBF.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUBF');
+            save([main.output.modsubf,'MOD09SUBF.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
             disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
         end
     end
