@@ -101,6 +101,9 @@ swathDownload <- function(webFile,output){
     binDownload(fullURL,outFile)
     cat('...done\n')
 
+    # garbage collection
+    gc()
+
   }
 
   # done
