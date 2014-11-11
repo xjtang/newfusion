@@ -98,7 +98,7 @@ swathDownload <- function(webFile,output){
     
     # download
     cat(pgs,'Downloading from: ',fullURL)
-    binDownload(fullURL,outFile)
+    try(binDownload(fullURL,outFile))
     cat('...done\n')
 
     # garbage collection
