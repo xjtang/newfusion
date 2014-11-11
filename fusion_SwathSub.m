@@ -157,6 +157,9 @@ function fusion_SwathSub(main)
                 Bearing(:,end) = 2*Bearing(:,end-1)-Bearing(:,end-2);
                 MOD09SUB.Bearing = Bearing;
 
+                % get QA data
+                MOD09SUB = swathInterpQA(MOD09SUB);
+
                 % save and end timer
                 save([main.output.modsub,'MOD09SUB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
                 disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
