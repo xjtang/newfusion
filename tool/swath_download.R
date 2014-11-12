@@ -22,13 +22,13 @@
 #   
 #----------------------------------------------------------------
 
+# library
+library(RCurl)
+
 # sourcing
 script <- getURL('https://raw.githubusercontent.com/xjtang/rTools/master/web_tools.R',ssl.verifypeer=F)
 eval(parse(text=script),envir=.GlobalEnv)
 sourceURL('https://raw.githubusercontent.com/xjtang/rTools/master/text_tools.R')
-
-# library
-library(RCurl)
 
 # main function
 swathDownload <- function(webFile,output){
