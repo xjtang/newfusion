@@ -59,7 +59,7 @@ swathDownload <- function(webFile,output){
   imgList <- readLines(webFile,warn=F)
   
   # pre-process list
-  pat <- '^.*(MOD09.*hdf).*$'
+  pat <- '^.*(M*D09.*hdf).*$'
   imgList <- gsub(pat, '\\1', imgList[grepl(pat,imgList)])
 
   # count numbers 
