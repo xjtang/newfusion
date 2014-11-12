@@ -20,9 +20,9 @@ Main Scripts:
 fusion_Inputs - Intilize the main input structure for other processes  
 fusion_BRDF - Generate BRDF correction coefficients  
 fusion_SwathSub - Create subset of the MODIS swath based on geolocation of Landsat images  
-fusion_Fusion - The main fusion process
-fusion_FusionBRDF - The main fusion process with BRDF correction
-fusion_WriteHDF - Write the final outputs to new HDF files
+fusion_Fusion - The main fusion process  
+fusion_FusionBRDF - The main fusion process with BRDF correction  
+fusion_WriteHDF - Write the final outputs to new HDF files  
 
 core - some key functions that will be used by the main scripts
 
