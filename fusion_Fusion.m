@@ -112,12 +112,16 @@ function fusion_Fusion(main)
             MOD09SUB = load([main.output.modsub,File.MOD09SUB(I_TIME).name]);
 
             % fusion
-            MOD09SUB.FUS09BLU = etm2swath(ETMBLU,MOD09SUB,ETMGeo);
-            MOD09SUB.FUS09GRE = etm2swath(ETMGRE,MOD09SUB,ETMGeo);
+
             MOD09SUB.FUS09RED = etm2swath(ETMRED,MOD09SUB,ETMGeo);
             MOD09SUB.FUS09NIR = etm2swath(ETMNIR,MOD09SUB,ETMGeo);
-            MOD09SUB.FUS09SWIR = etm2swath(ETMSWIR,MOD09SUB,ETMGeo);
-            MOD09SUB.FUS09SWIR2 = etm2swath(ETMSWIR2,MOD09SUB,ETMGeo);
+
+            if main.set.res == 500
+                MOD09SUB.FUS09BLU = etm2swath(ETMBLU,MOD09SUB,ETMGeo);
+                MOD09SUB.FUS09GRE = etm2swath(ETMGRE,MOD09SUB,ETMGeo);
+                MOD09SUB.FUS09SWIR = etm2swath(ETMSWIR,MOD09SUB,ETMGeo);
+                MOD09SUB.FUS09SWIR2 = etm2swath(ETMSWIR2,MOD09SUB,ETMGeo);
+            end
 
             % save
             save([main.output.modsubf,'MOD09SUBF.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
