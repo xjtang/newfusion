@@ -129,12 +129,15 @@ function fusion_BRDFusion(main)
             MOD09SUB = load([main.output.modsub,File.MOD09SUB(I_TIME).name]);
 
             % fusion
-            MOD09SUB.FUSB9BLU = etm2swath(ETMBLU,MOD09SUB,ETMGeo);
-            MOD09SUB.FUSB9GRE = etm2swath(ETMGRE,MOD09SUB,ETMGeo);
             MOD09SUB.FUSB9RED = etm2swath(ETMRED,MOD09SUB,ETMGeo);
             MOD09SUB.FUSB9NIR = etm2swath(ETMNIR,MOD09SUB,ETMGeo);
-            MOD09SUB.FUSB9SWIR = etm2swath(ETMSWIR,MOD09SUB,ETMGeo);
-            MOD09SUB.FUSB9SWIR2 = etm2swath(ETMSWIR2,MOD09SUB,ETMGeo);
+
+            if main.set.res == 500
+                MOD09SUB.FUSB9BLU = etm2swath(ETMBLU,MOD09SUB,ETMGeo);
+                MOD09SUB.FUSB9GRE = etm2swath(ETMGRE,MOD09SUB,ETMGeo);
+                MOD09SUB.FUSB9SWIR = etm2swath(ETMSWIR,MOD09SUB,ETMGeo);
+                MOD09SUB.FUSB9SWIR2 = etm2swath(ETMSWIR2,MOD09SUB,ETMGeo);
+            end
 
             % save
             save([main.output.modsubbrdf,'MOD09SUBFB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
