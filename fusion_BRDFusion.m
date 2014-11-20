@@ -66,7 +66,7 @@ function fusion_BRDFusion(main)
         DayStr = num2str(Day);
 
         % check if result already exist
-        File.Check = dir([main.output.modsubbrdf '*' DayStr '*']);
+        File.Check = dir([main.output.modsubbrdf '*' num2str(main.set.res) '*' DayStr '*']);
         if numel(File.Check) >= 1
             disp([DayStr ' already exist, skip this date.']);
             continue;
