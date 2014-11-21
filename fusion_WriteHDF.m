@@ -138,8 +138,8 @@ function fusion_WriteHDF(main)
                 
             elseif main.set.res == 250
             
-                [~] = writeHDF([main.output.fusion,HDFFile.name],6,FUS09RED);
-                [~] = writeHDF([main.output.fusion,HDFFile.name],7,FUS09NIR);
+                [~] = writeHDF([main.output.fusion,HDFFile.name],7,FUS09RED);
+                [~] = writeHDF([main.output.fusion,HDFFile.name],8,FUS09NIR);
             
             end
 
@@ -186,8 +186,8 @@ function fusion_WriteHDF(main)
                     [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],15,FUSB9SWIR2);
                     
                 elseif main.set.res == 250
-                    [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],6,FUSB9RED);
-                    [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],7,FUSB9NIR);
+                    [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],7,FUSB9RED);
+                    [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],8,FUSB9NIR);
                 end
             
             end
