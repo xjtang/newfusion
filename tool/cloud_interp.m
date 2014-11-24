@@ -1,4 +1,4 @@
-% cloud_plot.m
+% cloud_interp.m
 % Version 1.0
 %
 % Project: Fusion
@@ -22,7 +22,7 @@
 % Created on Github on 11/24/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-function cloud_plot(path,res,outFile)
+function cloud_interp(path,res,outFile)
 
   % get list of all valid files in the input directory
   fileList = dir([path,'MOD09SUB*',num2str(res),'*.mat']);
