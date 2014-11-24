@@ -1,5 +1,5 @@
 % fusion_SwathSub.m
-% Version 6.1.2
+% Version 6.2
 % Step 2
 % Subsetting the Swath Data
 %
@@ -41,7 +41,7 @@
 % Updates of Version 6.1.1 - 10/10/2014 (by Xiaojing Tang)
 %   1.automatically skip if output file already exist.
 %
-% Updates of Version 6.1.2 - 11/24/2014 (by Xiaojing Tang)
+% Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
 %   1.Bug fixed.
 %   2.Added support for 250m.
 %   3.Updated comments.
