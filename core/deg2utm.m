@@ -40,6 +40,7 @@
 %   3.Modified for work flow of fusion version 6.1.
 %   4.Handle negative UTMzone as southern hemisphere.
 %
+% Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 function [Easting, Northing, UTMzone] = deg2utm(Lat, Lon, UTMzone)
