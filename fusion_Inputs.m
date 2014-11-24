@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 6.1
+% Version 6.1.15 (Beta)
 % Step 0
 % Main Inputs and Settings
 %
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 10/14/2014
+% Last Update: 11/24/2014
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -33,6 +33,10 @@
 %
 % Update of Version 6.1 - 10/14/2014 (by Xiaojing Tang)
 %   1.This script now loads the hrf module
+%
+% Released Version 6.1.1 (Beta) - 10/15/2014 (by Xiaojing Tang)
+%   Released on Github
+%   Check Github Commits for updates afterwards.
 %
 %----------------------------------------------------------------
 %
