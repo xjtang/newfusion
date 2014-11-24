@@ -22,8 +22,6 @@
 % Version 6.0 - Unknown
 %   This script gets decoded 500m QA data from 1000m QA data in MOD09 
 %       (swath data).
-%   This interpolation can NOT done by simple resampling, we need 
-%       interpolate QA data for each scan.
 %   In the code, SwathScan defined the steps for MODIS scan (20 for 500 m
 %       and 40 for 250 m).
 %   MOD09SUB.QAWater is for water mask, MOD09SUB.QACloud for cloud mask, 
