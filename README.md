@@ -10,9 +10,9 @@ About
 
 The fusion tool is a set of functions written in MATLAB for combining remote sensing images from MODIS and Landsat to detect land cover change in near real time (see Xin et al., 2013 for more details on fusion). The core of the fusion tool is to predict MODIS swath observations based on synthetic Landsat ETM image from the CCDC model (see Zhu & Woodcock, 2014 for more details on CCDC). 
 
-The fusion tool is originally developed by Qinchuan Xin at Boston University (version 1-6). I modified the the fusion ver. 6 after I took over the project in May, 2014. The new fusion ver. 6.1 in this repo. is designed to fit the new work flow and data structure. See comments in each script for the specific changes that I made to the original fusion tool.
+The fusion tool is originally developed by Qinchuan Xin at Boston University (version 1-6). I modified the the fusion ver. 6 after I took over the project in May, 2014. The new fusion ver. 6.1 (and higher) in this repo. is designed to fit the new work flow and data structure. See comments in each script for the specific changes that I made to the original fusion tool.
 
-The current fusion tool supports MODIS Terra in 500m resolution only without BRDF correction. BRDF correction will be added in the next major update that will come soon. A brand new fusion tool in open source language is under development. I expect it to be released on soon. (follow xjtang/openfusion). The new open source fusion will support both MODIS Aqua adn Terra in 250m and 500m resolution.
+The current fusion tool supports MODIS Terra/Aqua in 500/250m resolution with the option of BRDF correction. A brand new fusion tool in open source language is under development. I expect it to be released soon. (follow xjtang/openfusion). The new open source fusion will be based on fusion ver. 6.1 and higher.
 
 Content
 ------
@@ -59,7 +59,7 @@ Instruction
 
 - Download required input data and allocate enough disk space for output
 - Organize all input data in one folder with original folders and file names (such as MOD09, MOD09GA)
-- Pull the fusion repo. to your server or local computer
+- Clone (or pull) the fusion repo. to your server or local computer
 
 **To run fusion step by step**  
 
