@@ -5,7 +5,7 @@
 %
 % Project: Fusion
 % By Qinchuan Xin
-% Updated By: xjtang
+% Updated By: Xiaojing Tang
 % Created On: Unknown
 % Last Update: 10/1/2014
 %
@@ -25,7 +25,7 @@
 %   This script extracts MOD43A1 (BRDF parameters) data and reproject them
 %       to match Landat image.
 %
-% Updates of Version 6.1 - 10/1/2014 (by xjtang)
+% Updates of Version 6.1 - 10/1/2014 (by Xiaojing Tang)
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
