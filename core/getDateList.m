@@ -24,6 +24,7 @@
 % Updates of Version 6.1.1 - 10/10/2014 (by Xiaojing Tang)
 %   1.Bug fixed: date list is now unique.
 %
+% Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 function dateList = getDateList(path)
