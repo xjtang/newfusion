@@ -1,5 +1,6 @@
 # swath_download.R
 # Version 1.0.1
+# Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
@@ -25,6 +26,7 @@
 # Updates of Version 1.0.1 - 11/12/2014
 #   1.Bug fixed.
 #   
+# Created on Github on 11/4/2014, check Github Commits for updates afterwards.
 #----------------------------------------------------------------
 
 # library
