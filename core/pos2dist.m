@@ -30,6 +30,7 @@
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
 %
+% Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 function [Distance, Bearing] = pos2dist(Lat1, Lon1, Lat2, Lon2)
