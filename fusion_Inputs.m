@@ -1,5 +1,5 @@
 % fusion_Inputs.m
-% Version 6.1.15 (Beta)
+% Version 6.1.1
 % Step 0
 % Main Inputs and Settings
 %
@@ -31,13 +31,15 @@
 %   This script serves as a single repository for all inputs and settings
 %       for the fusion process
 %
-% Update of Version 6.1 - 10/14/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 10/14/2014 (by Xiaojing Tang)
 %   1.This script now loads the hrf module
 %
-% Released Version 6.1.1 (Beta) - 10/15/2014 (by Xiaojing Tang)
-%   Released on Github
-%   Check Github Commits for updates afterwards.
+% Updates of Version 6.1.1 - 11/24/2014 (by Xiaojing Tang)
+%   1.Improved main input structure.
+%   2.Updated comments.
+%   3.Bug fixed.
 %
+% Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 function main = fusion_Inputs(iData,iBRDF,iRes,iDis,iSub)
