@@ -34,7 +34,7 @@
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
-%
+
 function Swath = etm2swath(ETM,MOD09SUB,ETMGeo,Thres4NaN)
 
     % check the input arguments
