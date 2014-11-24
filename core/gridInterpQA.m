@@ -39,8 +39,9 @@
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
 %
+% Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
-%
+
 function    MOD09GA=gridInterpQA(MOD09GA)
 
     % check the input arguments
