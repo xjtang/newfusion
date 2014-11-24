@@ -28,13 +28,10 @@ fusion_WriteHDF - Write the final outputs to new HDF files
 
 **Supplimental Scripts:**  
 
-core - some key functions that will be used by the main scripts
-
-ext - some external functions written by other authors
-
-bash - bash scripts for running fusion in qshell
-
-tool - some small tools for pre- / post- fusion analysis  
+core - some key functions that will be used by the main scripts  
+ext - some external functions written by other authors  
+bash - bash scripts for running fusion in qshell  
+tool - some small tools for pre- / post- fusion analysis
 
 
 Data
