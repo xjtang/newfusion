@@ -5,7 +5,7 @@
 %
 % Project: Fusion
 % By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Updated By: xjtang
 % Created On: Unknown
 % Last Update: 11/24/2014
 %
@@ -28,7 +28,7 @@
 %   This script saves the results as Matlab object called MOD09SUB that 
 %       contains the data and related metadata.
 %
-% Updates of Version 6.1 - 10/1/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 10/1/2014 (by xjtang)
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
@@ -38,10 +38,10 @@
 %   7.The code now save output to MOD09SUBF instead of overwriting old
 %       files.
 %
-% Updates of Version 6.1.1 - 10/15/2014 (by Xiaojing Tang)
+% Updates of Version 6.1.1 - 10/15/2014 (by xjtang)
 %   1.The script now checks for existing results and skip.
 %
-% Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
+% Updates of Version 6.2 - 11/24/2014 (by xjtang)
 %   1.Bugs Fixed.
 %   2.Added support of 250m fusion.
 %   3.Updated comments.
