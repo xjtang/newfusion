@@ -38,8 +38,9 @@
 %   4.Handle negative UTM zone as southern hemisphere (used to be extra
 %       input argument in previous version).
 %
+% Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
-%
+
 function  [Lat, Lon] = utm2deg(UTMEast, UTMNorth, UTMZone)
 
     % check the input and output arguments
