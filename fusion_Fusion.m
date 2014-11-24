@@ -1,5 +1,5 @@
 % fusion_Fusion.m
-% Version 6.1.2
+% Version 6.2
 % Step 3
 % Main Fusion Process
 %
@@ -41,7 +41,7 @@
 % Updates of Version 6.1.1 - 10/15/2014 (by Xiaojing Tang)
 %   1.The script now checks for existing results and skip.
 %
-% Updates of Version 6.1.2 - 11/24/2014 (by Xiaojing Tang)
+% Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
 %   1.Bugs Fixed.
 %   2.Added support of 250m fusion.
 %   3.Updated comments.
