@@ -34,6 +34,7 @@
 %   6.User gdal_translate instead of MRT to resample.
 %   7.The code now creates the BRDF coefficinet output file by itself.
 %
+% Released on Github on 10/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 function fusion_BRDF(main)
