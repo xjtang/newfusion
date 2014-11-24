@@ -35,8 +35,11 @@ function cloud_plot(path,res,outFile)
 
   % loop through all files in the list
   for i = 1:numel(fileList)
+    
+    % load the .mat file
+    MOD09Sub = load([path,fileList(i).name]);
   
-  
+    
   
   
   end
