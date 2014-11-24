@@ -1,5 +1,5 @@
 % fusion_BRDFusion.m
-% Version 6.1
+% Version 6.2
 % Step 4
 % Fusion With BRDF Correction
 %
@@ -34,8 +34,14 @@
 %   4.Changed from script to function
 %   5.Modified the code to incorporate the use of fusion_inputs structure.
 %
-%----------------------------------------------------------------
+% Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
+%   1.Bugs fixed.
+%   2.Updated comments.
+%   3.Added support for 250m fusion
 %
+% Released on Github on 10/15/2014, check Github Commits for updates afterwards.
+%----------------------------------------------------------------
+
 function fusion_BRDFusion(main)
 
     % check if BRDF option is checked
