@@ -5,7 +5,7 @@
 %
 % Project: Fusion
 % By Qinchuan Xin
-% Updated By: xjtang
+% Updated By: Xiaojing Tang
 % Created On: Unknown
 % Last Update: 10/3/2014
 %
@@ -27,14 +27,14 @@
 %   This script generage MODIS swath data based on Landsat synthetic data
 %       with BRDF correction.
 %
-% Updates of Version 6.1 - 10/3/2014 (by xjtang)
+% Updates of Version 6.1 - 10/3/2014 (by Xiaojing Tang)
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
 %   4.Changed from script to function
 %   5.Modified the code to incorporate the use of fusion_inputs structure.
 %
-% Updates of Version 6.2 - 11/24/2014 (by xjtang)
+% Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
 %   1.Bugs fixed.
 %   2.Updated comments.
 %   3.Added support for 250m fusion
