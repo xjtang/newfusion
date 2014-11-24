@@ -42,7 +42,7 @@
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
-%
+
 function [Easting, Northing, UTMzone] = deg2utm(Lat, Lon, UTMzone)
 
     % check the input and output arguments
