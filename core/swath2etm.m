@@ -29,8 +29,9 @@
 %   3.Modified for work flow of fusion version 6.1.
 %   4.Initial value set to -9999 (-10000 originally).
 %
+% Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
-%
+
 function ETM = swath2etm(Swath, MOD09SUB, ETMGeo)
 
     % Swath=((MOD09SUB.FUS09NIR-MOD09SUB.FUS09RED)./(MOD09SUB.FUS09NIR+MOD09SUB.FUS09RED)-...
