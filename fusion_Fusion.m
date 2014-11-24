@@ -1,5 +1,5 @@
 % fusion_Fusion.m
-% Version 6.1.1
+% Version 6.1.2
 % Step 3
 % Main Fusion Process
 %
