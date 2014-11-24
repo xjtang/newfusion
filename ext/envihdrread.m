@@ -32,6 +32,7 @@
 %   3.Modified for work flow of fusion version 6.1.
 %   4.Added support for data type 5 (double).
 %
+% Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 function [jiDim,jiUL,resolu,ZC,bands,interleave] = envihdrread(filename)
