@@ -21,8 +21,8 @@
 # Version 1.0 - 11/5/2014
 #   Reproject BRDF coefficients to Landsat scale
 #
+# Created on Github on 11/5/2014, check Github Commits for updates afterwards.
 #----------------------------------------------------------------
-#
 
 #!/bin/bash
 
