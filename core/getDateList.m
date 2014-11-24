@@ -26,7 +26,7 @@
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
-%
+
 function dateList = getDateList(path)
     
     % read files
