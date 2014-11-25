@@ -12,7 +12,7 @@ The fusion tool is a set of functions written in MATLAB for combining remote sen
 
 The fusion tool is originally developed by Qinchuan Xin at Boston University (version 1-6). I modified the the fusion ver. 6 after I took over the project in May, 2014. The new fusion ver. 6.1 (and higher) in this repo. is designed to fit the new work flow and data structure. See comments in each script for the specific changes that I made to the original fusion tool.
 
-The current fusion tool supports MODIS Terra in 500/250m resolution with the option of BRDF correction. A brand new fusion tool in open source language is under development. I expect it to be released soon. (follow xjtang/openfusion). The new open source fusion will be based on fusion ver. 6.1 and higher.
+The current fusion tool supports MODIS Terra/Aqua in 500/250m resolution with the option of BRDF correction. A brand new fusion tool in open source language is under development. I expect it to be released soon. (follow xjtang/openfusion). The new open source fusion will be based on fusion ver. 6.1 and higher.
 
 Content
 ------
