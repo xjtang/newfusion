@@ -39,6 +39,7 @@
 %   2.Updated comments.
 %   3.Added support for 250m fusion.
 %   4.Added support for BRDF correstion.
+%   5.Added support for Aqua
 %
 % Released on Github on 10/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -54,6 +55,9 @@ function fusion_WriteHDF(main)
     % start timer
     tic;
     
+    % check platform
+    plat = main.set.plat;
+    
     % set file path
     FileName.MOD09SUB = main.output.modsubf;
     FileName.MOD09SUBB = main.output.modsubbrdf;
@@ -66,14 +70,14 @@ function fusion_WriteHDF(main)
         DayStr = num2str(Day);
         
         % find files
-        File.MOD09SUB = dir([FileName.MOD09SUB,'MOD09SUBF.',num2str(main.set.res),'*',DayStr,'*']);
+        File.MOD09SUB = dir([FileName.MOD09SUB,plat,'09SUBF.',num2str(main.set.res),'*',DayStr,'*']);
         if numel(File.MOD09SUB) < 1
             disp(['Cannot find MOD09SUBF for Julian Day: ', DayStr]);
             continue;
         end
 
         % copy original swath data to output location 
-        system(['cp ' main.input.swath '*' DayStr '* ' main.output.fusion]);
+        system(['cp ' main.input.swath plat '*' DayStr '* ' main.output.fusion]);
         
         for I_TIME = 1:numel(File.MOD09SUB)
             
@@ -83,7 +87,7 @@ function fusion_WriteHDF(main)
             % load MOD09SUBBRDF
             BRDFlag = main.set.brdf;
             if BRDFlag == 1
-                File.MOD09SUBB = dir([main.output.modsubbrdf,'MOD09SUBFB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat']);
+                File.MOD09SUBB = dir([main.output.modsubbrdf,plat,'09SUBFB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat']);
                 if numel(File.MOD09SUB) < 1
                     disp(['Cannot find MOD09SUBFB for Julian Day: ', DayStr]);
                     disp(['Only non-BRDF corrected results are produced for Julian Day: ', DayStr]);
@@ -95,11 +99,11 @@ function fusion_WriteHDF(main)
             MOD09SUB = load([FileName.MOD09SUB,File.MOD09SUB(I_TIME).name]);
             if BRDFlag == 1 
                 MOD09SUBB = load([FileName.MOD09SUBB,File.MOD09SUBB.name]);
-                system(['cp ' main.input.swath '*' DayStr '* ' main.output.fusionbrdf]);
+                system(['cp ' main.input.swath plat '*' DayStr '* ' main.output.fusionbrdf]);
             end
             
             % Find HDF file to write
-            HDFFile = dir([main.output.fusion,'*',DayStr,'*',TimeStr,'*']);
+            HDFFile = dir([main.output.fusion,plat,'*',DayStr,'*',TimeStr,'*']);
             if numel(HDFFile) ~= 1
                 disp(['Cannot find HDFFile for Julian Day: ', DayStr]);
                 continue;
@@ -153,7 +157,7 @@ function fusion_WriteHDF(main)
             if BRDFlag == 1
             
                 % Find HDF file to write
-                HDFFileB = dir([main.output.fusionbrdf,'*',DayStr,'*',TimeStr,'*']);
+                HDFFileB = dir([main.output.fusionbrdf,plat,'*',DayStr,'*',TimeStr,'*']);
                 if numel(HDFFileB) ~= 1
                     disp(['Cannot find HDFFileB for Julian Day: ', DayStr]);
                     continue;
