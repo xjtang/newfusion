@@ -45,6 +45,7 @@
 %   1.Bugs Fixed.
 %   2.Added support of 250m fusion.
 %   3.Updated comments.
+%   4.Added support for Aqua.
 %
 % Released on Github on 10/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -66,6 +67,9 @@ function fusion_Fusion(main)
 
     % start timer
     tic;
+    
+    % check platform
+    plat = main.set.plat;
     
     % loop through all etm images
     for I_Day=1:numel(main.date.swath)
@@ -101,7 +105,7 @@ function fusion_Fusion(main)
         ETMSWIR2 = ETM(:,:,6);
 
         % find MOD09SUB files
-        File.MOD09SUB = dir([main.output.modsub,'MOD09SUB.',num2str(main.set.res),'*',DayStr,'*']);
+        File.MOD09SUB = dir([main.output.modsub,plat,'09SUB.',num2str(main.set.res),'*',DayStr,'*']);
 
         if numel(File.MOD09SUB)<1
             disp(['Cannot find MOD09SUB for Julian Day: ', DayStr]);
@@ -129,7 +133,7 @@ function fusion_Fusion(main)
             end
 
             % save
-            save([main.output.modsubf,'MOD09SUBF.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
+            save([main.output.modsubf,plat,'09SUBF.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
             disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
         end
     end
