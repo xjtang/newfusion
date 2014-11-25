@@ -33,14 +33,25 @@ function cloud_interp(path,res,outFile)
     return;
   end
 
+  % initiate results
+  perCloud = zeros(numel(fileList));
+  dateList = zeros(numel(fileList));
+
   % loop through all files in the list
   for i = 1:numel(fileList)
     
     % load the .mat file
-    MOD09Sub = load([path,fileList(i).name]);
+    MOD09SUB = load([path,fileList(i).name]);
   
+    % total number of swath observation
+    nPixel = numel(MOD09SUB.MODLine)*numel(MOD09SUB.MODSamp);
     
-  
+    % total cloudy
+    nCloud = sum(MOD09SUB.QACloud(:));
+    
+    % insert result
+    perCloud(i) = nCloud/nPixel;
+    dateList(i) = 2005123;
   
   end
 
