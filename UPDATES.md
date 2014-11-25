@@ -11,6 +11,7 @@ Version 6.2 - 11/24/2014 - xjtang
 --------------
 - Added support for BRDF correction.
 - Added support for 250m fusion.
+- Added support for MODIS Aqua.
 - Bugs fixed.
 - Updated comments.
 
