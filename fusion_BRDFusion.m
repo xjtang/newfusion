@@ -38,6 +38,7 @@
 %   1.Bugs fixed.
 %   2.Updated comments.
 %   3.Added support for 250m fusion
+%   4.Added support for Aqua
 %
 % Released on Github on 10/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -64,6 +65,9 @@ function fusion_BRDFusion(main)
     % start timer
     tic;
     
+    % check platform
+    plat = main.set.plat;
+    
     % loop through all etm images
     for I_Day = 1:numel(main.date.swath)
         
@@ -72,21 +76,14 @@ function fusion_BRDFusion(main)
         DayStr = num2str(Day);
 
         % check if result already exist
-        File.Check = dir([main.output.modsubbrdf '*' num2str(main.set.res) '*' DayStr '*']);
+        File.Check = dir([main.output.modsubbrdf plat '*' num2str(main.set.res) '*' DayStr '*']);
         if numel(File.Check) >= 1
             disp([DayStr ' already exist, skip this date.']);
             continue;
         end
-        
-        % read ETM
-        File.ETM = dir([main.input.etm,'*',DayStr,'*.hdr']);
-        if  numel(File.ETM) ~= 1
-            disp(['Cannot find ETM for Julian Day: ', DayStr]);     
-            continue;
-        end
 
         % find ETM BRDF files
-        File.ETMBRDF = dir([main.output.etmBRDF,'ETMBRDF_A',DayStr,'*.hdr']);
+        File.ETMBRDF = dir([main.output.etmBRDF,'ETM',plat,'BRDF_A',DayStr,'*.hdr']);
         if  numel(File.ETMBRDF)~=1
             disp(['Cannot find ETMBRDF for Julian Day: ', DayStr]);
             continue;
@@ -119,7 +116,7 @@ function fusion_BRDFusion(main)
         ETMSWIR2 = ETM(:,:,6).*ETMBRDF(:,:,6);
 
         % find modsub
-        File.MOD09SUB = dir([main.output.modsub,'MOD09SUB.',num2str(main.set.res),'*',DayStr,'*']);
+        File.MOD09SUB = dir([main.output.modsub,plat,'09SUB.',num2str(main.set.res),'*',DayStr,'*']);
 
         if numel(File.MOD09SUB)<1
             disp(['Cannot find MOD09SUB for Julian Day: ', DayStr]);
@@ -146,7 +143,7 @@ function fusion_BRDFusion(main)
             end
 
             % save
-            save([main.output.modsubbrdf,'MOD09SUBFB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
+            save([main.output.modsubbrdf,plat,'09SUBFB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
             disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
         end
     end
