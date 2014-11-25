@@ -48,6 +48,9 @@ function fusion_BRDF(main)
     % start the timer
     tic;
     
+    % get platform information
+    plat = main.set.plat;
+    
     % loop through all files
     for I_Day = 1:numel(main.date.swath)
         
@@ -58,9 +61,6 @@ function fusion_BRDF(main)
         BRDFDay = Day-mod(Day-main.date.brdf(1),8);
         BRDFDayStr = num2str(BRDFDay);
         % BRDFDayStr = [num2str(year(BRDFDay)),num2str(BRDFDay-datenum(year(BRDFDay),1,1)+1,'%03d')];
-
-        % get platform information
-        plat = main.set.plat;
 
         % find input files
         File.MOD09GA = dir([main.input.grid,plat,'09GA.A',DayStr,'*']);
