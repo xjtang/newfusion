@@ -1,5 +1,5 @@
 % fusion_Inputs.m
-% Version 6.1.1
+% Version 6.2
 % Step 0
 % Main Inputs and Settings
 %
@@ -10,6 +10,7 @@
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
+%   iPlat (String) - platform, MOD for Terra, MYD for Aqua.
 %   iBRDF (Integer) - 0: BRDF off; 1: BRDF on.
 %   iRes (Integer) - resolusion 500/250.
 %   iDis (Double) - Percenatble of data discarded at the edge of Landsat
@@ -39,10 +40,13 @@
 %   2.Updated comments.
 %   3.Bug fixed.
 %
+% Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
+%   1.Added support for MODIS Aqua.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
-function main = fusion_Inputs(iData,iBRDF,iRes,iDis,iSub)
+function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
 
     % check input argument
     if ~exist('iSub', 'var')
@@ -60,6 +64,9 @@ function main = fusion_Inputs(iData,iBRDF,iRes,iDis,iSub)
     if ~exist('iData', 'var')
         iData = '/projectnb/landsat/projects/fusion/srb_site/';
     end
+    if ~exist('iPlat', 'var')
+        iPlat = 'MOD';
+    end
 
     % add the fusion package to system path
     addpath(genpath(fileparts(mfilename('fullpath'))));
@@ -76,21 +83,21 @@ function main = fusion_Inputs(iData,iBRDF,iRes,iDis,iSub)
         % Landsat ETM images to fuse
         main.input.etm = [main.path 'MOD09ETM/'];
         % MODIS Surface Reflectance data (swath data)
-        main.input.swath = [main.path 'MOD09/'];
+        main.input.swath = [main.path iPlat '09/'];
 
         % for 250m resolution fusion process only:
         % gridded 250m resolution band 1 and 2 surface reflectance data
-        main.input.g250m = [main.path 'MOD09GQ/'];
+        main.input.g250m = [main.path iPlat '09GQ/'];
 
         % for BRDF correction process only:
         % daily gridded MODIS suface reflectance data
-        main.input.grid = [main.path 'MOD09GA/'];
+        main.input.grid = [main.path iPlat '09GA/'];
         % BRDF/Albedo model parameters product
         main.input.brdf = [main.path 'MCD43A1/'];
 
         % for gridding process only:
         % MODIS geolocation data
-        main.input.geo = [main.path 'MOD03/'];
+        main.input.geo = [main.path iPlat '03/'];
         
     % set output data location (create if not exist)
         % main outputs:
