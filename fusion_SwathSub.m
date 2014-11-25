@@ -45,6 +45,7 @@
 %   1.Bug fixed.
 %   2.Added support for 250m.
 %   3.Updated comments.
+%   4.Added support for MODIS Aqua
 %
 % Released on Github on 10/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -62,10 +63,13 @@ function fusion_SwathSub(main)
     % loop through all files
     for I_Day = 1:numel(main.date.swath)
         
+        % check platform
+        plat = main.set.plat;
+        
         % find files
         Day = main.date.swath(I_Day);
         DayStr = num2str(Day);
-        File.MOD09 = dir([main.input.swath,'MOD09.A',DayStr,'*']);
+        File.MOD09 = dir([main.input.swath,plat,'09.A',DayStr,'*']);
 
         % all files exist
         if numel(File.MOD09)<1
@@ -81,7 +85,7 @@ function fusion_SwathSub(main)
             TimeStr = char(TimeStr(3));
             
             % check if file already exist
-            output = [main.output.modsub,'MOD09SUB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'];
+            output = [main.output.modsub,plat,'09SUB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'];
             if exist(output,'file')>0 
                 disp([output ' already exist, skip one'])
                 continue;
@@ -167,7 +171,7 @@ function fusion_SwathSub(main)
                 MOD09SUB = swathInterpQA(MOD09SUB);
 
                 % save and end timer
-                save([main.output.modsub,'MOD09SUB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
+                save([main.output.modsub,plat,'09SUB.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
                 disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
             else
                 disp(['No points in: ',File.MOD09(I_TIME).name]);
