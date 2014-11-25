@@ -79,7 +79,7 @@ function fusion_Fusion(main)
         DayStr = num2str(Day);
 
         % check if result already exist
-        File.Check = dir([main.output.modsubf '*' num2str(main.set.res) '*' DayStr '*']);
+        File.Check = dir([main.output.modsubf plat '*' num2str(main.set.res) '*' DayStr '*']);
         if numel(File.Check) >= 1
             disp([DayStr ' already exist, skip this date.']);
             continue;
