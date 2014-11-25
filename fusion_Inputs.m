@@ -157,6 +157,8 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
         end
           
     % settings and parameters
+        % platform of MODIS
+        main.set.plat = iPlat;
         % apply BRDF correction or not
         main.set.brdf = iBRDF;
         % resolution (500 or 250)
