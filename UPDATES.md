@@ -1,7 +1,7 @@
 Versions and Updates
 ==============
 
-Version 6.2.1 - 11/25/2014 - xjtang
+Version 6.2.1 - 11/26/2014 - xjtang
 --------------
 - Updated comments in all script files.
 - Bugs fixed.
