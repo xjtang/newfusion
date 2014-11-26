@@ -62,7 +62,7 @@ function cloud_interp(path,res,outFile)
   
   % save result
   r = [dateList,perCloud];
-  dlmwrite(outFile,r,',','precision',10);
+  dlmwrite(outFile,r,'delimiter',',','precision',10);
 
   % done
 
