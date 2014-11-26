@@ -4,6 +4,7 @@
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 11/24/2014
+% Last Update: 11/25/2014
 %
 % Input Arguments: 
 %   path - path to MOD09SUB m-files.
@@ -16,7 +17,7 @@
 %   1.Generate MOD09SUB m-files with the main fusion codes.
 %   2.Run this script with correct input arguments.
 %
-% Version 1.0 - 11/24/2014
+% Version 1.0 - 11/25/2014
 %   This script generates plot and table for cloud statistics of the MOD09SUB data.
 %   
 % Created on Github on 11/24/2014, check Github Commits for updates afterwards.
@@ -51,7 +52,7 @@ function cloud_interp(path,res,outFile)
     
     % insert result
     perCloud(i) = round(nCloud/nPixel*1000)/10;
-    p = regexp(fileList(i).name,'/d/d/d/d/d/d/d');
+    p = regexp(fileList(i).name,'\d\d\d\d\d\d\d');
     dateList(i) = str2num(fileList(i).name(p:(p+7)));
   
   end
