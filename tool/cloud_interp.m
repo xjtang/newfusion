@@ -52,7 +52,7 @@ function cloud_interp(path,res,outFile)
     % insert result
     perCloud(i) = round(nCloud/nPixel*1000)/10;
     p = regexp(fileList(i).name,'/d/d/d/d/d/d/d');
-    dateList(i) = str2num(fileList(i).name(t:(t+7)));
+    dateList(i) = str2num(fileList(i).name(p:(p+7)));
   
   end
   
