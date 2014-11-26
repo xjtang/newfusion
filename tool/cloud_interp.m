@@ -34,8 +34,8 @@ function cloud_interp(path,res,outFile)
   end
 
   % initiate results
-  perCloud = zeros(numel(fileList));
-  dateList = zeros(numel(fileList));
+  perCloud = zeros(numel(fileList),1);
+  dateList = zeros(numel(fileList),1);
 
   % loop through all files in the list
   for i = 1:numel(fileList)
@@ -50,10 +50,18 @@ function cloud_interp(path,res,outFile)
     nCloud = sum(MOD09SUB.QACloud(:));
     
     % insert result
-    perCloud(i) = nCloud/nPixel;
-    dateList(i) = 2005123;
+    perCloud(i) = round(nCloud/nPixel*1000)/10;
+    p = regexp(fileList(i).name,'/d/d/d/d/d/d/d');
+    dateList(i) = str2num(fileList(i).name(t:(t+7)));
   
   end
+  
+  % draw plot
+    
+  
+  % save result
+  r = [dateList,perCloud];
+  csvwrite(outFile,r);
 
   % done
 
