@@ -36,7 +36,8 @@ function cloud_interp(path,res,outFile)
 
   % initiate results
   perCloud = zeros(numel(fileList),1);
-  dateList = zeros(numel(fileList),1);
+  dateYear = zeros(numel(fileList),1);
+  dateDOY = zeros(numel(fileList),1);
 
   % loop through all files in the list
   for i = 1:numel(fileList)
@@ -53,7 +54,8 @@ function cloud_interp(path,res,outFile)
     % insert result
     perCloud(i) = round(nCloud/nPixel*1000)/10;
     p = regexp(fileList(i).name,'\d\d\d\d\d\d\d');
-    dateList(i) = str2num(fileList(i).name(p:(p+7)));
+    dateYear(i) = str2num(fileList(i).name(p:(p+3)));
+    dateDOY(i) = str2num(fileList(i).name((p+4):(p+6)));
   
   end
   
@@ -61,7 +63,7 @@ function cloud_interp(path,res,outFile)
     
   
   % save result
-  r = [dateList,perCloud];
+  r = [dateYear,dateDOY,perCloud];
   dlmwrite(outFile,r,'delimiter',',','precision',10);
 
   % done
