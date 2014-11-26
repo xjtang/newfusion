@@ -1,11 +1,12 @@
 Versions and Updates
 ==============
 
-Version 6.2.1 - 11/24/2014 - xjtang
+Version 6.2.1 - 11/25/2014 - xjtang
 --------------
 - Updated comments in all script files.
 - Bugs fixed.
 - Created log for updates in all versions.
+- Added new tool for generateing cloud stats.  
 
 Version 6.2 - 11/24/2014 - xjtang
 --------------
