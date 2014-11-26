@@ -1,10 +1,10 @@
 % cloud_interp.m
-% Version 1.0
+% Version 1.1
 %
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 11/24/2014
-% Last Update: 11/25/2014
+% Last Update: 11/26/2014
 %
 % Input Arguments: 
 %   path - path to MOD09SUB m-files.
@@ -20,6 +20,9 @@
 % Version 1.0 - 11/25/2014
 %   This script generates plot and table for cloud statistics of the MOD09SUB data.
 %   
+% Updated of Version 1.1 - 11/26/2014
+%   1.Seperate year and doy.
+%
 % Created on Github on 11/24/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
