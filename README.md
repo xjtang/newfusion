@@ -83,7 +83,7 @@ bash (4.1.2 or higher)
 **For some minor fucstions:**  
 R (2.15.2 or higher)  
 RCurl Package (1.95-4.3 or higher)  
-
+R.matlab Package (3.1.1 or higher)  
 
 Publications
 ------
