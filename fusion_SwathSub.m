@@ -175,6 +175,7 @@ function fusion_SwathSub(main)
                 disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
             else
                 disp(['No points in: ',File.MOD09(I_TIME).name]);
+                system(['rm ',main.input.swath,File.MOD09(I_TIME).name])
             end
         end
     end
