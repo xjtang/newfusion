@@ -94,8 +94,8 @@ function fusion_Fusion(main)
 
         ETM = multibandread([main.input.etm,File.ETM.name(1:(length(File.ETM.name)-4))],...
             [numel(main.etm.line),numel(main.etm.sample),main.etm.band],'int16',0,main.etm.interleave,'ieee-le');
-        ETM(ETM>10000) = nan;
-        ETM(ETM<1) = nan;
+        ETM(ETM>10000) = 10000;
+        ETM(ETM<0) = 0;
 
         ETMBLU = ETM(:,:,1);
         ETMGRE = ETM(:,:,2);
