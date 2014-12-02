@@ -144,7 +144,7 @@ gen_preview <- function(file,outFile,subType='SUB',
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-batch_gen_preview <- function(path,pattern='MOD09SUB*500m*',output,subType='SUB',
+batch_gen_preview <- function(path,output,pattern='MOD09SUB*500m*',subType='SUB',
                               comp=c(4,3,2),stretch=c(0,3000),cmask=F){
   
   # find all files
