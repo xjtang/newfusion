@@ -22,6 +22,7 @@
 #
 # Updates of Version 1.1 - 12/02/2014
 #   1.Added cloud mask feature.
+#   2.Checks if input file exist before processing.
 #   
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
