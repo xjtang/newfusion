@@ -18,7 +18,7 @@
 #$ -j y
 
 # Name the file where to redirect standard output and error
-#$ -o download.qlog
+#$ -o preview.qlog
 
 # Now let's keep track of some information just in case anything goes wrong
 
