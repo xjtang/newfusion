@@ -114,7 +114,7 @@ gen_preview <- function(file,outFile,subType='SUB',
     # remove the trailing .png extension from output file name
     if(strRight(outFile,4)=='.png'){outFile<-trimRight(outFile,4)}
     # calculate cloud cover percent
-    cc <- floor(sum(sr[,,7])/(line*samp))
+    cc <- floor(sum(sr[,,7])/(line*samp)*100)
     # forge output file name
     if(cmask){
       outFile <- paste(outFile,'_',cc,'C.png',sep='')
