@@ -23,6 +23,7 @@
 # Updates of Version 1.1 - 12/02/2014
 #   1.Added cloud mask feature.
 #   2.Checks if input file exist before processing.
+#   3.Append cloud percent into output file name.
 #   
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -109,7 +110,18 @@ gen_preview <- function(file,outFile,subType='SUB',
     rm(band)
   
   # generate image
-  writePNG(preview,outFile)
+    # remove the trailing .png extension from output file name
+    if(strRight(outFile,4)=='.png'){outFile<-trimRight(outFile,4)}
+    # calculate cloud cover percent
+    cc <- floor(sum(sr[,,7])/(line*samp))
+    # forge output file name
+    if(cmask){
+      outFile <- paste(outFile,'_',cc,'C.png',sep='')
+    }else{
+      outFile <- paste(outFile,'_',cc,'M.png',sep='')
+    }
+    # write output
+    writePNG(preview,outFile)
   
   # done
   return(0)
