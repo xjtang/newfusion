@@ -5,7 +5,7 @@
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 11/26/2014
-# Last Update: 11/30/2014
+# Last Update: 12/02/2014
 #
 # Input Arguments: 
 #   file - a csv file with the cloud states
@@ -17,7 +17,7 @@
 #   1.Generate cloud stats with other tools.
 #   2.Use this script to make plot.
 #
-# Version 1.0 - 11/30/2014
+# Version 1.0 - 12/02/2014
 #   This script makes a lot for the cloud stats of swath data.
 #   
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
