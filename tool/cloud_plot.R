@@ -39,6 +39,12 @@ cloud_plot <- function(file,outFile){
   labelColor <- 523
   pointMarker <- 16
   
+  # check if file exist
+  if(!file.exists(file)){
+    cat('Can not find input file.\n')
+    return(-1)
+  }
+  
   # read input
   data <- read.csv(file,header=F)
   year <- data[1,1]
