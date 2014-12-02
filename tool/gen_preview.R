@@ -24,6 +24,7 @@
 #   1.Added cloud mask feature.
 #   2.Checks if input file exist before processing.
 #   3.Append cloud percent into output file name.
+#   4.Bugs fixed.
 #   
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -166,7 +167,8 @@ batch_gen_preview <- function(path,output,pattern='MOD09SUB.*500m.*',subType='SU
   # loop through all files
   for(i in 1:length(fileList)){
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
-    outFile <- paste(output,subType,'_',date,'.png',sep='')
+    time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
+    outFile <- paste(output,subType,'_',date,'_',time,'.png',sep='')
     gen_preview(fileList[i],outFile,subType,comp,stretch,cmask)
     cat(paste(outFile,'...done\n'))
   }
