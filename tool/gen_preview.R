@@ -64,6 +64,12 @@ gen_preview <- function(file,outFile,subType='SUB',
   }
   
   # interpret the mat file
+    # check if file exist
+    if(!file.exists(file)){
+      cat('Can not find input file.\n')
+      return(-1)
+    }
+  
     # read the mat file
     MOD09SUB <- readMat(file)
     # grab dimension information
