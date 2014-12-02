@@ -146,7 +146,7 @@ gen_preview <- function(file,outFile,subType='SUB',
 #   r (Integer) - 0: Successful
 #
 batch_gen_preview <- function(path,output,pattern='MOD09SUB.*500m.*',subType='SUB',
-                              comp=c(4,3,2),stretch=c(0,3000),cmask=F){
+                              comp=c(5,4,3),stretch=c(0,5000),cmask=F){
   
   # find all files
   pattern <- paste(pattern,'.*.mat',sep='')
