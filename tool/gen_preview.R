@@ -1,11 +1,11 @@
 # gen_preview.R
-# Version 1.0
+# Version 1.1
 # Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 11/30/2014
-# Last Update: 12/01/2014
+# Last Update: 12/02/2014
 #
 # Input Arguments: 
 #   See specific function.
@@ -19,6 +19,9 @@
 #
 # Version 1.0 - 12/01/2014
 #   This script generates preview images for SwathSub.
+#
+# Updates of Version 1.1 - 12/02/2014
+#   1.Added cloud mask feature.
 #   
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -91,6 +94,8 @@ gen_preview <- function(file,outFile,subType='SUB',
       band[band<stretch[1]] <- stretch[1]
       # stretch the band
       band <- ((band-stretch[1])/(stretch[2]-stretch[1]))*(band!=0)
+      # apply cloud mask
+      if(cmask){band[sr[,,7]==1]<-1}
       # assign to preview
       preview[,,i] <- band
     }
