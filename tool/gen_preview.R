@@ -5,7 +5,7 @@
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 11/30/2014
-# Last Update: 12/02/2014
+# Last Update: 12/05/2014
 #
 # Input Arguments: 
 #   See specific function.
@@ -20,7 +20,7 @@
 # Version 1.0 - 12/01/2014
 #   This script generates preview images for SwathSub.
 #
-# Updates of Version 1.1 - 12/02/2014
+# Updates of Version 1.1 - 12/05/2014
 #   1.Added cloud mask feature.
 #   2.Checks if input file exist before processing.
 #   3.Append cloud percent into output file name.
@@ -117,9 +117,9 @@ gen_preview <- function(file,outFile,subType='SUB',
     cc <- floor(sum(sr[,,7])/(line*samp)*100)
     # forge output file name
     if(cmask){
-      outFile <- paste(outFile,'_',cc,'C.png',sep='')
-    }else{
       outFile <- paste(outFile,'_',cc,'M.png',sep='')
+    }else{
+      outFile <- paste(outFile,'_',cc,'C.png',sep='')
     }
     # write output
     writePNG(preview,outFile)
