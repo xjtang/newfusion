@@ -1,5 +1,5 @@
 # fusion_plot.R
-# Version 1.0
+# Version 1.1
 # Tools
 #
 # Project: Fusion
