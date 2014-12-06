@@ -1,0 +1,173 @@
+# fusion_plot.R
+# Version 1.0
+# Tools
+#
+# Project: Fusion
+# By Xiaojing Tang
+# Created On: 12/02/2014
+# Last Update: 12/05/2014
+#
+# Input Arguments: 
+#   See specific function.
+#   
+# Output Arguments: 
+#   See specific function.
+#
+# Usage: 
+#   1.Generate fusion results with fusion program.
+#   2.Use this script to generate plots of the results.
+#
+# Version 1.0 - 12/05/2014
+#   This script generates plots for the fusion results.
+#   The script will fit a simple linear model and display the result.
+#   Only plot for red, nir and swir are generated.
+#   
+# Released on Github on 12/05/2014, check Github Commits for updates afterwards.
+#------------------------------------------------------------
+
+# library and sourcing
+library(R.matlab)
+library(RCurl)
+library(png)
+script <- getURL('https://raw.githubusercontent.com/xjtang/rTools/master/source_all.R',ssl.verifypeer=F)
+eval(parse(text=script),envir=.GlobalEnv)
+
+#------------------------------------------------------------
+
+# generate preview plots for the fusion results
+#
+# Input Arguments: 
+#   file (String) - input fusion result .mat file
+#   outFile (String) - output file with .png extension
+#   fusType (String) - the type of the fusion result ('FUS', or 'BRDF')
+#   cmask (Logical) - apply cloud mask or not
+#
+# Output Arguments: 
+#   r (Integer) - 0: Successful
+#
+fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=F){
+  
+  # set style
+  pointMarker <- 16
+  lineColor <- 300
+  pointColor <- 29
+  rsColor <- 46
+  rslineColor <- 133
+  axisLim <- c(0,5000)
+  
+  # check fusType
+  if(fusType=='FUS'){
+    MOD <- 'FUS09' 
+  }else if(fusType=='BRDF'){
+    MOD <- 'FUSB9' 
+  }else{
+    cat('Invalid fusType.\n')
+    return(-1)
+  }
+  
+  # check if file exist
+  if(!file.exists(file)){
+    cat('Can not find input file.\n')
+    return(-1)
+  }
+  
+  # check platform
+  plat <- strLeft(gsub('.*(M.*D09SUB).*','\\1',file),3)
+  if(plat=='MOD'){
+    MODIS <- 'Terra' 
+  }else if(plat=='MYD'){
+    MODIS <-'Aqua' 
+  }else{
+    cat('Can not figure our the platform.\n')
+    return(-1)
+  }
+  
+  # read in .mat file
+  MOD09SUB <- readMat(file)
+  
+  # grab dimension information
+  line <- length(unlist(MOD09SUB['MODLine'],use.names=F))
+  samp <- length(unlist(MOD09SUB['MODSamp'],use.names=F))
+  
+  # initiate surface reflectance array
+  sr <- matrix(0,line*samp,7)
+  
+  # grab each band
+  sr[,1] <- unlist(MOD09SUB[paste('MOD09','RED',sep='')],use.names=F)
+  sr[,2] <- unlist(MOD09SUB[paste('MOD09','NIR',sep='')],use.names=F)
+  sr[,3] <- unlist(MOD09SUB[paste('MOD09','SWIR',sep='')],use.names=F)
+  sr[,4] <- unlist(MOD09SUB[paste(MOD,'RED',sep='')],use.names=F)
+  sr[,5] <- unlist(MOD09SUB[paste(MOD,'NIR',sep='')],use.names=F)
+  sr[,6] <- unlist(MOD09SUB[paste(MOD,'SWIR',sep='')],use.names=F)
+  sr[,7] <- unlist(MOD09SUB['QACloud'],use.names=F)
+  
+  # cloud masking
+  if(cmask){
+    sr <- sr[sr[,7]==0,]
+  }
+
+  # run regression
+  if(rs){
+    lmred <- lm(sr[,1]~sr[,4])
+    lmnir <- lm(sr[,2]~sr[,5])
+    lmswir <- lm(sr[,3]~sr[,6])
+  }
+  
+  # generate plot
+  
+    # initiate plot
+    png(file=outFile,width=1920,height=800,pointsize=20)
+    cPar <- par(mfrow=c(1,3))
+  
+    # plot red
+    plot(sr[,4],sr[,1],type='p',col=colors()[pointColor],pch=pointMarker,
+         main=paste('MODIS ',MODIS,'vs. Fusion (Red Band)',sep=''),
+         ylab=paste('MODIS ',MODIS,sep=''),xlab='Fusion',
+         xlim=axisLim,ylim=axisLim
+        )
+    abline(0,1,col=colors()[lineColor])
+    if(rs){
+      abline(coef(lmred)[1],coef(lmred)[2],col=colors()[rslineColor])
+      eq <- paste('MOD = ',round(coef(lmred)[2],2),'*',fusType,'+',round(coef(lmred)[1],1),sep='')
+      text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
+      text(0,axisLim[2]-150,paste('R2=',round(summary(lmred)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
+    }
+  
+    # plot NIR
+    plot(sr[,5],sr[,2],type='p',col=colors()[pointColor],pch=pointMarker,
+         main=paste('MODIS ',MODIS,'vs. Fusion (NIR Band)',sep=''),
+         ylab=paste('MODIS ',MODIS,sep=''),xlab='Fusion',
+         xlim=axisLim,ylim=axisLim
+    )
+    abline(0,1,col=colors()[lineColor])
+    if(rs){
+      abline(coef(lmnir)[1],coef(lmnir)[2],col=colors()[rslineColor])
+      eq <- paste('MOD = ',round(coef(lmnir)[2],2),'*',fusType,'+',round(coef(lmnir)[1],1),sep='')
+      text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
+      text(0,axisLim[2]-150,paste('R2=',round(summary(lmnir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
+    }
+  
+    # plot SWIR
+    plot(sr[,6],sr[,3],type='p',col=colors()[pointColor],pch=pointMarker,
+         main=paste('MODIS ',MODIS,'vs. Fusion (SWIR Band)',sep=''),
+         ylab=paste('MODIS ',MODIS,sep=''),xlab='Fusion',
+         xlim=axisLim,ylim=axisLim
+    )
+    abline(0,1,col=colors()[lineColor])
+    if(rs){
+      abline(coef(lmswir)[1],coef(lmswir)[2],col=colors()[rslineColor])
+      eq <- paste('MOD = ',round(coef(lmswir)[2],2),'*',fusType,'+',round(coef(lmswir)[1],1),sep='')
+      text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
+      text(0,axisLim[2]-150,paste('R2=',round(summary(lmswir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
+    }
+      
+  # save plot
+  dev.off()
+  
+  # reset par
+  par(cPar)
+  
+  # done
+  return(0)
+  
+}
