@@ -1,11 +1,11 @@
 # fusion_plot.R
-# Version 1.0
+# Version 1.1
 # Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 12/02/2014
-# Last Update: 12/05/2014
+# Last Update: 12/06/2014
 #
 # Input Arguments: 
 #   See specific function.
@@ -22,6 +22,11 @@
 #   The script will fit a simple linear model and display the result.
 #   Only plot for red, nir and swir are generated.
 #   
+# Updates of Version 1.1 - 12/06/2014
+#   1.Added batch processing.
+#   2.Bugs fixed.
+#   3.Added overall title.
+#
 # Released on Github on 12/05/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
 
@@ -41,11 +46,12 @@ eval(parse(text=script),envir=.GlobalEnv)
 #   outFile (String) - output file with .png extension
 #   fusType (String) - the type of the fusion result ('FUS', or 'BRDF')
 #   cmask (Logical) - apply cloud mask or not
+#   rs (Logical) - do regression or not
 #
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=F){
+fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
   
   # set style
   pointMarker <- 16
@@ -117,11 +123,11 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=F){
   
     # initiate plot
     png(file=outFile,width=1920,height=800,pointsize=20)
-    cPar <- par(mfrow=c(1,3))
+    cPar <- par(mfrow=c(1,3),oma=c(0,0,3,0))
   
     # plot red
     plot(sr[,4],sr[,1],type='p',col=colors()[pointColor],pch=pointMarker,
-         main=paste('MODIS ',MODIS,'vs. Fusion (Red Band)',sep=''),
+         main=paste('MODIS ',MODIS,' vs. Fusion (Red Band)',sep=''),
          ylab=paste('MODIS ',MODIS,sep=''),xlab='Fusion',
          xlim=axisLim,ylim=axisLim
         )
@@ -135,7 +141,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=F){
   
     # plot NIR
     plot(sr[,5],sr[,2],type='p',col=colors()[pointColor],pch=pointMarker,
-         main=paste('MODIS ',MODIS,'vs. Fusion (NIR Band)',sep=''),
+         main=paste('MODIS ',MODIS,' vs. Fusion (NIR Band)',sep=''),
          ylab=paste('MODIS ',MODIS,sep=''),xlab='Fusion',
          xlim=axisLim,ylim=axisLim
     )
@@ -149,7 +155,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=F){
   
     # plot SWIR
     plot(sr[,6],sr[,3],type='p',col=colors()[pointColor],pch=pointMarker,
-         main=paste('MODIS ',MODIS,'vs. Fusion (SWIR Band)',sep=''),
+         main=paste('MODIS ',MODIS,' vs. Fusion (SWIR Band)',sep=''),
          ylab=paste('MODIS ',MODIS,sep=''),xlab='Fusion',
          xlim=axisLim,ylim=axisLim
     )
@@ -161,13 +167,68 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=F){
       text(0,axisLim[2]-150,paste('R2=',round(summary(lmswir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
       
+    # add overall title
+    fileDate <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',file)
+    mTitle <- paste('MODIS ',MODIS,' ',fileDate,' TYPE=',fusType,' CMASK=',strLeft(cmask,1),sep='')
+    mtext(mTitle,outer = TRUE, cex = 1.5)
+  
   # save plot
   dev.off()
   
   # reset par
-  par(cPar)
+  par(cPar) 
   
   # done
   return(0)
   
 }
+
+#------------------------------------------------------------
+
+# batch generate fusion plot of all mat files in a folder
+#
+# Input Arguments: 
+#   path (String) - path to all input files
+#   pattern (String) pattern to search for file
+#   output (String) - output location
+#   fusType (String) - the type of the fusion result ('FUS', or 'BRDF')
+#   cmask (Logical) - apply cloud mask or not
+#   rs (Logical) - do regression or not
+#
+# Output Arguments: 
+#   r (Integer) - 0: Successful
+#
+batch_fusion_plot <- function(path,output,pattern='MOD09SUB.*500m.*',
+                              fusType='FUS',cmask=T,rs=T){
+  
+  # find all files
+  pattern <- paste(pattern,'.*.mat',sep='')
+  fileList <- list.files(path=path,pattern=pattern,full.names=T,recursive=T)
+  
+  # check if we have files found
+  if(length(fileList)<=0){
+    cat('Can not find any .mat file.\n')
+    return(-1)
+  }
+  
+  # check output
+  if(!file.exists(output)){
+    cat('Creating output directory.\n')
+    dir.create(output)
+  }
+  
+  # loop through all files
+  for(i in 1:length(fileList)){
+    date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
+    time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
+    outFile <- paste(output,fusType,'_',date,'_',time,'_plot.png',sep='')
+    fusion_plot(fileList[i],outFile,fusType,cmask,rs)
+    cat(paste(outFile,'...done\n'))
+  }
+  
+  # done
+  return(0)
+  
+}
+
+#------------------------------------------------------------

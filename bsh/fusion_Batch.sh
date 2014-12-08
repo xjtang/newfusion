@@ -4,10 +4,11 @@
 # n defines number of jobs in total
 # Input Arguments: 
 #   1.Data path
-#   2.BRDF switch
-#   3.Resolusion
-#   4.Discard rate
-#   5.n jobs
+#   2.Platform
+#   3.BRDF switch
+#   4.Resolusion
+#   5.Discard rate
+#   6.n jobs
 
 echo 'Total jobs to submit is' $6
 for i in $(seq 1 $6); do
