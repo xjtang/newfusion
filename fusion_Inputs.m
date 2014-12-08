@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 6.2
+% Version 6.2.1
 % Step 0
 % Main Inputs and Settings
 %
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 11/24/2014
+% Last Update: 12/08/2014
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -42,6 +42,9 @@
 %
 % Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
 %   1.Added support for MODIS Aqua.
+%
+% Updates of Version 6.2.1 - 12/8/2014 (by Xiaojing Tang)
+%   1.Added a dump folder for collecting dumped data.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -120,6 +123,11 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
         main.output.change = [main.path 'FUSCHG/'];
         if exist(main.output.change,'dir') == 0 
             mkdir([main.path 'FUSCHG'])
+        end
+        % a dump folder for temporaryly storing dumped data
+        main.output.dump = [main.path 'DUMP/'];
+        if exist(main.output.dump,'dir') == 0 
+            mkdir([main.path 'DUMP'])
         end
         
         % from BRDF correction
