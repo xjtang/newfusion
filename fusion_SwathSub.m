@@ -179,7 +179,7 @@ function fusion_SwathSub(main)
                 disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
             else
                 disp(['No points in: ',File.MOD09(I_TIME).name]);
-                system(['mv ',main.input.swath,File.MOD09(I_TIME).name,' 'main.output.dump])
+                system(['mv ',main.input.swath,File.MOD09(I_TIME).name,' ',main.output.dump])
             end
         end
     end
