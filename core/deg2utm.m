@@ -55,6 +55,7 @@ function [Easting, Northing, UTMzone] = deg2utm(Lat, Lon, UTMzone)
     end
     
     % normalize UTM zone
+    TrueUTM = UTMzone;
     UTMzone = abs(UTMzone);
 
 
@@ -83,11 +84,11 @@ function [Easting, Northing, UTMzone] = deg2utm(Lat, Lon, UTMzone)
 
     % results
     Northing = (ki+kii.*deltalonrad.*deltalonrad+kiii.*deltalonrad.^4);
-    Northing(Northing<0) = 10000000+Northing(Northing<0);
-    Easting = 500000+(kiv.*deltalonrad+kv.*deltalonrad.^3);
-    if Lat<0
-        UTMzone = -UTMzone;
+    if TrueUTM < 0 
+        Northing(Northing<0) = 10000000+Northing(Northing<0);
     end
+    Easting = 500000+(kiv.*deltalonrad+kv.*deltalonrad.^3);
+    UTMzone = TrueUTM;
         
     % done
     
