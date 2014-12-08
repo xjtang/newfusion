@@ -1,5 +1,5 @@
 % fusion_SwathSub.m
-% Version 6.2
+% Version 6.2.1
 % Step 2
 % Subsetting the Swath Data
 %
@@ -47,6 +47,9 @@
 %   3.Updated comments.
 %   4.Added support for MODIS Aqua
 %   5.Automatically remove swath that does not cover roi.
+%
+% Updates of Version 6.2.1 - 12/8/2014 (by Xiaojing Tang)
+%   1.Move non-usable swath to DUMP instead of deleting.
 %
 % Released on Github on 10/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -176,7 +179,7 @@ function fusion_SwathSub(main)
                 disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
             else
                 disp(['No points in: ',File.MOD09(I_TIME).name]);
-                system(['rm ',main.input.swath,File.MOD09(I_TIME).name])
+                system(['mv ',main.input.swath,File.MOD09(I_TIME).name,' 'main.output.dump])
             end
         end
     end
