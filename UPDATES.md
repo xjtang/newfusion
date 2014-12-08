@@ -1,7 +1,7 @@
 Versions and Updates
 ==============
 
-Version 6.2.1 - 12/07/2014 - xjtang
+Version 6.2.1 - 12/08/2014 - xjtang
 --------------
 - Updated comments in all script files.
 - Bugs fixed.
@@ -10,7 +10,8 @@ Version 6.2.1 - 12/07/2014 - xjtang
 - Added new tool for generating cloud plots.  
 - Added new tool for generating preview image.
 - Added new tool for generating fusion plots.  
-- Added a DUMP folder for collecting trash.
+- Added a DUMP folder for collecting trash.  
+- Added support for synthetic image with nodata value (-9999).  
 
 Version 6.2 - 11/24/2014 - xjtang
 --------------
