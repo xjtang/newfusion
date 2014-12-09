@@ -1,11 +1,11 @@
 # fusion_plot.R
-# Version 1.1
+# Version 1.2
 # Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 12/02/2014
-# Last Update: 12/06/2014
+# Last Update: 12/09/2014
 #
 # Input Arguments: 
 #   See specific function.
@@ -26,6 +26,9 @@
 #   1.Added batch processing.
 #   2.Bugs fixed.
 #   3.Added overall title.
+#
+# Updates of Version 1.2 - 12/09/2014
+#   1.Added a NDVI plot.
 #
 # Released on Github on 12/05/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -96,7 +99,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
   samp <- length(unlist(MOD09SUB['MODSamp'],use.names=F))
   
   # initiate surface reflectance array
-  sr <- matrix(0,line*samp,7)
+  sr <- matrix(0,line*samp,9)
   
   # grab each band
   sr[,1] <- unlist(MOD09SUB[paste('MOD09','RED',sep='')],use.names=F)
@@ -106,6 +109,9 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
   sr[,5] <- unlist(MOD09SUB[paste(MOD,'NIR',sep='')],use.names=F)
   sr[,6] <- unlist(MOD09SUB[paste(MOD,'SWIR',sep='')],use.names=F)
   sr[,7] <- unlist(MOD09SUB['QACloud'],use.names=F)
+  # calculate ndvi
+  sr[,8] <- (sr[,2]-sr[,1])./(sr[,2]+sr[,1])
+  sr[,9] <- (sr[,5]-sr[,4])./(sr[,5]+sr[,4])
   
   # cloud masking
   if(cmask){
@@ -117,13 +123,14 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
     lmred <- lm(sr[,1]~sr[,4])
     lmnir <- lm(sr[,2]~sr[,5])
     lmswir <- lm(sr[,3]~sr[,6])
+    lmndvi <- lm(sr[,9]~sr[,8])
   }
   
   # generate plot
   
     # initiate plot
-    png(file=outFile,width=1920,height=800,pointsize=20)
-    cPar <- par(mfrow=c(1,3),oma=c(0,0,3,0))
+    png(file=outFile,width=1600,height=1600,pointsize=20)
+    cPar <- par(mfrow=c(2,2),oma=c(0,0,3,0))
   
     # plot red
     plot(sr[,4],sr[,1],type='p',col=colors()[pointColor],pch=pointMarker,
@@ -165,6 +172,20 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
       eq <- paste('MOD = ',round(coef(lmswir)[2],2),'*',fusType,'+',round(coef(lmswir)[1],1),sep='')
       text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
       text(0,axisLim[2]-150,paste('R2=',round(summary(lmswir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
+    }
+      
+    # plot NDVI
+    plot(sr[,9],sr[,8],type='p',col=colors()[pointColor],pch=pointMarker,
+         main=paste('MODIS ',MODIS,' vs. Fusion (NDVI)',sep=''),
+         ylab=paste('MODIS ',MODIS,sep=''),xlab='Fusion',
+         xlim=c(-1,1),ylim=c(-1,1)
+    )
+    abline(0,1,col=colors()[lineColor])
+    if(rs){
+      abline(coef(lmndvi)[1],coef(lmndvi)[2],col=colors()[rslineColor])
+      eq <- paste('MOD = ',round(coef(lmndvi)[2],2),'*',fusType,'+',round(coef(lmndvi)[1],1),sep='')
+      text(0,1,eq,col=colors()[rsColor],pos=4,cex=1.5)
+      text(0,0.85,paste('R2=',round(summary(lmndvi)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
       
     # add overall title
