@@ -186,7 +186,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
       abline(coef(lmndvi)[1],coef(lmndvi)[2],col=colors()[rslineColor])
       eq <- paste('MOD = ',round(coef(lmndvi)[2],2),'*',fusType,'+',round(coef(lmndvi)[1],1),sep='')
       text(-1,1,eq,col=colors()[rsColor],pos=4,cex=1.5)
-      text(-1,0.96,paste('R2=',round(summary(lmndvi)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
+      text(-1,0.92,paste('R2=',round(summary(lmndvi)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
       
     # add overall title
