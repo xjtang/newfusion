@@ -29,6 +29,7 @@
 #
 # Updates of Version 1.2 - 12/09/2014
 #   1.Added a NDVI plot.
+#   2.Bugs fixed
 #
 # Released on Github on 12/05/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -143,7 +144,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
       abline(coef(lmred)[1],coef(lmred)[2],col=colors()[rslineColor])
       eq <- paste('MOD = ',round(coef(lmred)[2],2),'*',fusType,'+',round(coef(lmred)[1],1),sep='')
       text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
-      text(0,axisLim[2]-150,paste('R2=',round(summary(lmred)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
+      text(0,axisLim[2]-200,paste('R2=',round(summary(lmred)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
   
     # plot NIR
@@ -157,7 +158,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
       abline(coef(lmnir)[1],coef(lmnir)[2],col=colors()[rslineColor])
       eq <- paste('MOD = ',round(coef(lmnir)[2],2),'*',fusType,'+',round(coef(lmnir)[1],1),sep='')
       text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
-      text(0,axisLim[2]-150,paste('R2=',round(summary(lmnir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
+      text(0,axisLim[2]-200,paste('R2=',round(summary(lmnir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
   
     # plot SWIR
@@ -171,7 +172,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
       abline(coef(lmswir)[1],coef(lmswir)[2],col=colors()[rslineColor])
       eq <- paste('MOD = ',round(coef(lmswir)[2],2),'*',fusType,'+',round(coef(lmswir)[1],1),sep='')
       text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
-      text(0,axisLim[2]-150,paste('R2=',round(summary(lmswir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
+      text(0,axisLim[2]-200,paste('R2=',round(summary(lmswir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
       
     # plot NDVI
@@ -184,8 +185,8 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
     if(rs){
       abline(coef(lmndvi)[1],coef(lmndvi)[2],col=colors()[rslineColor])
       eq <- paste('MOD = ',round(coef(lmndvi)[2],2),'*',fusType,'+',round(coef(lmndvi)[1],1),sep='')
-      text(0,1,eq,col=colors()[rsColor],pos=4,cex=1.5)
-      text(0,0.85,paste('R2=',round(summary(lmndvi)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
+      text(-1,1,eq,col=colors()[rsColor],pos=4,cex=1.5)
+      text(-1,0.96,paste('R2=',round(summary(lmndvi)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
       
     # add overall title
