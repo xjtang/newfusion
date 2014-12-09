@@ -111,8 +111,8 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
   sr[,6] <- unlist(MOD09SUB[paste(MOD,'SWIR',sep='')],use.names=F)
   sr[,7] <- unlist(MOD09SUB['QACloud'],use.names=F)
   # calculate ndvi
-  sr[,8] <- (sr[,2]-sr[,1])./(sr[,2]+sr[,1])
-  sr[,9] <- (sr[,5]-sr[,4])./(sr[,5]+sr[,4])
+  sr[,8] <- (sr[,2]-sr[,1])/(sr[,2]+sr[,1])
+  sr[,9] <- (sr[,5]-sr[,4])/(sr[,5]+sr[,4])
   
   # cloud masking
   if(cmask){
