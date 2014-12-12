@@ -4,13 +4,14 @@
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 11/24/2014
-% Last Update: 12/11/2014
+% Last Update: 12/12/2014
 %
 % Input Arguments: 
 %   path - path to MOD09SUB m-files.
 %   res - resolusion of MODIS swath.
 %   plat - paltform MOD/MYD
 %   outFile - output file.
+%   disThres - the cloud threshold for discarding the swath data.
 %   
 % Output Arguments: NA
 %
@@ -24,13 +25,19 @@
 % Updates of Version 1.1 - 11/26/2014
 %   1.Seperate year and doy.
 %
-% Updates of Version 1.2 - 12/11/2014
+% Updates of Version 1.2 - 12/12/2014
 %   1.Added support for aqua.
+%   2.Added a new function of discarding cloudy swath based on cloud percent threshold.
 %
 % Created on Github on 11/24/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-function cloud_interp(path,res,plat,outFile)
+function cloud_interp(path,res,plat,outFile,disThres)
+
+  % set default value for disThres if not given
+  if ~exist('disThres', 'var')
+    disThres = 101;
+  end
 
   % get list of all valid files in the input directory
   fileList = dir([path,plat,'09SUB*',num2str(res),'*.mat']);
@@ -64,10 +71,16 @@ function cloud_interp(path,res,plat,outFile)
     dateYear(i) = str2num(fileList(i).name(p:(p+3)));
     dateDOY(i) = str2num(fileList(i).name((p+4):(p+6)));
   
-  end
+    % discard current swath if cloud percent larger than certain threshold
+    dumpDir = [path '../DUMP/SUBCLD/'];
+    if exist(dumpDir,'dir') == 0 
+        mkdir(dumpDir);
+    end
+    if perCloud(i) > disThres
+      system(['mv ',path,fileList(i).name,' ',dumpDir]);
+    end
   
-  % draw plot
-    
+  end
   
   % save result
   r = [dateYear,dateDOY,perCloud];

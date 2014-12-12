@@ -6,7 +6,7 @@
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 12/08/2014
+% Last Update: 12/12/2014
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -43,8 +43,9 @@
 % Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
 %   1.Added support for MODIS Aqua.
 %
-% Updates of Version 6.2.1 - 12/8/2014 (by Xiaojing Tang)
+% Updates of Version 6.2.1 - 12/12/2014 (by Xiaojing Tang)
 %   1.Added a dump folder for collecting dumped data.
+%   2.Added missing ;.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -107,61 +108,61 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
         % MODIS sub image that covers the Landsat ETM area
         main.output.modsub = [main.path 'MOD09SUB/'];
         if exist(main.output.modsub,'dir') == 0 
-            mkdir([main.path 'MOD09SUB'])
+            mkdir([main.path 'MOD09SUB']);
         end
         % fused MOD09SUB
         main.output.modsubf = [main.path 'MOD09SUBF/'];
         if exist(main.output.modsubf,'dir') == 0 
-            mkdir([main.path 'MOD09SUBF'])
+            mkdir([main.path 'MOD09SUBF']);
         end
         % fused synthetic MODIS image from ETM image
         main.output.fusion = [main.path 'FUS09/'];
         if exist(main.output.fusion,'dir') == 0 
-            mkdir([main.path 'FUS09'])
+            mkdir([main.path 'FUS09']);
         end
         % changes between synthetic MODIS and true MODIS
         main.output.change = [main.path 'FUSCHG/'];
         if exist(main.output.change,'dir') == 0 
-            mkdir([main.path 'FUSCHG'])
+            mkdir([main.path 'FUSCHG']);
         end
         % a dump folder for temporaryly storing dumped data
         main.output.dump = [main.path 'DUMP/'];
         if exist(main.output.dump,'dir') == 0 
-            mkdir([main.path 'DUMP'])
+            mkdir([main.path 'DUMP']);
         end
         
         % from BRDF correction
         % BRDF parameters at Landsat scale
         main.output.etmBRDF = [main.path 'ETMBRDF/'];
         if exist(main.output.etmBRDF,'dir') == 0 
-            mkdir([main.path 'ETMBRDF'])
+            mkdir([main.path 'ETMBRDF']);
         end
         % BRDF coefficients grabbed from the BRDF product
         main.output.modBRDF = [main.path 'MOD09B/'];
         if exist(main.output.modBRDF,'dir') == 0 
-            mkdir([main.path 'MOD09B'])
+            mkdir([main.path 'MOD09B']);
         end
         % BRDF corrected and fused MOD09SUB
         main.output.modsubbrdf = [main.path 'MOD09SUBBRDF/'];
         if exist(main.output.modsubbrdf,'dir') == 0 
-            mkdir([main.path 'MOD09SUBBRDF'])
+            mkdir([main.path 'MOD09SUBBRDF']);
         end
         % fused synthetic MODISimage with BRDF correction
         main.output.fusionbrdf = [main.path 'FUS09B/'];
         if exist(main.output.fusionbrdf,'dir') == 0 
-            mkdir([main.path 'FUS09B'])
+            mkdir([main.path 'FUS09B']);
         end
     
         % from gridding process
         % gridded fusion result
         main.output.fusGrid = [main.path 'FUSGRID/'];
         if exist(main.output.fusGrid,'dir') == 0 
-            mkdir([main.path 'FUSGRID'])
+            mkdir([main.path 'FUSGRID']);
         end
         % gridding parameters
         main.output.gridPara = [main.path 'GRIDPARA/'];
         if exist(main.output.gridPara,'dir') == 0 
-            mkdir([main.path 'GRIDPARA'])
+            mkdir([main.path 'GRIDPARA']);
         end
           
     % settings and parameters
