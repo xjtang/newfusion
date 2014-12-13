@@ -29,6 +29,7 @@
 # Updates of Version 1.2 - 12/13/2014
 #   1.Make cloud and mask preview in one file.
 #   2.Added gap between two images.
+#   3.Added support for dealing with fill value
 #
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -101,6 +102,8 @@ gen_preview <- function(file,outFile,subType='SUB',
       band <- sr[,,comp[i]]
       # fix na
       band[is.na(band)] <- 0
+      # fix fill value (treat as saturation)
+      band[band==(-28672)] <- stretch[2]
       # fix extreme value
       band[band>stretch[2]] <- stretch[2]
       band[band<stretch[1]] <- stretch[1]
