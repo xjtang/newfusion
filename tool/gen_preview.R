@@ -1,11 +1,11 @@
 # gen_preview.R
-# Version 1.1
+# Version 1.2
 # Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 11/30/2014
-# Last Update: 12/05/2014
+# Last Update: 12/13/2014
 #
 # Input Arguments: 
 #   See specific function.
@@ -26,6 +26,10 @@
 #   3.Append cloud percent into output file name.
 #   4.Bugs fixed.
 #   
+# Updates of Version 1.2 - 12/13/2014
+#   1.Make cloud and mask preview in one file.
+#   2.Added gap between two images.
+#
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
 
@@ -46,13 +50,12 @@ eval(parse(text=script),envir=.GlobalEnv)
 #   subType (String) - the type of the input SwathSub ('SUB','FUS', or 'BRDF')
 #   comp (Vector) - composite of the preview image (default 4,3,2)
 #   stretch (Vector) - stretch of the image (default 0-3000)
-#   cmask (Logical) - apply cloud mask or not
 #
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
 gen_preview <- function(file,outFile,subType='SUB',
-                        comp=c(5,4,3),stretch=c(0,5000),cmask=F){
+                        comp=c(5,4,3),stretch=c(0,5000)){
   
   # check subType
   if(subType=='SUB'){
@@ -91,7 +94,7 @@ gen_preview <- function(file,outFile,subType='SUB',
   
   # forge preview image
     #initiate preview image
-    preview <- array(0,c(line,samp,3))
+    preview <- array(0,c(line,samp*2+10,3))
     # insert each band
     for(i in 1:3){
       # grab band
@@ -103,10 +106,12 @@ gen_preview <- function(file,outFile,subType='SUB',
       band[band<stretch[1]] <- stretch[1]
       # stretch the band
       band <- ((band-stretch[1])/(stretch[2]-stretch[1]))*(band!=0)
+      # assign cloudy image
+      preview[,1:samp,i] <- band
       # apply cloud mask
-      if(cmask){band[sr[,,7]==1]<-1}
-      # assign to preview
-      preview[,,i] <- band
+      band[sr[,,7]==1]<-1
+      # assign masked image
+      preview[,(samp+11):(samp*2+10),i] <- band
     }
     rm(band)
   
@@ -116,11 +121,7 @@ gen_preview <- function(file,outFile,subType='SUB',
     # calculate cloud cover percent
     cc <- floor(sum(sr[,,7])/(line*samp)*100)
     # forge output file name
-    if(cmask){
-      outFile <- paste(outFile,'_',cc,'M.png',sep='')
-    }else{
-      outFile <- paste(outFile,'_',cc,'C.png',sep='')
-    }
+    outFile <- paste(outFile,'_',cc,'C.png',sep='')
     # write output
     writePNG(preview,outFile)
   
@@ -140,13 +141,12 @@ gen_preview <- function(file,outFile,subType='SUB',
 #   subType (String) - the type of the input SwathSub ('SUB','SUBF', or 'BRDF')
 #   comp (Vector) - composite of the preview image (default 4,3,2)
 #   stretch (Vector) - stretch of the image (default 0-3000)
-#   cmask (Logical) - apply cloud mask or not
 #
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
 batch_gen_preview <- function(path,output,pattern='MOD09SUB.*500m.*',subType='SUB',
-                              comp=c(5,4,3),stretch=c(0,5000),cmask=F){
+                              comp=c(5,4,3),stretch=c(0,5000)){
   
   # find all files
   pattern <- paste(pattern,'.*.mat',sep='')
@@ -169,7 +169,7 @@ batch_gen_preview <- function(path,output,pattern='MOD09SUB.*500m.*',subType='SU
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
     time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
     outFile <- paste(output,subType,'_',date,'_',time,'.png',sep='')
-    gen_preview(fileList[i],outFile,subType,comp,stretch,cmask)
+    gen_preview(fileList[i],outFile,subType,comp,stretch)
     cat(paste(outFile,'...done\n'))
   }
   
