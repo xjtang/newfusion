@@ -3,18 +3,19 @@
 # submit n jobs to run fusion
 # n defines number of jobs in total
 # Input Arguments: 
-#   1.Data path
-#   2.Platform
-#   3.BRDF switch
-#   4.Resolusion
-#   5.Discard rate
-#   6.n jobs
+#   1.Function to execute
+#   2.Data path
+#   3.Platform
+#   4.BRDF switch
+#   5.Resolusion
+#   6.Discard rate
+#   7.n jobs
 
-echo 'Total jobs to submit is' $6
-for i in $(seq 1 $6); do
-    echo 'Submitting job no.' $i 'out of' $6
+echo 'Total jobs to submit is' $7
+for i in $(seq 1 $7); do
+    echo 'Submitting job no.' $i 'out of' $7
     chmod u+x ./fusion_qsub.sh
-    qsub ./fusion_qsub.sh $1 $2 $3 $4 $5 $i $6
+    qsub ./fusion_qsub.sh $1 $2 $3 $4 $5 $6 $i $7
 done
 
 # end
