@@ -6,7 +6,7 @@
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 12/12/2014
+% Last Update: 12/15/2014
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -43,9 +43,10 @@
 % Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
 %   1.Added support for MODIS Aqua.
 %
-% Updates of Version 6.2.1 - 12/12/2014 (by Xiaojing Tang)
+% Updates of Version 6.2.1 - 12/15/2014 (by Xiaojing Tang)
 %   1.Added a dump folder for collecting dumped data.
 %   2.Added missing ;.
+%   3.Removed unused folder.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -155,15 +156,15 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
     
         % from gridding process
         % gridded fusion result
-        main.output.fusGrid = [main.path 'FUSGRID/'];
-        if exist(main.output.fusGrid,'dir') == 0 
-            mkdir([main.path 'FUSGRID']);
-        end
+        % main.output.fusGrid = [main.path 'FUSGRID/'];
+        % if exist(main.output.fusGrid,'dir') == 0 
+        %     mkdir([main.path 'FUSGRID']);
+        % end
         % gridding parameters
-        main.output.gridPara = [main.path 'GRIDPARA/'];
-        if exist(main.output.gridPara,'dir') == 0 
-            mkdir([main.path 'GRIDPARA']);
-        end
+        % main.output.gridPara = [main.path 'GRIDPARA/'];
+        % if exist(main.output.gridPara,'dir') == 0 
+        %     mkdir([main.path 'GRIDPARA']);
+        % end
           
     % settings and parameters
         % platform of MODIS

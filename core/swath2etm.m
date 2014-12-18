@@ -1,12 +1,12 @@
 % swath2etm.m
-% Version 6.1
+% Version 6.2
 % Core
 %
 % Project: Fusion
 % By Qinchuan Xin
 % Updated By: Xiaojing Tang
 % Created On: Unknown
-% Last Update: 9/17/2014
+% Last Update: 12/14/2014
 %
 % Input Arguments:
 %   Swath (Matrix, Var) - MODIS swath data (change map usually).
@@ -29,16 +29,17 @@
 %   3.Modified for work flow of fusion version 6.1.
 %   4.Initial value set to -9999 (-10000 originally).
 %
+% Updates of Version 6.2 - 12/14/2014 (by Xiaojing Tang)
+%   1.Bugs fixed.
+%   2.Generate band difference map according to new fusion workflow.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
 function ETM = swath2etm(Swath, MOD09SUB, ETMGeo)
 
-    % Swath=((MOD09SUB.FUS09NIR-MOD09SUB.FUS09RED)./(MOD09SUB.FUS09NIR+MOD09SUB.FUS09RED)-...
-    %     (MOD09SUB.MOD09NIR-MOD09SUB.MOD09RED)./(MOD09SUB.MOD09NIR+MOD09SUB.MOD09RED))*1000;
-
     % initialize
-    ETM = -9999*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp),size(Swath,3)]);
+    ETM = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp),3]);
 
     % for each MODIS swath observation, determine the maximum possible 
     %   range of corresponding ETM pixel
@@ -75,10 +76,7 @@ function ETM = swath2etm(Swath, MOD09SUB, ETMGeo)
                 % mask areas out of the shape of MODIS footprint
                 ETMMask = (A^2*B^2 > (Distance.^2.*(A^2*sind(Bearing).^2+B^2*cosd(Bearing).^2)));
 
-                % % Mask areas out of the shape of MODIS footprint
-                % ETMMask=( X< A & Y <B);
-
-                % if 90% of the swath area is covered by current ETM image
+                   % if 90% of the swath area is covered by current ETM image
                 if sum(sum(ETMMask))*30*30 > 0.9*pi*A*B
                     
                     % change data type to double
@@ -89,14 +87,23 @@ function ETM = swath2etm(Swath, MOD09SUB, ETMGeo)
 
                     % create a mask for pixels that is already updated by
                     %   adjacent MODIS swatch observation
-                    MaskLarge = (ETMMask.*Swath(Index_Row,Index_Col,1))>ETM(PixelTop:PixelBot,PixelLef:PixelRig,1);
+                    MaskFilled = ETM(PixelTop:PixelBot,PixelLef:PixelRig,1)>0;
+                    MaskLarge = (ETMMask.*Swath(Index_Row,Index_Col))>ETM(PixelTop:PixelBot,PixelLef:PixelRig,1);
 
-                    % resample MODIS swath of change map to ETM resolution
-                    for I_Bands=1:size(Swath,3)
-                        Temp = ETM(PixelTop:PixelBot,PixelLef:PixelRig,I_Bands);
-                        Temp(MaskLarge>0) = Swath(Index_Row,Index_Col,I_Bands);
-                        ETM(PixelTop:PixelBot,PixelLef:PixelRig,I_Bands)=Temp;
-                    end
+                    % generate number of observation map
+                    Temp = ETM(PixelTop:PixelBot,PixelLef:PixelRig,1);
+                    Temp(ETMMask>0) = Temp(ETMMask>0)+1;
+                    ETM(PixelTop:PixelBot,PixelLef:PixelRig,1) = Temp;
+                    
+                    % generate average map
+                    Temp = ETM(PixelTop:PixelBot,PixelLef:PixelRig,2);
+                    Temp(MaskFilled>0) = Temp(MaskFilled>0)+Swath(Index_Row,Index_Col);
+                    ETM(PixelTop:PixelBot,PixelLef:PixelRig,2) = Temp;
+                    
+                    % resample max(or min) map
+                    Temp = ETM(PixelTop:PixelBot,PixelLef:PixelRig,3);
+                    Temp(MaskLarge>0) = Swath(Index_Row,Index_Col);
+                    ETM(PixelTop:PixelBot,PixelLef:PixelRig,3)=Temp;
                     
                 end
                 
@@ -105,8 +112,14 @@ function ETM = swath2etm(Swath, MOD09SUB, ETMGeo)
         end
     end
 
-    % set -9999 to nan
-    ETM(ETM==-9999)=nan;
+    % calculate averate
+    Temp = ETM(:,:,1);
+    Temp(Temp==0) = 1;
+    ETM(:,:,2) = ETM(:,:,2)./Temp;
+    
+    
+    % set 0 to -9999
+    ETM(ETM==0)=-9999;
 
     % done
     

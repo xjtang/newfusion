@@ -1,15 +1,16 @@
 # cloud_plot.R
-# Version 1.0
+# Version 1.1
 # Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 11/26/2014
-# Last Update: 12/02/2014
+# Last Update: 12/14/2014
 #
 # Input Arguments: 
 #   file - a csv file with the cloud states
 #   outFile - the output file for saving the plot
+#   plat - platform for adding to the title
 #   
 # Output Arguments: NA
 #
@@ -19,6 +20,10 @@
 #
 # Version 1.0 - 12/02/2014
 #   This script makes a lot for the cloud stats of swath data.
+#
+# Updates of Version 1.1 - 12/14/2014
+#   1.Bugs fixed.
+#   2.Added platform information into title
 #   
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -31,7 +36,7 @@ eval(parse(text=script),envir=.GlobalEnv)
 #--------------------------------------
 
 # main function
-cloud_plot <- function(file,outFile){
+cloud_plot <- function(file,outFile,plat='NA'){
   
   # set style
   classColor <- c(258,88,90,503,326) 
@@ -53,7 +58,7 @@ cloud_plot <- function(file,outFile){
   png(file=outFile,width=1920,height=1080,pointsize=24)
   c1 <- data[data[,3]<=20,]
   plot(c1[,2],c1[,3],type='p',col=colors()[classColor[1]],pch=pointMarker,
-       main=paste('Cloud Cover of MODIS Swath Data (',year,')',sep=''),
+       main=paste('Cloud Cover of MODIS Swath Data (',plat,'/',year,')',sep=''),
        xlab='Day of Year',ylab='Percent Cloud',
        xlim=c(-10,365),ylim=c(-5,100)
       )
