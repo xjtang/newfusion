@@ -124,7 +124,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
     lmred <- lm(sr[,1]~sr[,4])
     lmnir <- lm(sr[,2]~sr[,5])
     lmswir <- lm(sr[,3]~sr[,6])
-    lmndvi <- lm(sr[,9]~sr[,8])
+    lmndvi <- lm(sr[,8]~sr[,9])
   }
   
   # generate plot
