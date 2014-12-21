@@ -79,19 +79,31 @@ gen_preview <- function(file,outFile,subType='SUB',
   
     # read the mat file
     MOD09SUB <- readMat(file)
+  
     # grab dimension information
     line <- length(unlist(MOD09SUB['MODLine'],use.names=F))
     samp <- length(unlist(MOD09SUB['MODSamp'],use.names=F))
+  
     # initiate surface reflectance array
     sr <- array(0,c(line,samp,7))
+  
     # grab each band
-    sr[,,1] <- matrix(unlist(MOD09SUB[paste(MOD,'BLU',sep='')],use.names=F),line,samp)
-    sr[,,2] <- matrix(unlist(MOD09SUB[paste(MOD,'GRE',sep='')],use.names=F),line,samp)
-    sr[,,3] <- matrix(unlist(MOD09SUB[paste(MOD,'RED',sep='')],use.names=F),line,samp)
-    sr[,,4] <- matrix(unlist(MOD09SUB[paste(MOD,'NIR',sep='')],use.names=F),line,samp)
-    sr[,,5] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR',sep='')],use.names=F),line,samp)
-    sr[,,6] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR2',sep='')],use.names=F),line,samp)
+    sr[,,1] <- matrix(unlist(MOD09SUB[paste('MOD09','BLU',sep='')],use.names=F),line,samp)
+    sr[,,2] <- matrix(unlist(MOD09SUB[paste('MOD09','GRE',sep='')],use.names=F),line,samp)
+    sr[,,3] <- matrix(unlist(MOD09SUB[paste('MOD09','RED',sep='')],use.names=F),line,samp)
+    sr[,,4] <- matrix(unlist(MOD09SUB[paste('MOD09','NIR',sep='')],use.names=F),line,samp)
+    sr[,,5] <- matrix(unlist(MOD09SUB[paste('MOD09','SWIR',sep='')],use.names=F),line,samp)
+    sr[,,6] <- matrix(unlist(MOD09SUB[paste('MOD09','SWIR2',sep='')],use.names=F),line,samp)
     sr[,,7] <- matrix(unlist(MOD09SUB['QACloud'],use.names=F),line,samp)
+    
+    # read fus data if subType is FUS or BRDF
+    sr2 <- array(0,c(line,samp,6))
+    sr2[,,1] <- matrix(unlist(MOD09SUB[paste(MOD,'BLU',sep='')],use.names=F),line,samp)
+    sr2[,,2] <- matrix(unlist(MOD09SUB[paste(MOD,'GRE',sep='')],use.names=F),line,samp)
+    sr2[,,3] <- matrix(unlist(MOD09SUB[paste(MOD,'RED',sep='')],use.names=F),line,samp)
+    sr2[,,4] <- matrix(unlist(MOD09SUB[paste(MOD,'NIR',sep='')],use.names=F),line,samp)
+    sr2[,,5] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR',sep='')],use.names=F),line,samp)
+    sr2[,,6] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR2',sep='')],use.names=F),line,samp)
   
   # forge preview image
     #initiate preview image
@@ -99,7 +111,7 @@ gen_preview <- function(file,outFile,subType='SUB',
     # insert each band
     for(i in 1:3){
       # grab band
-      band <- sr[,,comp[i]]
+      band <- cbind(sr2[,,comp[i]],matrix(0,line,10),sr[,,comp[i]])
       # fix na
       band[is.na(band)] <- 0
       # fix fill value (treat as saturation)
@@ -109,12 +121,12 @@ gen_preview <- function(file,outFile,subType='SUB',
       band[band<stretch[1]] <- stretch[1]
       # stretch the band
       band <- ((band-stretch[1])/(stretch[2]-stretch[1]))*(band!=0)
-      # assign cloudy image
-      preview[,1:samp,i] <- band
       # apply cloud mask
-      band[sr[,,7]==1]<-1
-      # assign masked image
-      preview[,(samp+11):(samp*2+10),i] <- band
+      band[cbind(matrix(0,line,samp+10),sr[,,7])==1]<-1
+      # apply no data area
+      band[cbind(matrix(1,line,samp+10),band[,1:samp])==0]<-0
+      # assign image
+      preview[,,i] <- band
     }
     rm(band)
   
