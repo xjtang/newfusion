@@ -5,7 +5,7 @@
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 12/20/2014
-# Last Update: 12/20/2014
+# Last Update: 12/21/2014
 #
 # Input Arguments: 
 #   See specific function.
@@ -17,10 +17,10 @@
 #   1.Generate fusion results with fusion program.
 #   2.Use this script to generate difference map.
 #
-# Version 1.0 - 12/20/2014
+# Version 1.0 - 12/21/2014
 #   This script generates difference maps for fusion results.
 #
-# Released on Github on 12/20/2014, check Github Commits for updates afterwards.
+# Released on Github on 12/21/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
 
 # library and sourcing
