@@ -121,10 +121,10 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
 
   # run regression
   if(rs){
-    lmred <- lm(sr[,1]~sr[,4])
-    lmnir <- lm(sr[,2]~sr[,5])
-    lmswir <- lm(sr[,3]~sr[,6])
-    lmndvi <- lm(sr[,8]~sr[,9])
+    lmred <- lm(sr[,1]~sr[,4],na.action=na.omit)
+    lmnir <- lm(sr[,2]~sr[,5],na.action=na.omit)
+    lmswir <- lm(sr[,3]~sr[,6],na.action=na.omit)
+    lmndvi <- lm(sr[,8]~sr[,9],na.action=na.omit)
   }
   
   # generate plot
@@ -142,7 +142,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
     abline(0,1,col=colors()[lineColor])
     if(rs){
       abline(coef(lmred)[1],coef(lmred)[2],col=colors()[rslineColor])
-      eq <- paste('MOD = ',round(coef(lmred)[2],2),'*',fusType,'+',round(coef(lmred)[1],1),sep='')
+      eq <- paste('MOD = ',round(coef(lmred)[2],2),'*',fusType,'+(',round(coef(lmred)[1],1),')',sep='')
       text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
       text(0,axisLim[2]-200,paste('R2=',round(summary(lmred)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
@@ -156,7 +156,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
     abline(0,1,col=colors()[lineColor])
     if(rs){
       abline(coef(lmnir)[1],coef(lmnir)[2],col=colors()[rslineColor])
-      eq <- paste('MOD = ',round(coef(lmnir)[2],2),'*',fusType,'+',round(coef(lmnir)[1],1),sep='')
+      eq <- paste('MOD = ',round(coef(lmnir)[2],2),'*',fusType,'+(',round(coef(lmnir)[1],1),')',sep='')
       text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
       text(0,axisLim[2]-200,paste('R2=',round(summary(lmnir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
@@ -170,7 +170,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
     abline(0,1,col=colors()[lineColor])
     if(rs){
       abline(coef(lmswir)[1],coef(lmswir)[2],col=colors()[rslineColor])
-      eq <- paste('MOD = ',round(coef(lmswir)[2],2),'*',fusType,'+',round(coef(lmswir)[1],1),sep='')
+      eq <- paste('MOD = ',round(coef(lmswir)[2],2),'*',fusType,'+(',round(coef(lmswir)[1],1),')',sep='')
       text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
       text(0,axisLim[2]-200,paste('R2=',round(summary(lmswir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
@@ -184,7 +184,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',cmask=T,rs=T){
     abline(0,1,col=colors()[lineColor])
     if(rs){
       abline(coef(lmndvi)[1],coef(lmndvi)[2],col=colors()[rslineColor])
-      eq <- paste('MOD = ',round(coef(lmndvi)[2],2),'*',fusType,'+',round(coef(lmndvi)[1],1),sep='')
+      eq <- paste('MOD = ',round(coef(lmndvi)[2],2),'*',fusType,'+(',round(coef(lmndvi)[1],1),')',sep='')
       text(-1,1,eq,col=colors()[rsColor],pos=4,cex=1.5)
       text(-1,0.92,paste('R2=',round(summary(lmndvi)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
