@@ -121,10 +121,10 @@ gen_preview <- function(file,outFile,subType='SUB',
       band[band<stretch[1]] <- stretch[1]
       # stretch the band
       band <- ((band-stretch[1])/(stretch[2]-stretch[1]))*(band!=0)
-      # apply cloud mask
-      band[cbind(matrix(0,line,samp+10),sr[,,7])==1]<-1
       # apply no data area
       band[cbind(matrix(1,line,samp+10),band[,1:samp])==0]<-0
+      # apply cloud mask
+      band[cbind(matrix(0,line,samp+10),sr[,,7])==1]<-1
       # assign image
       preview[,,i] <- band
     }
