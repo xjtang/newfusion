@@ -190,7 +190,7 @@ batch_dif_map <- function(path,output,pattern='MOD09SUB.*500m.*',
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
     time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
     outFile <- paste(output,fusType,'_',date,'_',time,'_dif.png',sep='')
-    dif_map(fileList[i],outFile,fusType,cmask,rs)
+    dif_map(fileList[i],outFile,fusType,cmask)
     cat(paste(outFile,'...done\n'))
   }
   
