@@ -1,11 +1,11 @@
 # gen_preview.R
-# Version 1.2
+# Version 1.3
 # Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 11/30/2014
-# Last Update: 12/13/2014
+# Last Update: 12/28/2014
 #
 # Input Arguments: 
 #   See specific function.
@@ -16,6 +16,7 @@
 # Usage: 
 #   1.Generate SwathSub with fusion program.
 #   2.Use this script to generate preview image.
+#   3.NDVI grey scale image at 250 resolution.
 #
 # Version 1.0 - 12/01/2014
 #   This script generates preview images for SwathSub.
@@ -30,6 +31,10 @@
 #   1.Make cloud and mask preview in one file.
 #   2.Added gap between two images.
 #   3.Added support for dealing with fill value
+#
+# Updates of Version 1.3 - 12/28/2014
+#   1.Added support for 250m resolution.
+#   2.Bugs fixed.
 #
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -55,7 +60,7 @@ eval(parse(text=script),envir=.GlobalEnv)
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-gen_preview <- function(file,outFile,subType='SUB',
+gen_preview <- function(file,outFile,subType='SUB',plat='MOD',res=500,
                         comp=c(5,4,3),stretch=c(0,5000)){
   
   # check subType
@@ -85,33 +90,54 @@ gen_preview <- function(file,outFile,subType='SUB',
     samp <- length(unlist(MOD09SUB['MODSamp'],use.names=F))
   
     # initiate surface reflectance array
-    sr <- array(0,c(line,samp,7))
+    if(res==500){
+      sr <- array(0,c(line,samp,7))
+      sr2 <- array(0,c(line,samp,6))
+    }else if(res==250){
+      sr <- array(0,c(line,samp,4))
+      sr2 <- array(0,c(line,samp,3))
+      comp <- 8
+    }else{
+      cat('Invalid resolution.\n')
+      return(-1)
+    }
   
     # grab each band
-    sr[,,1] <- matrix(unlist(MOD09SUB[paste('MOD09','BLU',sep='')],use.names=F),line,samp)
-    sr[,,2] <- matrix(unlist(MOD09SUB[paste('MOD09','GRE',sep='')],use.names=F),line,samp)
-    sr[,,3] <- matrix(unlist(MOD09SUB[paste('MOD09','RED',sep='')],use.names=F),line,samp)
-    sr[,,4] <- matrix(unlist(MOD09SUB[paste('MOD09','NIR',sep='')],use.names=F),line,samp)
-    sr[,,5] <- matrix(unlist(MOD09SUB[paste('MOD09','SWIR',sep='')],use.names=F),line,samp)
-    sr[,,6] <- matrix(unlist(MOD09SUB[paste('MOD09','SWIR2',sep='')],use.names=F),line,samp)
-    sr[,,7] <- matrix(unlist(MOD09SUB['QACloud'],use.names=F),line,samp)
-    
+    sr[,,1] <- matrix(unlist(MOD09SUB[paste('MOD09','RED',sep='')],use.names=F),line,samp)
+    sr[,,2] <- matrix(unlist(MOD09SUB[paste('MOD09','NIR',sep='')],use.names=F),line,samp)
+    sr[,,3] <- matrix(unlist(MOD09SUB['QACloud'],use.names=F),line,samp)
+    if(res==500){  
+      sr[,,4] <- matrix(unlist(MOD09SUB[paste('MOD09','BLU',sep='')],use.names=F),line,samp)
+      sr[,,5] <- matrix(unlist(MOD09SUB[paste('MOD09','GRE',sep='')],use.names=F),line,samp)
+      sr[,,6] <- matrix(unlist(MOD09SUB[paste('MOD09','SWIR',sep='')],use.names=F),line,samp)
+      sr[,,7] <- matrix(unlist(MOD09SUB[paste('MOD09','SWIR2',sep='')],use.names=F),line,samp)
+    }else{
+      # calculate ndvi
+      sr[,,4] <- (sr[,,2]-sr[,,1])/(sr[,,2]+sr[,,1])
+    }
+  
     # read fus data if subType is FUS or BRDF
-    sr2 <- array(0,c(line,samp,6))
-    sr2[,,1] <- matrix(unlist(MOD09SUB[paste(MOD,'BLU',sep='')],use.names=F),line,samp)
-    sr2[,,2] <- matrix(unlist(MOD09SUB[paste(MOD,'GRE',sep='')],use.names=F),line,samp)
-    sr2[,,3] <- matrix(unlist(MOD09SUB[paste(MOD,'RED',sep='')],use.names=F),line,samp)
-    sr2[,,4] <- matrix(unlist(MOD09SUB[paste(MOD,'NIR',sep='')],use.names=F),line,samp)
-    sr2[,,5] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR',sep='')],use.names=F),line,samp)
-    sr2[,,6] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR2',sep='')],use.names=F),line,samp)
+    sr2[,,1] <- matrix(unlist(MOD09SUB[paste(MOD,'RED',sep='')],use.names=F),line,samp)
+    sr2[,,2] <- matrix(unlist(MOD09SUB[paste(MOD,'NIR',sep='')],use.names=F),line,samp)
+    if(res==500){
+      sr2[,,3] <- matrix(unlist(MOD09SUB[paste(MOD,'BLU',sep='')],use.names=F),line,samp)
+      sr2[,,4] <- matrix(unlist(MOD09SUB[paste(MOD,'GRE',sep='')],use.names=F),line,samp)
+      sr2[,,5] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR',sep='')],use.names=F),line,samp)
+      sr2[,,6] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR2',sep='')],use.names=F),line,samp)
+    }else{
+      sr2[,,3] <- (sr2[,,2]-sr2[,,1])/(sr2[,,2]+sr2[,,1])
+    }
   
   # forge preview image
     #initiate preview image
-    preview <- array(0,c(line,samp*2+10,3))
+    if(res==500){imax<-3}else{imax<-1}
+    preview <- array(0,c(line,samp*2+10,imax))
+    sr1b <- c(4,5,1,2,6,7,7,4)
+    sr2b <- c(3,4,1,2,5,6,6,3)
     # insert each band
-    for(i in 1:3){
+    for(i in 1:imax){
       # grab band
-      band <- cbind(sr2[,,comp[i]],matrix(0,line,10),sr[,,comp[i]])
+      band <- cbind(sr2[,,sr2b[comp[i]]],matrix(0,line,10),sr[,,sr1b[comp[i]]])
       # fix na
       band[is.na(band)] <- 0
       # fix fill value (treat as saturation)
@@ -124,7 +150,7 @@ gen_preview <- function(file,outFile,subType='SUB',
       # apply no data area
       band[cbind(matrix(1,line,samp+10),band[,1:samp])==0]<-0
       # apply cloud mask
-      band[cbind(matrix(0,line,samp+10),sr[,,7])==1]<-1
+      band[cbind(matrix(0,line,samp+10),sr[,,3])==1]<-1
       # assign image
       preview[,,i] <- band
     }
@@ -134,7 +160,7 @@ gen_preview <- function(file,outFile,subType='SUB',
     # remove the trailing .png extension from output file name
     if(strRight(outFile,4)=='.png'){outFile<-trimRight(outFile,4)}
     # calculate cloud cover percent
-    cc <- floor(sum(sr[,,7])/(line*samp)*100)
+    cc <- floor(sum(sr[,,3])/(line*samp)*100)
     # forge output file name
     outFile <- paste(outFile,'_',cc,'C.png',sep='')
     # write output
@@ -151,20 +177,21 @@ gen_preview <- function(file,outFile,subType='SUB',
 #
 # Input Arguments: 
 #   path (String) - path to all input files
-#   pattern (String) pattern to search for file
 #   output (String) - output location
 #   subType (String) - the type of the input SwathSub ('SUB','SUBF', or 'BRDF')
+#   plat (String) - platform ('MOD' or 'MYD')
+#   res (Integer) - resolution of the image (250 or 500)
 #   comp (Vector) - composite of the preview image (default 4,3,2)
 #   stretch (Vector) - stretch of the image (default 0-3000)
 #
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-batch_gen_preview <- function(path,output,pattern='MOD09SUB.*500m.*',subType='SUB',
+batch_gen_preview <- function(path,output,subType='SUB',plat='MOD',res=500,
                               comp=c(5,4,3),stretch=c(0,5000)){
   
   # find all files
-  pattern <- paste(pattern,'.*.mat',sep='')
+  pattern <- paste('.*',plat,'.*',res,'m.*.mat',sep='')
   fileList <- list.files(path=path,pattern=pattern,full.names=T,recursive=T)
 
   # check if we have files found
@@ -183,8 +210,8 @@ batch_gen_preview <- function(path,output,pattern='MOD09SUB.*500m.*',subType='SU
   for(i in 1:length(fileList)){
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
     time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
-    outFile <- paste(output,subType,'_',date,'_',time,'.png',sep='')
-    gen_preview(fileList[i],outFile,subType,comp,stretch)
+    outFile <- paste(output,'/PREV_',plat,subType,'_',res,'m_',date,'_',time,'.png',sep='')
+    gen_preview(fileList[i],outFile,subType,plat,res,comp,stretch)
     cat(paste(outFile,'...done\n'))
   }
   
