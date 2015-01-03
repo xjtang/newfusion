@@ -1,11 +1,11 @@
 # dif_map.R
-# Version 1.1
+# Version 1.2
 # Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 12/20/2014
-# Last Update: 12/29/2014
+# Last Update: 1/3/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -20,9 +20,16 @@
 # Version 1.0 - 12/21/2014
 #   This script generates difference maps for fusion results.
 #
-# Updates of Version 1.1 - 12/29/2014
+# Updates of Version 1.1 - 12/31/2014
 #   1.Added support for 250m resolution.
 #   2.Bugs fixed.
+#
+# Updates of Version 1.2 - 1/3/2015
+#   1.display possitive and negative pixels in different color
+#   2.display outliers in green
+#   3.Added a quantile for streching the image
+#   4.Added support for a fixed streching value
+#   5.Bugs fixed
 #
 # Released on Github on 12/21/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -43,13 +50,16 @@ eval(parse(text=script),envir=.GlobalEnv)
 #   outFile (String) - output file with .png extension
 #   fusType (String) - the type of the fusion result ('FUS', or 'BRDF')
 #   plat (String) - platform ('MOD' or 'MYD')
-#   res (Integer) - resolution of the image (250 or 500).
+#   res (Integer) - resolution of the image (250 or 500)
 #   cmask (Logical) - apply cloud mask or not
+#   q (Single) - quantile for determine the max value in stretching the image
+#   fix (Vector) - fixed value for streching each band (0 means na)
 #
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-dif_map <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T){
+dif_map <- function(file,outFile,fusType='FUS',plat='MOD',
+                    res=500,cmask=T,q=0.95,fix=c(0,0,0,0)){
   
   # check fusType
   if(fusType=='FUS'){
@@ -133,30 +143,47 @@ dif_map <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T){
   if(res==250){preview[,(samp*3+31):(samp*4+30),2]<-0}
   # insert each band
   for(i in 1:imax){
+    # initialize extreme band
+    extm <- matrix(0,line,samp)
     for(j in c(1,3)){
       # grab band
       band <- dif[,,i]
-      band[sr[,,7]==1] <- NaN
+      # fix na
+      band[is.na(band)] <- 0 
+      # apply cloud mask
+      if(cmask){
+        band[sr[,,7]==1] <- 0
+      }
       if(j==1){
-        band[band<0] <- NaN
+        band[band<0] <- 0
       }else{
-        band[band>0] <- NaN
+        band[band>0] <- 0
         band <- abs(band)
       }
       # stretch the band
-      band <- band/(max(band,na.rm=T))
-      # fix na
-      band[is.na(band)] <- 0    
-      #add cloud mask
+      if(fix[i]==0){
+        band <- band/(quantile(band,q,na.rm=T))
+      }else{
+        band <- band/fix[i]
+      }
+      # pick out extreme values
+      extm[band>1] <- 1
+      # fix extreme value
+      band[band>1] <- 0   
+      # add cloud mask
       if(cmask){
         band[sr[,,7]==1] <- 1 
+        extm[sr[,,7]==1] <- 1 
       }
       # assign masked image
       preview[,((samp+10)*(i-1)+1):(samp*i+10*(i-1)),j] <- band
     }
+    #assign extreme value to image
+    preview[,((samp+10)*(i-1)+1):(samp*i+10*(i-1)),2] <- extm
   }
   rm(band)
-  
+  rm(extm)
+
   # finalize preview 
   preview2 <- array(0,c(2*line+10,2*samp+10,3))
   for(i in 1:3){
@@ -190,12 +217,14 @@ dif_map <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T){
 #   plat (String) - platform ('MOD' or 'MYD')
 #   res (Integer) - resolution of the image (250 or 500).
 #   cmask (Logical) - apply cloud mask or not
+#   q (Single) - quantile for determine the max value in stretching the image
+#   fix (Vector) - fixed values for streching each band (0 means na)
 #
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
 batch_dif_map <- function(path,output,plat='MOD',res=500,
-                              fusType='FUS',cmask=T){
+                              fusType='FUS',cmask=T,q=0.95,fix=c(0,0,0,0)){
   
   # find all files
   pattern <- paste('.*',plat,'.*',res,'m.*.mat',sep='')
@@ -218,7 +247,7 @@ batch_dif_map <- function(path,output,plat='MOD',res=500,
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
     time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
     outFile <- paste(output,'/DIF_',plat,fusType,'_',res,'m_',date,'_',time,'.png',sep='')
-    dif_map(fileList[i],outFile,fusType,plat,res,cmask)
+    dif_map(fileList[i],outFile,fusType,plat,res,cmask,q,fix)
     cat(paste(outFile,'...done\n'))
    }
   
