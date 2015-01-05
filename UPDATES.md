@@ -1,6 +1,12 @@
 Versions and Updates
 ==============
 
+Version 6.2.2 - 1/5/2015 - xjtang
+--------------
+- Bugs fixed.  
+- Added new tool for generating difference images.  
+- Added support for 250m resolution in all tools.  
+
 Version 6.2.1 - 12/08/2014 - xjtang
 --------------
 - Updated comments in all script files.
