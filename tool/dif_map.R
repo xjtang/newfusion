@@ -1,11 +1,11 @@
 # dif_map.R
-# Version 1.2
+# Version 1.3
 # Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 12/20/2014
-# Last Update: 1/3/2015
+# Last Update: 1/12/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -30,6 +30,9 @@
 #   3.Added a quantile for streching the image
 #   4.Added support for a fixed streching value
 #   5.Bugs fixed
+#
+# Updates of Version 1.3 - 1/12/2015
+#   1.Added a option of correcting the bias
 #
 # Released on Github on 12/21/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
