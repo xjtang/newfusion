@@ -54,12 +54,13 @@ eval(parse(text=script),envir=.GlobalEnv)
 #   cmask (Logical) - apply cloud mask or not
 #   q (Single) - quantile for determine the max value in stretching the image
 #   fix (Vector) - fixed value for streching each band (0 means na)
+#   bias (Logical) - fix the bias or not
 #
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
 dif_map <- function(file,outFile,fusType='FUS',plat='MOD',
-                    res=500,cmask=T,q=0.95,fix=c(0,0,0,0)){
+                    res=500,cmask=T,q=0.95,fix=c(0,0,0,0),bias=T){
   
   # check fusType
   if(fusType=='FUS'){
@@ -122,6 +123,20 @@ dif_map <- function(file,outFile,fusType='FUS',plat='MOD',
   
   # set na to -9999
   # sr[is.na(sr)] <- -9999
+  
+  # fix bias
+  if(bias){
+    bseq <- c(1,3,5,8)
+    for(i in bseq[1:imax]){
+      observe <- sr[,,i]
+      predict <- sr[,,i+1]
+      b <- mean(observe[sr[,,7]==0],na.rm=T)-mean(predict[sr[,,7]==0],na.rm=T)
+      sr[,,i] <- sr[,,i] - b
+    }
+  }
+  rm(observe)
+  rm(predict)
+  rm(b)
   
   # initialize dif bands
   dif <- array(0,c(line,samp,imax))
@@ -219,12 +234,13 @@ dif_map <- function(file,outFile,fusType='FUS',plat='MOD',
 #   cmask (Logical) - apply cloud mask or not
 #   q (Single) - quantile for determine the max value in stretching the image
 #   fix (Vector) - fixed values for streching each band (0 means na)
+#   bias (Logical) - fix the bias or not
 #
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-batch_dif_map <- function(path,output,plat='MOD',res=500,
-                              fusType='FUS',cmask=T,q=0.95,fix=c(0,0,0,0)){
+batch_dif_map <- function(path,output,plat='MOD',res=500,fusType='FUS',
+                          cmask=T,q=0.95,fix=c(0,0,0,0),bias=T){
   
   # find all files
   pattern <- paste('.*',plat,'.*',res,'m.*.mat',sep='')
@@ -247,7 +263,7 @@ batch_dif_map <- function(path,output,plat='MOD',res=500,
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
     time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
     outFile <- paste(output,'/DIF_',plat,fusType,'_',res,'m_',date,'_',time,'.png',sep='')
-    dif_map(fileList[i],outFile,fusType,plat,res,cmask,q,fix)
+    dif_map(fileList[i],outFile,fusType,plat,res,cmask,q,fix,bias)
     cat(paste(outFile,'...done\n'))
    }
   
