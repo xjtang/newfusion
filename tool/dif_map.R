@@ -5,7 +5,7 @@
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 12/20/2014
-# Last Update: 1/12/2015
+# Last Update: 1/14/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -31,8 +31,9 @@
 #   4.Added support for a fixed streching value
 #   5.Bugs fixed
 #
-# Updates of Version 1.3 - 1/12/2015
+# Updates of Version 1.3 - 1/14/2015
 #   1.Added a option of correcting the bias
+#   2.Bugs fixed
 #
 # Released on Github on 12/21/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -136,11 +137,11 @@ dif_map <- function(file,outFile,fusType='FUS',plat='MOD',
       b <- mean(observe[sr[,,7]==0],na.rm=T)-mean(predict[sr[,,7]==0],na.rm=T)
       sr[,,i] <- sr[,,i] - b
     }
+    rm(observe)
+    rm(predict)
+    rm(b)
   }
-  rm(observe)
-  rm(predict)
-  rm(b)
-  
+
   # initialize dif bands
   dif <- array(0,c(line,samp,imax))
   
