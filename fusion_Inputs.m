@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 6.2.1
+% Version 6.2.2
 % Step 0
 % Main Inputs and Settings
 %
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 12/15/2014
+% Last Update: 1/19/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -47,6 +47,9 @@
 %   1.Added a dump folder for collecting dumped data.
 %   2.Added missing ;.
 %   3.Removed unused folder.
+%
+% Updates of Version 6.2.2 - 1/19/2015 (by Xiaojing Tang)
+%   1.Added new output folders to hold change and difference maps.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -116,12 +119,22 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
         if exist(main.output.modsubf,'dir') == 0 
             mkdir([main.path 'MOD09SUBF']);
         end
+        % MOD09SUB with change and difference image
+        main.output.modsubc = [main.path 'MOD09SUBC/'];
+        if exist(main.output.modsubc,'dir') == 0 
+            mkdir([main.path 'MOD09SUBC']);
+        end
         % fused synthetic MODIS image from ETM image
         main.output.fusion = [main.path 'FUS09/'];
         if exist(main.output.fusion,'dir') == 0 
             mkdir([main.path 'FUS09']);
         end
-        % changes between synthetic MODIS and true MODIS
+        % difference between synthetic MODIS and true MODIS
+        main.output.dif = [main.path 'FUSDIF/'];
+        if exist(main.output.dif,'dir') == 0 
+            mkdir([main.path 'FUSDIF']);
+        end
+        % changes detected
         main.output.change = [main.path 'FUSCHG/'];
         if exist(main.output.change,'dir') == 0 
             mkdir([main.path 'FUSCHG']);
