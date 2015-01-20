@@ -51,7 +51,7 @@ function fusion_Change(main)
         end
 
         % find MOD09SUB files
-        File.MOD09SUB = dir([main.output.modsubf,plat,'09SUB.',num2str(main.set.res),'*',DayStr,'*']);
+        File.MOD09SUB = dir([main.output.modsubf,plat,'09SUB*.',num2str(main.set.res),'*',DayStr,'*']);
 
         if numel(File.MOD09SUB)<1
             disp(['Cannot find MOD09SUB for Julian Day: ', DayStr]);
