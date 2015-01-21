@@ -1,12 +1,12 @@
 % swath2etm.m
-% Version 6.2
+% Version 6.3
 % Core
 %
 % Project: Fusion
 % By Qinchuan Xin
 % Updated By: Xiaojing Tang
 % Created On: Unknown
-% Last Update: 12/14/2014
+% Last Update: 1/21/2014
 %
 % Input Arguments:
 %   Swath (Matrix, Var) - MODIS swath data (change map usually).
@@ -32,6 +32,11 @@
 % Updates of Version 6.2 - 12/14/2014 (by Xiaojing Tang)
 %   1.Bugs fixed.
 %   2.Generate band difference map according to new fusion workflow.
+%
+% Updates of Version 6.3 - 1/21/2014 (by Xiaojing Tang)
+%   1.Convert MODIS swath style data to ETM scale with specific setting.
+%   2.Operational with this version.
+%   3.Bugs fixed.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
