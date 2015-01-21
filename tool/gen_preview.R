@@ -55,7 +55,6 @@ eval(parse(text=script),envir=.GlobalEnv)
 #   file (String) - input SwathSub .mat file
 #   outFile (String) - output file with .png extension
 #   subType (String) - the type of the input SwathSub ('SUB','FUS', or 'BRDF')
-#   plat (String) - platform ('MOD' or 'MYD')
 #   res (Integer) - resolution of the image (250 or 500)
 #   comp (Vector) - composite of the preview image (default 5,4,3)
 #   stretch (Vector) - stretch of the image (default 0-5000)
@@ -63,7 +62,7 @@ eval(parse(text=script),envir=.GlobalEnv)
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-gen_preview <- function(file,outFile,subType='SUB',plat='MOD',res=500,
+gen_preview <- function(file,outFile,subType='SUB',res=500,
                         comp=c(5,4,3),stretch=c(0,5000)){
   
   # check subType
@@ -214,7 +213,7 @@ batch_gen_preview <- function(path,output,subType='SUB',plat='MOD',res=500,
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
     time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
     outFile <- paste(output,'/PREV_',plat,subType,'_',res,'m_',date,'_',time,'.png',sep='')
-    gen_preview(fileList[i],outFile,subType,plat,res,comp,stretch)
+    gen_preview(fileList[i],outFile,subType,res,comp,stretch)
     cat(paste(outFile,'...done\n'))
   }
   
