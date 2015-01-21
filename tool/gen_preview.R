@@ -5,7 +5,7 @@
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 11/30/2014
-# Last Update: 12/28/2014
+# Last Update: 1/21/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -32,9 +32,10 @@
 #   2.Added gap between two images.
 #   3.Added support for dealing with fill value
 #
-# Updates of Version 1.3 - 12/28/2014
+# Updates of Version 1.3 - 1/21/2015
 #   1.Added support for 250m resolution.
 #   2.Bugs fixed.
+#   3.Updated comments.
 #
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -54,8 +55,8 @@ eval(parse(text=script),envir=.GlobalEnv)
 #   file (String) - input SwathSub .mat file
 #   outFile (String) - output file with .png extension
 #   subType (String) - the type of the input SwathSub ('SUB','FUS', or 'BRDF')
-#   comp (Vector) - composite of the preview image (default 4,3,2)
-#   stretch (Vector) - stretch of the image (default 0-3000)
+#   comp (Vector) - composite of the preview image (default 5,4,3)
+#   stretch (Vector) - stretch of the image (default 0-5000)
 #
 # Output Arguments: 
 #   r (Integer) - 0: Successful
@@ -181,8 +182,8 @@ gen_preview <- function(file,outFile,subType='SUB',plat='MOD',res=500,
 #   subType (String) - the type of the input SwathSub ('SUB','SUBF', or 'BRDF')
 #   plat (String) - platform ('MOD' or 'MYD')
 #   res (Integer) - resolution of the image (250 or 500)
-#   comp (Vector) - composite of the preview image (default 4,3,2)
-#   stretch (Vector) - stretch of the image (default 0-3000)
+#   comp (Vector) - composite of the preview image (default 5,4,3)
+#   stretch (Vector) - stretch of the image (default 0-5000)
 #
 # Output Arguments: 
 #   r (Integer) - 0: Successful
