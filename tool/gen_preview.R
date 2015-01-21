@@ -55,6 +55,8 @@ eval(parse(text=script),envir=.GlobalEnv)
 #   file (String) - input SwathSub .mat file
 #   outFile (String) - output file with .png extension
 #   subType (String) - the type of the input SwathSub ('SUB','FUS', or 'BRDF')
+#   plat (String) - platform ('MOD' or 'MYD')
+#   res (Integer) - resolution of the image (250 or 500)
 #   comp (Vector) - composite of the preview image (default 5,4,3)
 #   stretch (Vector) - stretch of the image (default 0-5000)
 #
