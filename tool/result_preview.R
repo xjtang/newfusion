@@ -108,37 +108,66 @@ result_preview <- function(file,outFile,res=500,
     # grab change and dif data
     DIF <- matrix(unlist(MOD09SUB[paste('DIF09',bdc[cband],sep='')],use.names=F),line,samp)
     CHG <- matrix(unlist(MOD09SUB[paste('CHG09',bdc[cband],sep='')],use.names=F),line,samp)
+    rm(MOD09SUB)
   
   # forge preview image
     # initiate preview image
     preview <- array(0,c(line*2+10,samp*2+10,3))
     # insert each band
     for(i in 1:3){
-      # grab band
-      band <- cbind(sr2[,,sr2b[comp[i]]],matrix(0,line,10),sr[,,sr1b[comp[i]]])
-      # fix na
-      band[is.na(band)] <- 0
-      # fix fill value (treat as saturation)
-      band[band==(-28672)] <- stretch[2]
-      # fix extreme value
-      band[band>stretch[2]] <- stretch[2]
-      band[band<stretch[1]] <- stretch[1]
-      # stretch the band
-      band <- ((band-stretch[1])/(stretch[2]-stretch[1]))*(band!=0)
-      # apply no data area
-      band[cbind(matrix(1,line,samp+10),band[,1:samp])==0]<-0
-      # apply cloud mask
-      band[cbind(matrix(0,line,samp+10),sr[,,3])==1]<-1
+      # forge sr
+        # initiate band
+        srband <- cbind(MOD[,,bsr[comp[i]]],matrix(0,line,10),FUS[,,bsr[comp[i]]])
+        # fix na
+        srband[is.na(srband)] <- 0
+        # fix fill value (treat as saturation)
+        srband[srband==(-28672)] <- stretch[2]
+        # fix extreme value
+        srband[srband>stretch[2]] <- stretch[2]
+        srband[srband<stretch[1]] <- stretch[1]
+        # stretch the band
+        srband <- ((srband-stretch[1])/(stretch[2]-stretch[1]))*(srband!=0)
+        # apply no data area
+        srband[cbind(matrix(1,line,samp+10),srband[,1:samp])==0]<-0
+        # apply cloud mask
+        srband[cbind(matrix(0,line,samp+10),CLD)==1]<-1
+      # forge dif and chg
+        # initiate band
+        dcband <- cbind(matrix(0,line,samp+10),CHG)
+        # fix na
+        dcband[is.na(dcband)] <- 0
+        # insert dif image
+        if(i==1){
+          difband <- DIF
+          difband[is.na(difband)] <- 0
+          difband[CHG==1] <- 0
+          difband[difband<0] <- 0
+          difband <- difband / max(difband)
+        }else if(i==3){
+          difband <- DIF
+          difband[is.na(difband)] <- 0
+          difband[CHG==1] <- 0
+          difband[difband>0] <- 0
+          difband <- abs(difband)
+          difband <- difband / max(difband)
+        }else{
+          difband <- CHG
+          difband[is.na(difband)] <- 0
+        }
+        dcband[1:line,1:samp] <- difband
       # assign image
-      preview[,,i] <- band
+      preview[,,i] <- rbind(srband,matrix(1,10,samp*2+10),dcband)
+      preview[,(samp+1):(samp+10),i] <- 1
     }
-    rm(band)
-  
+    rm(srband)
+    rm(dcband)
+    rm(difband)
+    
   # generate image
     # remove the trailing .png extension from output file name
     if(strRight(outFile,4)=='.png'){outFile<-trimRight(outFile,4)}
     # calculate cloud cover percent
-    cc <- floor(sum(sr[,,3])/(line*samp)*100)
+    cc <- floor(sum(CLD)/(line*samp)*100)
     # forge output file name
     outFile <- paste(outFile,'_',cc,'C.png',sep='')
     # write output
@@ -165,8 +194,8 @@ result_preview <- function(file,outFile,res=500,
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-batch_gen_preview <- function(path,output,plat='MOD',res=500,
-                              comp=c(5,4,3),stretch=c(0,5000)){
+batch_result_preview <- function(path,output,plat='MOD',res=500,
+                                 comp=c(5,4,3),stretch=c(0,5000),cband=8){
   
   # find all files
   pattern <- paste('.*',plat,'.*',res,'m.*.mat',sep='')
@@ -188,8 +217,8 @@ batch_gen_preview <- function(path,output,plat='MOD',res=500,
   for(i in 1:length(fileList)){
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
     time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
-    outFile <- paste(output,'/PREV_',plat,subType,'_',res,'m_',date,'_',time,'.png',sep='')
-    gen_preview(fileList[i],outFile,subType,plat,res,comp,stretch)
+    outFile <- paste(output,'/RESULT_',plat,'_',res,'m_',date,'_',time,'.png',sep='')
+    result_preview(fileList[i],outFile,res,comp,stretch,cband)
     cat(paste(outFile,'...done\n'))
   }
   
