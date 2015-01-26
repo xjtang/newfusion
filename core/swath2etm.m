@@ -44,7 +44,9 @@
 function ETM = swath2etm(Swath, MOD09SUB, ETMGeo)
 
     % initialize
-    ETM = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp),3]);
+    ETM.nob = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp)]);
+    ETM.max = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp)]);
+    ETM.avg = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp)]);
 
     % for each MODIS swath observation, determine the maximum possible 
     %   range of corresponding ETM pixel
@@ -61,7 +63,7 @@ function ETM = swath2etm(Swath, MOD09SUB, ETMGeo)
         for Index_Col=1:size(Top,2)  
             
             % if the current MODIS swath observation can be generated
-            if MODMask(Index_Row,Index_Col)==1
+            if MODMask(Index_Row,Index_Col)==1 && ~isnan(Swath(Index_Row,Index_Col))
                 
                 % boundary of ETM images for a MODIS observation
                 PixelTop = Top(Index_Row,Index_Col);
@@ -92,23 +94,22 @@ function ETM = swath2etm(Swath, MOD09SUB, ETMGeo)
 
                     % create a mask for pixels that is already updated by
                     %   adjacent MODIS swatch observation
-                    MaskFilled = ETM(PixelTop:PixelBot,PixelLef:PixelRig,1)>0;
-                    MaskLarge = (ETMMask.*Swath(Index_Row,Index_Col))>ETM(PixelTop:PixelBot,PixelLef:PixelRig,1);
+                    MaskLarger = (ETMMask.*Swath(Index_Row,Index_Col))>ETM(PixelTop:PixelBot,PixelLef:PixelRig,1);
 
                     % generate number of observation map
-                    Temp = ETM(PixelTop:PixelBot,PixelLef:PixelRig,1);
+                    Temp = ETM.nob(PixelTop:PixelBot,PixelLef:PixelRig);
                     Temp(ETMMask>0) = Temp(ETMMask>0)+1;
-                    ETM(PixelTop:PixelBot,PixelLef:PixelRig,1) = Temp;
+                    ETM.nob(PixelTop:PixelBot,PixelLef:PixelRig,1) = Temp;
                     
-                    % generate average map
-                    Temp = ETM(PixelTop:PixelBot,PixelLef:PixelRig,2);
-                    Temp(MaskFilled>0) = Temp(MaskFilled>0)+Swath(Index_Row,Index_Col);
-                    ETM(PixelTop:PixelBot,PixelLef:PixelRig,2) = Temp;
+                    % generate sum map
+                    Temp = ETM.avg(PixelTop:PixelBot,PixelLef:PixelRig);
+                    Temp(ETMMask>0) = Temp(ETMMask>0)+Swath(Index_Row,Index_Col);
+                    ETM.avg(PixelTop:PixelBot,PixelLef:PixelRig,2) = Temp;
                     
                     % resample max(or min) map
-                    Temp = ETM(PixelTop:PixelBot,PixelLef:PixelRig,3);
-                    Temp(MaskLarge>0) = Swath(Index_Row,Index_Col);
-                    ETM(PixelTop:PixelBot,PixelLef:PixelRig,3)=Temp;
+                    Temp = ETM.max(PixelTop:PixelBot,PixelLef:PixelRig);
+                    Temp(MaskLarger>0) = Swath(Index_Row,Index_Col);
+                    ETM.max(PixelTop:PixelBot,PixelLef:PixelRig,3)=Temp;
                     
                 end
                 
@@ -117,14 +118,15 @@ function ETM = swath2etm(Swath, MOD09SUB, ETMGeo)
         end
     end
 
-    % calculate averate
-    Temp = ETM(:,:,1);
+    % calculate average
+    Temp = ETM.nob;
     Temp(Temp==0) = 1;
-    ETM(:,:,2) = ETM(:,:,2)./Temp;
-    
+    ETM.avg = ETM.avg./Temp;
     
     % set 0 to -9999
-    ETM(ETM==0)=-9999;
+    ETM.nob(ETM.nob==0) = -9999;
+    ETM.avg(ETM.avg==0) = -9999;
+    ETM.max(ETM.max==0) = -9999;
 
     % done
     
