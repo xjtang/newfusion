@@ -6,7 +6,7 @@
 % By Qinchuan Xin
 % Updated By: Xiaojing Tang
 % Created On: Unknown
-% Last Update: 1/21/2014
+% Last Update: 1/26/2015
 %
 % Input Arguments:
 %   Swath (Matrix, Var) - MODIS swath data (change map usually).
@@ -33,7 +33,7 @@
 %   1.Bugs fixed.
 %   2.Generate band difference map according to new fusion workflow.
 %
-% Updates of Version 6.3 - 1/21/2014 (by Xiaojing Tang)
+% Updates of Version 6.3 - 1/26/2015 (by Xiaojing Tang)
 %   1.Convert MODIS swath style data to ETM scale with specific setting.
 %   2.Operational with this version.
 %   3.Bugs fixed.
