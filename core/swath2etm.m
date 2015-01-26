@@ -94,22 +94,22 @@ function ETM = swath2etm(Swath, MOD09SUB, ETMGeo)
 
                     % create a mask for pixels that is already updated by
                     %   adjacent MODIS swatch observation
-                    MaskLarger = (ETMMask.*Swath(Index_Row,Index_Col))>ETM(PixelTop:PixelBot,PixelLef:PixelRig,1);
+                    MaskLarger = (ETMMask.*Swath(Index_Row,Index_Col))>ETM.max(PixelTop:PixelBot,PixelLef:PixelRig);
 
                     % generate number of observation map
                     Temp = ETM.nob(PixelTop:PixelBot,PixelLef:PixelRig);
                     Temp(ETMMask>0) = Temp(ETMMask>0)+1;
-                    ETM.nob(PixelTop:PixelBot,PixelLef:PixelRig,1) = Temp;
+                    ETM.nob(PixelTop:PixelBot,PixelLef:PixelRig) = Temp;
                     
                     % generate sum map
                     Temp = ETM.avg(PixelTop:PixelBot,PixelLef:PixelRig);
                     Temp(ETMMask>0) = Temp(ETMMask>0)+Swath(Index_Row,Index_Col);
-                    ETM.avg(PixelTop:PixelBot,PixelLef:PixelRig,2) = Temp;
+                    ETM.avg(PixelTop:PixelBot,PixelLef:PixelRig) = Temp;
                     
                     % resample max(or min) map
                     Temp = ETM.max(PixelTop:PixelBot,PixelLef:PixelRig);
                     Temp(MaskLarger>0) = Swath(Index_Row,Index_Col);
-                    ETM.max(PixelTop:PixelBot,PixelLef:PixelRig,3)=Temp;
+                    ETM.max(PixelTop:PixelBot,PixelLef:PixelRig)=Temp;
                     
                 end
                 
