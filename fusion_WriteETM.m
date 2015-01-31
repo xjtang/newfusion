@@ -75,13 +75,38 @@ function fusion_WriteETM(main)
             % load MOD09SUB
             MOD09SUB = load([main.output.modsubc,File.MOD09SUB(I_TIME).name]);
 
-            % generate ETM scale dif map
-            
-
+            % initialize ETM image
             if main.set.res == 500
-
+                ETMImage = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp)],9);
+            else
+                ETMImage = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp)],5);
+            end
+            
+            % generate ETM scale dif map
+            if main.set.res == 500
+                [~,~,ETMImage(:,:,1)] = swath2etm(MOD09SUB.DIF09BLU,MOD09SUB,ETMGeo);
+                [~,~,ETMImage(:,:,2)] = swath2etm(MOD09SUB.DIF09GRE,MOD09SUB,ETMGeo);
+                [~,~,ETMImage(:,:,3)] = swath2etm(MOD09SUB.DIF09RED,MOD09SUB,ETMGeo);
+                [~,~,ETMImage(:,:,4)] = swath2etm(MOD09SUB.DIF09NIR,MOD09SUB,ETMGeo);
+                [~,~,ETMImage(:,:,5)] = swath2etm(MOD09SUB.DIF09SWIR,MOD09SUB,ETMGeo);
+                [~,~,ETMImage(:,:,6)] = swath2etm(MOD09SUB.DIF09SWIR2,MOD09SUB,ETMGeo);
+                [~,~,ETMImage(:,:,7)] = swath2etm(MOD09SUB.DIF09NDVI,MOD09SUB,ETMGeo);
+                [ETMImage(:,:,9),ETMImage(:,:,8),~] = swath2etm(MOD09SUB.QACloud,MOD09SUB,ETMGeo);
+            else
+                [~,~,ETMImage(:,:,1)] = swath2etm(MOD09SUB.DIF09NIR,MOD09SUB,ETMGeo);
+                [~,~,ETMImage(:,:,2)] = swath2etm(MOD09SUB.DIF09SWIR,MOD09SUB,ETMGeo);
+                [~,~,ETMImage(:,:,3)] = swath2etm(MOD09SUB.DIF09NDVI,MOD09SUB,ETMGeo);
+                [ETMImage(:,:,5),ETMImage(:,:,4),~] = swath2etm(MOD09SUB.QACloud,MOD09SUB,ETMGeo);
             end
 
+            % clean up
+            if main.set.res == 500
+
+            else
+                
+            end
+            
+            
             % save as ENVI imsge
             
             
