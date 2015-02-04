@@ -128,8 +128,8 @@ function [ETMnob,ETMmax,ETMavg] = swath2etm(Swath, MOD09SUB, ETMGeo)
     
     % set 0 to -9999
     ETMnob(ETMnob==0) = -9999;
-    ETMavg(ETMavg==0) = -9999;
-    ETMmax(ETMmax==0) = -9999;
+    ETMavg(ETMnob==0) = -9999;
+    ETMmax(ETMnob==0) = -9999;
 
     % done
     
