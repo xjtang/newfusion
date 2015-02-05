@@ -101,15 +101,23 @@ function fusion_WriteETM(main)
 
             % clean up
             if main.set.res == 500
-
+                Temp = ETMImage(:,:,8);
+                Temp(Temp>0) = 1;
+                ETMImage(:,:,8) = Temp;
+                Temp = ETMImage(:,:,7);
+                Temp(Temp~=9999) = Temp(Temp~=9999)*1000;
+                ETMImage(:,:,7) = Temp;
             else
-                
+                Temp = ETMImage(:,:,4);
+                Temp(Temp>0) = 1;
+                ETMImage(:,:,4) = Temp;
+                Temp = ETMImage(:,:,3);
+                Temp(Temp~=9999) = Temp(Temp~=9999)*1000;
+                ETMImage(:,:,3) = Temp;
             end
-            
-            
+            ETMImage = int16(ETMImage);
+   
             % save as ENVI imsge
-            
-            
             
             
             % save([main.output.modsubf,plat,'09SUBF.',num2str(main.set.res),'m.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
