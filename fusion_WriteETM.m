@@ -81,9 +81,9 @@ function fusion_WriteETM(main)
 
             % initialize ETM image
             if main.set.res == 500
-                ETMImage = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp)],9);
+                ETMImage = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp),9]);
             else
-                ETMImage = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp)],5);
+                ETMImage = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp),5]);
             end
             
             % generate ETM scale dif map
