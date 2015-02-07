@@ -6,7 +6,7 @@
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 2/5/2015
+% Last Update: 2/7/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -48,11 +48,8 @@
 %   2.Added missing ;.
 %   3.Removed unused folder.
 %
-% Updates of Version 6.2.2 - 1/19/2015 (by Xiaojing Tang)
+% Updates of Version 6.2.2 - 2/7/2015 (by Xiaojing Tang)
 %   1.Added new output folders to hold change and difference maps.
-%
-% Updates of Version 6.2.3 - 2/5/2015 (by Xiaojing Tang)
-%   1.Added new output folder for ETM scale result
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -141,11 +138,6 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
         main.output.change = [main.path 'FUSCHG/'];
         if exist(main.output.change,'dir') == 0 
             mkdir([main.path 'FUSCHG']);
-        end
-        % difference image in ETM scale
-        main.output.etmdif = [main.path 'FUSDIFETM/'];
-        if exist(main.output.etmdif,'dir') == 0 
-            mkdir([main.path 'FUSDIFETM']);
         end
         % a dump folder for temporaryly storing dumped data
         main.output.dump = [main.path 'DUMP/'];
