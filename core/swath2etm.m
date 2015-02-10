@@ -6,7 +6,7 @@
 % By Qinchuan Xin
 % Updated By: Xiaojing Tang
 % Created On: Unknown
-% Last Update: 2/7/2015
+% Last Update: 2/9/2015
 %
 % Input Arguments:
 %   Swath (Matrix, Var) - MODIS swath data (change map usually).
@@ -38,7 +38,7 @@
 %   2.Operational with this version.
 %   3.Bugs fixed.
 %
-% Updates of Version 6.3.1 - 2/7/2015 (by Xiaojing Tang)
+% Updates of Version 6.3.1 - 2/9/2015 (by Xiaojing Tang)
 %   1.Changed output data structure.
 %   2.Bugs fixed.
 %
@@ -98,7 +98,7 @@ function [ETMnob,ETMmax,ETMavg] = swath2etm(Swath, MOD09SUB, ETMGeo)
 
                     % create a mask for pixels that is already updated by
                     %   adjacent MODIS swatch observation
-                    MaskLarger = abs(ETMMask.*Swath(Index_Row,Index_Col))>abs(ETMmax(PixelTop:PixelBot,PixelLef:PixelRig));
+                    MaskLarger = (ETMMask.*Swath(Index_Row,Index_Col))>ETMmax(PixelTop:PixelBot,PixelLef:PixelRig);
 
                     % generate number of observation map
                     Temp = ETMnob(PixelTop:PixelBot,PixelLef:PixelRig);
