@@ -6,7 +6,7 @@
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 2/7/2015
+% Last Update: 2/10/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -48,8 +48,10 @@
 %   2.Added missing ;.
 %   3.Removed unused folder.
 %
-% Updates of Version 6.2.2 - 2/7/2015 (by Xiaojing Tang)
+% Updates of Version 6.2.2 - 2/10/2015 (by Xiaojing Tang)
 %   1.Added new output folders to hold change and difference maps.
+%   2.Adjusted output folders.
+%   3.Added a extra parameter for bias correction.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -188,6 +190,8 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
         main.set.res = iRes;
         % discard ratio of Landsat image (% image discarded on the edge)
         main.set.dis = iDis;
+        % correct for bias in difference map
+        main.set.bias = 1;
         
     % image properties
         % grab the first ETM file
