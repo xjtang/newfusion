@@ -1,6 +1,17 @@
 Versions and Updates
 ==============
 
+Version 6.3 - 2/10/2015 - xjtang
+--------------
+- Bugs fixed.
+- Improved performance.
+- Added new core function to reproject Swath to ETM.
+- Improved input and output data structure.
+- Added new fusion function to generate dif and change image.
+- Added new fusion function to reproject dif to ETM scale.
+- Added external function to write output to ETM image.
+- Modified bash function so each step can be run separately.
+
 Version 6.2.2 - 1/5/2015 - xjtang
 --------------
 - Bugs fixed.  
