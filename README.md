@@ -1,7 +1,7 @@
 Fusion 
 ======
 
-Ver. 6.2.2 (Beta)  
+Ver. 6.3 (Beta)  
 
 Near Real-Time Monitoring of Land Cover Disturbance by Fusion of MODIS and Landsat Data
 
@@ -23,8 +23,11 @@ fusion_Inputs - Intilize the main input structure for other processes
 fusion_BRDF - Generate BRDF correction coefficients  
 fusion_SwathSub - Create subset of the MODIS swath based on geolocation of Landsat images  
 fusion_Fusion - The main fusion process  
-fusion_FusionBRDF - The main fusion process with BRDF correction  
+fusion_BRDFusion - The main fusion process with BRDF correction  
+fusion_Change - Calculate difference image and change image  
 fusion_WriteHDF - Write the final outputs to new HDF files  
+fusion_WriteETM - Reproject and write difference image to ETM image  
+
 
 **Supplimental Scripts:**  
 
@@ -66,8 +69,8 @@ Instruction
 
 **To run fusion in shell**  
 
-- Get in Bash
-- Use fusion_Batch.sh to submit jobs to run fusion
+- Get in Bash  
+- Use fusion_Batch.sh to submit jobs to run specific fusion process  
 
 See the comments in each script for detailed instructions including description of input and output arguments. A complete fusion process follows these steps: Inputs -> BRDF -> SwathSub -> Fusion/FusionBRDF -> WriteHDF
 
