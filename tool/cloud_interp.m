@@ -1,10 +1,10 @@
 % cloud_interp.m
-% Version 1.2
+% Version 1.2.1
 %
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 11/24/2014
-% Last Update: 12/12/2014
+% Last Update: 2/11/2015
 %
 % Input Arguments: 
 %   path - path to MOD09SUB m-files.
@@ -29,6 +29,9 @@
 %   1.Added support for aqua.
 %   2.Added a new function of discarding cloudy swath based on cloud percent threshold.
 %
+% Updates of Version 1.2.1 - 2/11/2015
+%   1.Bug fixed.
+%
 % Created on Github on 11/24/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -40,7 +43,7 @@ function cloud_interp(path,res,plat,outFile,disThres)
   end
 
   % get list of all valid files in the input directory
-  fileList = dir([path,plat,'09SUB*',num2str(res),'*.mat']);
+  fileList = dir([path,plat,'09SUB*',num2str(res),'m*.mat']);
 
   % check if list is empty
   if numel(fileList)<1
