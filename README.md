@@ -72,7 +72,7 @@ Instruction
 - Get in Bash  
 - Use fusion_Batch.sh to submit jobs to run specific fusion process  
 
-See the comments in each script for detailed instructions including description of input and output arguments. A complete fusion process follows these steps: Inputs -> BRDF -> SwathSub -> Fusion/FusionBRDF -> WriteHDF
+See the comments in each script for detailed instructions including description of input and output arguments. A complete fusion process follows these steps: Inputs -> BRDF -> SwathSub -> Fusion/FusionBRDF -> Change -> WriteHDF -> WriteETM  
 
 Requirements
 ------
