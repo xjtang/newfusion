@@ -6,7 +6,7 @@
 #$ -S /bin/bash
 
 # Run for 24 hours
-#$ -l h_rt=24:00:00
+#$ -l h_rt=48:00:00
 
 # Forward my current environment
 #$ -V
@@ -37,7 +37,7 @@ library('RCurl')
 script <- getURL('https://raw.githubusercontent.com/xjtang/rTools/master/web_tools.R',ssl.verifypeer=F)
 eval(parse(text=script),envir=.GlobalEnv)
 sourceURL('https://raw.githubusercontent.com/xjtang/fusion/master/tool/swath_download.R')
-swathDownload('$1','$2')
+swathDownload('$1','$2',$3,$4)
 EEE
 
 echo "=========================================================="
