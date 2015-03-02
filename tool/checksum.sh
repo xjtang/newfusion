@@ -37,7 +37,6 @@ file=$1
 while read line; do
   # extract information
   info=($line)
-  cks=${info[0]}
   archive=${info[2]}
   # test to see if archive exists
   if [ ! -f $archive ]; then
@@ -46,7 +45,7 @@ while read line; do
   fi
   # if archive exists, then validate checksum
   test=$(cksum $archive)
-  if [ "$test" != "$cks" ]; then
+  if [ "$test" != "$line" ]; then
     echo "!!!!! WARNING $archive may be corrupted !!!!!"
   else
     echo "$archive is ok"
