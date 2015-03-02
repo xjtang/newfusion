@@ -46,7 +46,7 @@ while read line; do
   fi
   # if archive exists, then validate checksum
   test=$(cksum $archive)
-  if [ "$test" != "$(cat $cks)" ]; then
+  if [ "$test" != "$cks" ]; then
     echo "!!!!! WARNING $archive may be corrupted !!!!!"
   else
     echo "$archive is ok"
