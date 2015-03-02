@@ -38,7 +38,7 @@ while read line; do
   # extract information
   info=($line)
   cks=${info[0]}
-  archive=${info[3]}
+  archive=${info[2]}
   # test to see if archive exists
   if [ ! -f $archive ]; then
     echo "Can not find $archive"
