@@ -27,6 +27,9 @@
 library(R.matlab)
 library(RCurl)
 library(png)
+library(sp)
+library(raster)
+library(rgdal)
 script <- getURL('https://raw.githubusercontent.com/xjtang/rTools/master/source_all.R',ssl.verifypeer=F)
 eval(parse(text=script),envir=.GlobalEnv)
 
@@ -66,8 +69,18 @@ dual_plot <- function(fPath,cPath,output,pixel){
   # read fusion result
     # loop through fusion images
     for(i in 1:length(fList)){
+      # forge image file name 
+      img <- trimRight(fList[i],4)
+      # remove .aux.xml file
+      if(file.exists(paste(img,'.aux.xml',sep=''))){
+        file.remove(paste(img,'.aux.xml',sep=''))
+      }
       # read image
-      
+      mask <- raster::as.matrix(raster(imgFile,band=8))
+      red <- raster::as.matrix(raster(imgFile,band=3))
+      nir <- raster::as.matrix(raster(imgFile,band=4))
+      swir <- raster::as.matrix(raster(imgFile,band=5))
+      swir2 <- raster::as.matrix(raster(imgFile,band=6))
       
       # read pixels
       for(j in nrow(pixel)){
@@ -80,9 +93,13 @@ dual_plot <- function(fPath,cPath,output,pixel){
   # read ccdc result
     # loop through ccdc images
     for(i in 1:length(cList)){
+      # forge image file name 
+      img <- trimRight(cList[i],4)
+      # remove .aux.xml file
+      if(file.exists(paste(img,'.aux.xml',sep=''))){
+        file.remove(paste(img,'.aux.xml',sep=''))
+      }
       # read image
-      
-      
       
   
       # read pixels
