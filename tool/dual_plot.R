@@ -63,8 +63,8 @@ dual_plot <- function(fPath,cPath,output,pixel){
   }
   
   # initialize result
-  fusion <- array(-9999,c(length(fList),7,nrow(pixel)))
-  ccdc <- array(-9999,c(length(cList),7,nrow(pixel)))
+  fusion <- array(-9999,c(length(fList),6,nrow(pixel)))
+  ccdc <- array(-9999,c(length(cList),6,nrow(pixel)))
   
   # read fusion result
     # loop through fusion images
@@ -76,18 +76,20 @@ dual_plot <- function(fPath,cPath,output,pixel){
         file.remove(paste(img,'.aux.xml',sep=''))
       }
       # read image
-      mask <- raster::as.matrix(raster(imgFile,band=8))
-      red <- raster::as.matrix(raster(imgFile,band=3))
-      nir <- raster::as.matrix(raster(imgFile,band=4))
-      swir <- raster::as.matrix(raster(imgFile,band=5))
-      swir2 <- raster::as.matrix(raster(imgFile,band=6))
-      
+      mask <- raster::as.matrix(raster(img,band=8))
+      red <- raster::as.matrix(raster(img,band=3))
+      nir <- raster::as.matrix(raster(img,band=4))
+      swir <- raster::as.matrix(raster(img,band=5))
+      swir2 <- raster::as.matrix(raster(img,band=6))
       # read pixels
       for(j in nrow(pixel)){
-        
-        
+        fusion[i,1,j] <- as.integer(strRight(trimRight(fList[i],15),7))
+        fusion[i,2,j] <- red[pixel[j,1],pixel[j,2]]
+        fusion[i,3,j] <- nir[pixel[j,1],pixel[j,2]]
+        fusion[i,4,j] <- swir[pixel[j,1],pixel[j,2]]
+        fusion[i,5,j] <- swir2[pixel[j,1],pixel[j,2]]
+        fusion[i,6,j] <- mask[pixel[j,1],pixel[j,2]]
       }
-      
     }
   
   # read ccdc result
@@ -100,27 +102,49 @@ dual_plot <- function(fPath,cPath,output,pixel){
         file.remove(paste(img,'.aux.xml',sep=''))
       }
       # read image
-      
-  
+      mask <- raster::as.matrix(raster(img,band=8))
+      red <- raster::as.matrix(raster(img,band=3))
+      nir <- raster::as.matrix(raster(img,band=4))
+      swir <- raster::as.matrix(raster(img,band=5))
+      swir2 <- raster::as.matrix(raster(img,band=6))
       # read pixels
       for(j in nrow(pixel)){
-        
+        ccdc[i,1,j] <- as.integer(strRight(trimRight(fList[i],15),7))
+        ccdc[i,2,j] <- red[pixel[j,1],pixel[j,2]]
+        ccdc[i,3,j] <- nir[pixel[j,1],pixel[j,2]]
+        ccdc[i,4,j] <- swir[pixel[j,1],pixel[j,2]]
+        ccdc[i,5,j] <- swir2[pixel[j,1],pixel[j,2]]
+        ccdc[i,6,j] <- mask[pixel[j,1],pixel[j,2]]
       }
-  
-  
     }
   
-  
-  
+  # clean up
+  rm(mask)
+  rm(red)
+  rm(nir)
+  rm(swir)
+  rm(swir2)
+  gc()
   
   # make plot
   
-  
-  
   # save result
-  
-  
-  
+    # check if output folder exist
+    if(!file.exists(output)){
+      cat('Creating output directory.\n')
+      dir.create(output)
+    }
+    # loop through individual pixels
+    for(k in nrow(pixel)){
+      # save fusion time series
+      outFile <- paste(output,'FUS_',pixel[k,1],'_'pixel[k,2],'.csv',sep='')
+      temp <- fusion[,,k]
+      write.table(temp,outFile,append=F,sep=',',row.names=F,col.names=F)
+      #save ccd tile series
+      outFile <- paste(output,'CCDC_',pixel[k,1],'_'pixel[k,2],'.csv',sep='')
+      temp <- ccdc[,,k]
+      write.table(temp,outFile,append=F,sep=',',row.names=F,col.names=F)
+    }
   
   # done
   return(0)
