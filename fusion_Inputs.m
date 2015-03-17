@@ -6,7 +6,7 @@
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 2/10/2015
+% Last Update: 3/17/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -52,6 +52,9 @@
 %   1.Added new output folders to hold change and difference maps.
 %   2.Adjusted output folders.
 %   3.Added a extra parameter for bias correction.
+%
+% Updates of Version 6.2.3 - 3/17/2015 (by Xiaojing Tang)
+%   1.Fixed a bug when MOD09GA is missing.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -227,10 +230,12 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
         main.date.swath = getDateList(main.input.swath);
         % dates of Landsat synthetic images used for this study
         main.date.etm = getDateList(main.input.etm);
-        % dates of the MODIS gridded images used for this study
-        main.date.grid = getDateList(main.input.grid);
-        % dates of the BRDF data used for this study
-        main.date.brdf = getDateList(main.input.brdf);
+        if main.set.brdf == 1
+            % dates of the MODIS gridded images used for this study
+            main.date.grid = getDateList(main.input.grid);
+            % dates of the BRDF data used for this study
+            main.date.brdf = getDateList(main.input.brdf);
+        end
     
     % divide into parts
         if min(iSub>0)
