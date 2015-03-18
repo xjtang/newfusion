@@ -36,7 +36,7 @@ R --slave --vanilla --quiet --no-save  <<EEE
 library('RCurl')
 script <- getURL('https://raw.githubusercontent.com/xjtang/fusion/master/tool/gen_preview.R',ssl.verifypeer=F)
 eval(parse(text=script),envir=.GlobalEnv)
-batch_gen_preview('$1','$2',pattern='$3',subType='$4')
+batch_gen_preview('$1','$2',subType='$3',plat='$4',res=$5)
 EEE
 
 echo "=========================================================="
