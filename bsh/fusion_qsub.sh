@@ -11,9 +11,6 @@
 # Forward my current environment
 #$ -V
 
-# Give this job a name
-#$ -N fusion
-
 # Join standard output and error to a single file
 #$ -j y
 
