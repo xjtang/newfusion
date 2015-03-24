@@ -1,6 +1,13 @@
 Versions and Updates
 ==============
 
+Version 6.3.1 - 3/24/2015 - xjtang  
+--------------
+- Bugs fixed.  
+- Added a new tool to check cheksums of downloaded files.  
+- modified bash functon to include job index in job name.  
+- MOD09GA and MCD43A1 are no longer required.  
+
 Version 6.3 - 2/10/2015 - xjtang
 --------------
 - Bugs fixed.
