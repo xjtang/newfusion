@@ -102,7 +102,7 @@ function fusion_WriteETM(main)
                     [~,ETMImage(:,:,5),~] = swath2etm(MOD09SUB.DIF09SWIR,MOD09SUB,ETMGeo);
                     [~,ETMImage(:,:,6),~] = swath2etm(MOD09SUB.DIF09SWIR2,MOD09SUB,ETMGeo);
                     [~,ETMImage(:,:,7),~] = swath2etm(MOD09SUB.DIF09NDVI,MOD09SUB,ETMGeo);
-                    [~,~,ETMImage(:,:,8)] = swath2etm(MOD09SUB.QACloud,MOD09SUB,ETMGeo);
+                    [~,ETMImage(:,:,8),~] = swath2etm(MOD09SUB.QACloud,MOD09SUB,ETMGeo);
                 else
                     [~,~,ETMImage(:,:,1)] = swath2etm(MOD09SUB.DIF09BLU,MOD09SUB,ETMGeo);
                     [~,~,ETMImage(:,:,2)] = swath2etm(MOD09SUB.DIF09GRE,MOD09SUB,ETMGeo);
@@ -111,19 +111,19 @@ function fusion_WriteETM(main)
                     [~,~,ETMImage(:,:,5)] = swath2etm(MOD09SUB.DIF09SWIR,MOD09SUB,ETMGeo);
                     [~,~,ETMImage(:,:,6)] = swath2etm(MOD09SUB.DIF09SWIR2,MOD09SUB,ETMGeo);
                     [~,~,ETMImage(:,:,7)] = swath2etm(MOD09SUB.DIF09NDVI,MOD09SUB,ETMGeo);
-                    [~,~,ETMImage(:,:,8)] = swath2etm(MOD09SUB.QACloud,MOD09SUB,ETMGeo);
+                    [~,ETMImage(:,:,8),~] = swath2etm(MOD09SUB.QACloud,MOD09SUB,ETMGeo);
                 end
             else
                 if main.set.dif == 0
                     [~,ETMImage(:,:,1),~] = swath2etm(MOD09SUB.DIF09RED,MOD09SUB,ETMGeo);
                     [ETMImage(:,:,5),ETMImage(:,:,2),~] = swath2etm(MOD09SUB.DIF09NIR,MOD09SUB,ETMGeo);
                     [~,ETMImage(:,:,3),~] = swath2etm(MOD09SUB.DIF09NDVI,MOD09SUB,ETMGeo);
-                    [~,~,ETMImage(:,:,4)] = swath2etm(MOD09SUB.QACloud,MOD09SUB,ETMGeo);
+                    [~,ETMImage(:,:,4),~] = swath2etm(MOD09SUB.QACloud,MOD09SUB,ETMGeo);
                 else
                     [~,~,ETMImage(:,:,1)] = swath2etm(MOD09SUB.DIF09RED,MOD09SUB,ETMGeo);
                     [ETMImage(:,:,5),~,ETMImage(:,:,2)] = swath2etm(MOD09SUB.DIF09NIR,MOD09SUB,ETMGeo);
                     [~,~,ETMImage(:,:,3)] = swath2etm(MOD09SUB.DIF09NDVI,MOD09SUB,ETMGeo);
-                    [~,~,ETMImage(:,:,4)] = swath2etm(MOD09SUB.QACloud,MOD09SUB,ETMGeo);
+                    [~,ETMImage(:,:,4),~] = swath2etm(MOD09SUB.QACloud,MOD09SUB,ETMGeo);
                 end
             end
 
