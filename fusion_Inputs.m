@@ -195,6 +195,8 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
         main.set.dis = iDis;
         % correct for bias in difference map
         main.set.bias = 1;
+        % max or mean in calculating difference map
+        main.set.dif = 'mean';
         
     % image properties
         % grab the first ETM file
