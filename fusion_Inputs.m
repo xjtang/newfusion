@@ -6,7 +6,7 @@
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 3/17/2015
+% Last Update: 3/27/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -53,8 +53,9 @@
 %   2.Adjusted output folders.
 %   3.Added a extra parameter for bias correction.
 %
-% Updates of Version 6.2.3 - 3/17/2015 (by Xiaojing Tang)
+% Updates of Version 6.2.3 - 3/26/2015 (by Xiaojing Tang)
 %   1.Fixed a bug when MOD09GA is missing.
+%   2.Added a new option.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
