@@ -6,7 +6,7 @@
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 3/27/2015
+% Last Update: 3/31/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -53,9 +53,10 @@
 %   2.Adjusted output folders.
 %   3.Added a extra parameter for bias correction.
 %
-% Updates of Version 6.2.3 - 3/26/2015 (by Xiaojing Tang)
+% Updates of Version 6.2.3 - 3/31/2015 (by Xiaojing Tang)
 %   1.Fixed a bug when MOD09GA is missing.
 %   2.Added a new option.
+%   3.Renamed the output folder for dif image.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -126,9 +127,9 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
             mkdir([main.path 'MOD09SUBF']);
         end
         % MOD09SUB with change and difference image
-        main.output.modsubc = [main.path 'MOD09SUBC/'];
-        if exist(main.output.modsubc,'dir') == 0 
-            mkdir([main.path 'MOD09SUBC']);
+        main.output.modsubd = [main.path 'MOD09SUBD/'];
+        if exist(main.output.modsubd,'dir') == 0 
+            mkdir([main.path 'MOD09SUBD']);
         end
         % fused synthetic MODIS image from ETM image
         main.output.fusion = [main.path 'FUS09/'];
