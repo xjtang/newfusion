@@ -84,7 +84,7 @@ function fusion_WriteETM(main)
             TimeStr = char(TimeStr(4));
 
             % load MOD09SUB
-            MOD09SUB = load([main.output.modsubc,File.MOD09SUB(I_TIME).name]);
+            MOD09SUB = load([main.output.modsubd,File.MOD09SUB(I_TIME).name]);
 
             % initialize ETM image
             if main.set.res == 500
