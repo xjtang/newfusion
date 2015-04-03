@@ -14,6 +14,8 @@ The fusion tool is originally developed by Qinchuan Xin at Boston University (ve
 
 The current fusion tool supports MODIS Terra/Aqua in 500/250m resolution with the option of BRDF correction. A brand new fusion tool in open source language is under development. I expect it to be released soon. (follow xjtang/openfusion). The new open source fusion will be based on fusion ver. 6.1 and higher.
 
+**Fusion with BRDF correction is currently offline, will be fixed soon.**    
+
 Content
 ------
 
