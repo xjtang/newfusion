@@ -68,7 +68,7 @@ function MOD09SUB = swathInterpQA(MOD09SUB)
         % Cloud Flag: Internal 10, Cloud 0-2, Cirrus 8,9
         Cloud250 = mod(bitshift(MOD09SUB.MODISQA250(I:I+SwathScan250-1,:), -10),2) | mod(MOD09SUB.MODISQA250(I:I+SwathScan250-1,:),8) | ...
             mod(bitshift(MOD09SUB.MODISQA250(I:I+SwathScan250-1,:), -8),4) | mod(bitshift(MOD09SUB.MODISQA250(I:I+SwathScan250-1,:), -13),2);
-        CloudB250 = 1-imerode(~Cloud250,strel('square',7*SwathScan250/10-1));
+        % CloudB250 = 1-imerode(~Cloud250,strel('square',7*SwathScan250/10-1));
         % Cloud = (bitand(uint16(MOD09SUB.MODISQA(I:I+SwathScan-1,:)),uint16(1799))~=0);    
         % CloudB = 1-imerode(~Cloud,strel('square',7));
         % Cloud = mod(bitshift(MOD09SUB.MODISQA(I:I+SwathScan-1,:), -10),2) | mod(MOD09SUB.MODISQA(I:I+SwathScan-1,:),8) | ...
@@ -79,14 +79,14 @@ function MOD09SUB = swathInterpQA(MOD09SUB)
 
         % Aerosol Flag: get_MOD09SUB_250m.m
         LowAsl250 = floor(mod(bitshift(MOD09SUB.MODISQA250(I:I+SwathScan250-1,:),-6)+2,4)/3);
-        LowAslB250 = imerode(LowAsl250,strel('square',7*SwathScan250/10-1));
+        % LowAslB250 = imerode(LowAsl250,strel('square',7*SwathScan250/10-1));
 
         % assign value
         MOD09SUB.QAWater250(I:I+SwathScan250-1,:) = Water250;
         MOD09SUB.QACloud250(I:I+SwathScan250-1,:) = Cloud250;
-        MOD09SUB.QACloudB250(I:I+SwathScan250-1,:) = CloudB250;
+        % MOD09SUB.QACloudB250(I:I+SwathScan250-1,:) = CloudB250;
         MOD09SUB.QALowAsl250(I:I+SwathScan250-1,:) = LowAsl250;
-        MOD09SUB.QALowAslB250(I:I+SwathScan250-1,:) = LowAslB250;
+        % MOD09SUB.QALowAslB250(I:I+SwathScan250-1,:) = LowAslB250;
         
     end
     
@@ -99,19 +99,19 @@ function MOD09SUB = swathInterpQA(MOD09SUB)
         % Cloud Flag: Internal 10, Cloud 0-2, Cirrus 8,9
         Cloud500 = mod(bitshift(MOD09SUB.MODISQA500(I:I+SwathScan500-1,:), -10),2) | mod(MOD09SUB.MODISQA500(I:I+SwathScan500-1,:),8) | ...
             mod(bitshift(MOD09SUB.MODISQA500(I:I+SwathScan500-1,:), -8),4) | mod(bitshift(MOD09SUB.MODISQA500(I:I+SwathScan500-1,:), -13),2);
-        CloudB500 = 1-imerode(~Cloud500,strel('square',7*SwathScan500/10-1));
+        % CloudB500 = 1-imerode(~Cloud500,strel('square',7*SwathScan500/10-1));
 
         % Aerosol Flag: get_MOD09SUB_250m.m
         LowAsl500 = floor(mod(bitshift(MOD09SUB.MODISQA500(I:I+SwathScan500-1,:),-6)+2,4)/3);
-        LowAslB500 = imerode(LowAsl500,strel('square',7*SwathScan500/10-1));
+        % LowAslB500 = imerode(LowAsl500,strel('square',7*SwathScan500/10-1));
         % LowAerosol(LowAerosol<1)=NaN;
 
         % assign value
         MOD09SUB.QAWater500(I:I+SwathScan500-1,:) = Water500;
         MOD09SUB.QACloud500(I:I+SwathScan500-1,:) = Cloud500;
-        MOD09SUB.QACloudB500(I:I+SwathScan500-1,:) = CloudB500;
+        % MOD09SUB.QACloudB500(I:I+SwathScan500-1,:) = CloudB500;
         MOD09SUB.QALowAsl500(I:I+SwathScan500-1,:) = LowAsl500;
-        MOD09SUB.QALowAslB500(I:I+SwathScan500-1,:) = LowAslB500;
+        % MOD09SUB.QALowAslB500(I:I+SwathScan500-1,:) = LowAslB500;
         
     end
 
