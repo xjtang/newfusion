@@ -6,7 +6,7 @@
 % By Qinchuan Xin
 % Updated By: Xiaojing Tang
 % Created On: Unknown
-% Last Update: 3/26/2015
+% Last Update: 4/3/2015
 %
 % Input Arguments:
 %   Swath (Matrix, Var) - MODIS swath data (change map usually).
@@ -41,13 +41,37 @@
 % Updates of Version 6.3.1 - 3/26/2015 (by Xiaojing Tang)
 %   1.Changed output data structure.
 %   2.Bugs fixed.
-%   3.A bug caused by negativ evalues in calculating max image is fixed.
+%   3.A bug caused by negative evalues in calculating max image is fixed.
+%
+% Updates of Version 6.4 - 4/3/2015 (by Xiaojing Tang)
+%   1.Combined 250 and 500 fusion.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-function [ETMnob,ETMmax,ETMavg] = swath2etm(Swath, MOD09SUB, ETMGeo)
+function [ETMnob,ETMmax,ETMavg] = swath2etm(Swath, MOD09SUB, ETMGeo,res)
 
+    % grab inputs
+    if res == 250
+        SizeAlongScan = MOD09SUB.SizeAlongScan250;
+        SizeAlongTrack = MOD09SUB.SizeAlongTrack250;
+        ETMLine = MOD09SUB.ETMLine250;
+        ETMSamp = MOD09SUB.ETMSamp250;
+        Lat = MOD09SUB.Lat250;
+        Lon = MOD09SUB.Lon250;
+        MODBear = MOD09SUB.Bearing250;
+    elseif res == 500
+        SizeAlongScan = MOD09SUB.SizeAlongScan500;
+        SizeAlongTrack = MOD09SUB.SizeAlongTrack500;
+        ETMLine = MOD09SUB.ETMLine500;
+        ETMSamp = MOD09SUB.ETMSamp500;
+        Lat = MOD09SUB.Lat500;
+        Lon = MOD09SUB.Lon500;
+        MODBear = MOD09SUB.Bearing500;
+    else
+        error('Invalid resolution');
+    end
+    
     % initialize
     ETMnob = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp)]);
     ETMmax = 0*ones([numel(ETMGeo.Line),numel(ETMGeo.Samp)]);
@@ -55,10 +79,10 @@ function [ETMnob,ETMmax,ETMavg] = swath2etm(Swath, MOD09SUB, ETMGeo)
 
     % for each MODIS swath observation, determine the maximum possible 
     %   range of corresponding ETM pixel
-    Top = max(floor(MOD09SUB.ETMLine-MOD09SUB.SizeAlongScan/30),1);
-    Bot = min( ceil(MOD09SUB.ETMLine+MOD09SUB.SizeAlongScan/30),max(ETMGeo.Line));
-    Lef = max(floor(MOD09SUB.ETMSamp-MOD09SUB.SizeAlongScan/30),1);
-    Rig = min( ceil(MOD09SUB.ETMSamp+MOD09SUB.SizeAlongScan/30),max(ETMGeo.Samp));
+    Top = max(floor(ETMLine-SizeAlongScan/30),1);
+    Bot = min( ceil(ETMLine+SizeAlongScan/30),max(ETMGeo.Line));
+    Lef = max(floor(ETMSamp-SizeAlongScan/30),1);
+    Rig = min( ceil(ETMSamp+SizeAlongScan/30),max(ETMGeo.Samp));
 
     % create a mask of valid MODIS swath observation that can be generated
     MODMask = (Lef<Rig & Top<Bot);
@@ -77,13 +101,13 @@ function [ETMnob,ETMmax,ETMavg] = swath2etm(Swath, MOD09SUB, ETMGeo)
                 PixelRig = Rig(Index_Row,Index_Col);      
 
                 % distance and bearing for each ETM pixel to MODIS center.
-                [Distance, Bearing] = pos2dist(MOD09SUB.Lat(Index_Row,Index_Col),MOD09SUB.Lon(Index_Row,Index_Col),...
-                    ETMGeo.Lat(PixelTop:PixelBot,PixelLef:PixelRig),ETMGeo.Lon(PixelTop:PixelBot,PixelLef:PixelRig));
-                Bearing = MOD09SUB.Bearing(Index_Row,Index_Col)-Bearing;
+                [Distance, Bearing] = pos2dist(Lat(Index_Row,Index_Col),Lon(Index_Row,Index_Col),...
+                    Lat(PixelTop:PixelBot,PixelLef:PixelRig),Lon(PixelTop:PixelBot,PixelLef:PixelRig));
+                Bearing = MODBear(Index_Row,Index_Col)-Bearing;
 
                 % A and B for a oval shape
-                A = MOD09SUB.SizeAlongScan(Index_Row,Index_Col);
-                B = MOD09SUB.SizeAlongTrack(Index_Row,Index_Col)/2;
+                A = SizeAlongScan(Index_Row,Index_Col);
+                B = SizeAlongTrack(Index_Row,Index_Col)/2;
 
                 % mask areas out of the shape of MODIS footprint
                 ETMMask = (A^2*B^2 > (Distance.^2.*(A^2*sind(Bearing).^2+B^2*cosd(Bearing).^2)));

@@ -1,18 +1,17 @@
 % fusion_Inputs.m
-% Version 6.2.3
+% Version 6.3
 % Step 0
 % Main Inputs and Settings
 %
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 3/31/2015
+% Last Update: 4/3/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
 %   iPlat (String) - platform, MOD for Terra, MYD for Aqua.
 %   iBRDF (Integer) - 0: BRDF off; 1: BRDF on.
-%   iRes (Integer) - resolusion 500/250.
 %   iDis (Double) - Percenatble of data discarded at the edge of Landsat
 %       image (0.1 as 10%).
 %   iSub (Vector, Interger) - process a subset of the data.
@@ -58,10 +57,13 @@
 %   2.Added a new option.
 %   3.Renamed the output folder for dif image.
 %
+% Update of Version 6.3 - 4/3/2015 (by Xiaojing Tang)
+%   1.Combined 250m and 500m fusion.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
-function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
+function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
 
     % check input argument
     if ~exist('iSub', 'var')
@@ -69,9 +71,6 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
     end
     if ~exist('iDis', 'var')
         iDis = 0.1;
-    end
-    if ~exist('iRes', 'var')
-        iRes = 500;
     end
     if ~exist('iBRDF', 'var')
         iBRDF = 0;
@@ -191,10 +190,8 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iRes,iDis,iSub)
         main.set.plat = iPlat;
         % apply BRDF correction or not
         main.set.brdf = iBRDF;
-        % resolution (500 or 250)
-        main.set.res = iRes;
         % discard ratio of Landsat image (% image discarded on the edge)
-        main.set.dis = iDis;
+        main.set.dis = 0;
         % correct for bias in difference map
         main.set.bias = 1;
         % max (0) or mean (1) in calculating difference map
