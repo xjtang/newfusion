@@ -36,6 +36,7 @@
 %
 % Updates of Version 6.2 - 4/3/2015 (by Xiaojing Tang)
 %   1.Combined 250 and 500 fusion.
+%   2.Removed a unused feature that could cause license problem.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
