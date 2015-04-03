@@ -195,9 +195,9 @@ function fusion_SwathSub(main)
                     MOD09SUB.Lat250(:,2:end),MOD09SUB.Lon250(:,2:end));
                 Bearing250(:,end) = 2*Bearing250(:,end-1)-Bearing250(:,end-2);
                 MOD09SUB.Bearing250 = Bearing250;
-                Bearing500 = nan(size(MOD09SUB.Lat));
-                [~, Bearing500(:,1:end-1)] = pos2dist(MOD09SUB.Lat250(:,1:end-1),MOD09SUB.Lon250(:,1:end-1),...
-                    MOD09SUB.Lat250(:,2:end),MOD09SUB.Lon250(:,2:end));
+                Bearing500 = nan(size(MOD09SUB.Lat500));
+                [~, Bearing500(:,1:end-1)] = pos2dist(MOD09SUB.Lat500(:,1:end-1),MOD09SUB.Lon500(:,1:end-1),...
+                    MOD09SUB.Lat500(:,2:end),MOD09SUB.Lon500(:,2:end));
                 Bearing500(:,end) = 2*Bearing500(:,end-1)-Bearing500(:,end-2);
                 MOD09SUB.Bearing500 = Bearing500;
                 
