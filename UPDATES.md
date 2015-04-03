@@ -5,6 +5,7 @@ Version 6.4 - 4/3/2015 - xjtang
 --------------
 - Bugs fixed.  
 - Combined 250m and 500m fusion.  
+- Removed a unused feature that could cause license problem.  
 
 Version 6.3.1 - 3/24/2015 - xjtang  
 --------------
