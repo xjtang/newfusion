@@ -133,7 +133,7 @@ function fusion_Fusion(main)
             MOD09SUB.FUS09SWIR2500 = etm2swath(ETMSWIR2,MOD09SUB,ETMGeo,500);
 
             % save
-            save([main.output.modsubf,plat,'09SUBF.','ALL',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
+            save([main.output.modsubf,plat,'09SUBF.','ALL.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
             disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
         end
     end
