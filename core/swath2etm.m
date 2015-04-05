@@ -6,7 +6,7 @@
 % By Qinchuan Xin
 % Updated By: Xiaojing Tang
 % Created On: Unknown
-% Last Update: 4/3/2015
+% Last Update: 4/4/2015
 %
 % Input Arguments:
 %   Swath (Matrix, Var) - MODIS swath data (change map usually).
@@ -43,8 +43,9 @@
 %   2.Bugs fixed.
 %   3.A bug caused by negative evalues in calculating max image is fixed.
 %
-% Updates of Version 6.4 - 4/3/2015 (by Xiaojing Tang)
+% Updates of Version 6.4 - 4/4/2015 (by Xiaojing Tang)
 %   1.Combined 250 and 500 fusion.
+%   2.Bug fixed.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -102,7 +103,7 @@ function [ETMnob,ETMmax,ETMavg] = swath2etm(Swath, MOD09SUB, ETMGeo,res)
 
                 % distance and bearing for each ETM pixel to MODIS center.
                 [Distance, Bearing] = pos2dist(Lat(Index_Row,Index_Col),Lon(Index_Row,Index_Col),...
-                    Lat(PixelTop:PixelBot,PixelLef:PixelRig),Lon(PixelTop:PixelBot,PixelLef:PixelRig));
+                    ETMGeo.Lat(PixelTop:PixelBot,PixelLef:PixelRig),ETMGeo.Lon(PixelTop:PixelBot,PixelLef:PixelRig));
                 Bearing = MODBear(Index_Row,Index_Col)-Bearing;
 
                 % A and B for a oval shape
