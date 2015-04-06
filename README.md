@@ -1,7 +1,7 @@
 Fusion 
 ======
 
-Ver. 6.3.1 (Beta)  
+Ver. 6.4 (Beta)  
 
 Near Real-Time Monitoring of Land Cover Disturbance by Fusion of MODIS and Landsat Data
 
@@ -13,8 +13,6 @@ The fusion tool is a set of functions written in MATLAB for combining remote sen
 The fusion tool is originally developed by Qinchuan Xin at Boston University (version 1-6). I modified the the fusion ver. 6 after I took over the project in May, 2014. The new fusion ver. 6.1 (and higher) in this repo. is designed to fit the new work flow and data structure. See comments in each script for the specific changes that I made to the original fusion tool.
 
 The current fusion tool supports MODIS Terra/Aqua in 500/250m resolution with the option of BRDF correction. A brand new fusion tool in open source language is under development. I expect it to be released soon. (follow xjtang/openfusion). The new open source fusion will be based on fusion ver. 6.1 and higher.
-
-**Fusion with BRDF correction is currently offline, will be fixed soon.**    
 
 Content
 ------
@@ -29,7 +27,7 @@ fusion_BRDFusion - The main fusion process with BRDF correction
 fusion_Change - Calculate difference image and change image  
 fusion_WriteHDF - Write the final outputs to new HDF files  
 fusion_WriteETM - Reproject and write difference image to ETM image  
-
+**Fusion with BRDF correction has not been tested since the last majot update.**   
 
 **Supplimental Scripts:**  
 
