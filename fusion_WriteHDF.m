@@ -99,7 +99,7 @@ function fusion_WriteHDF(main)
             % load MOD09SUB and MOD09SUBBRDF
             MOD09SUB = load([FileName.MOD09SUB,File.MOD09SUB(I_TIME).name]);
             if BRDFlag == 1 
-                MOD09SUBB = load([FileName.MOD09SUBB,File.MOD09SUBB.name]);
+                MOD09SUB = load([FileName.MOD09SUBB,File.MOD09SUBB.name]);
                 system(['cp ' main.input.swath plat '*' DayStr '* ' main.output.fusionbrdf]);
             end
             
@@ -147,7 +147,6 @@ function fusion_WriteHDF(main)
             FUS09SWIR2500 = int16(FUS09SWIR2500);
 
             % write HDF file
-
             [~] = writeHDF([main.output.fusion,HDFFile.name],11,FUS09BLU500);
             [~] = writeHDF([main.output.fusion,HDFFile.name],12,FUS09GRE500);
             [~] = writeHDF([main.output.fusion,HDFFile.name],9,FUS09RED500);
@@ -156,59 +155,6 @@ function fusion_WriteHDF(main)
             [~] = writeHDF([main.output.fusion,HDFFile.name],15,FUS09SWIR2500);
             [~] = writeHDF([main.output.fusion,HDFFile.name],7,FUS09RED250);
             [~] = writeHDF([main.output.fusion,HDFFile.name],8,FUS09NIR250);
-            
-
-            if BRDFlag == 1
-            
-                % Find HDF file to write
-                HDFFileB = dir([main.output.fusionbrdf,plat,'*',DayStr,'*',TimeStr,'*']);
-                if numel(HDFFileB) ~= 1
-                    disp(['Cannot find HDFFileB for Julian Day: ', DayStr]);
-                    continue;
-                end
-                
-                FUSB9RED250 = ones(Dims250)*(-9999);
-                FUSB9RED250(MOD09SUBB.MODLine250,MOD09SUBB.MODSamp250) = MOD09SUBB.FUS09RED250;        
-                FUSB9RED250 = int16(FUSB9RED250);
-
-                FUSB9NIR250 = ones(Dims250)*(-9999);
-                FUSB9NIR250(MOD09SUBB.MODLine250,MOD09SUBB.MODSamp250) = MOD09SUBB.FUSB9NIR250;        
-                FUSB9NIR250 = int16(FUSB9NIR);
-                
-                FUSB9RED500 = ones(Dims500)*(-9999);
-                FUSB9RED500(MOD09SUBB.MODLine500,MOD09SUBB.MODSamp500) = MOD09SUBB.FUSB9RED500;        
-                FUSB9RED500 = int16(FUSB9RED500);
-
-                FUSB9NIR500 = ones(Dims500)*(-9999);
-                FUSB9NIR500(MOD09SUBB.MODLine500,MOD09SUBB.MODSamp500) = MOD09SUBB.FUSB9NIR500;        
-                FUSB9NIR500 = int16(FUSB9NIR500);
-                
-                FUSB9BLU500 = ones(Dims500)*(-9999);
-                FUSB9BLU500(MOD09SUBB.MODLine500,MOD09SUBB.MODSamp500) = MOD09SUBB.FUSB9BLU500;        
-                FUSB9BLU500 = int16(FUSB9BLU500);
-
-                FUSB9GRE500 = ones(Dims500)*(-9999);
-                FUSB9GRE500(MOD09SUBB.MODLine500,MOD09SUBB.MODSamp500) = MOD09SUBB.FUSB9GRE500;        
-                FUSB9GRE500 = int16(FUSB9GRE500);
-
-                FUSB9SWIR500 = ones(Dims500)*(-9999);
-                FUSB9SWIR500(MOD09SUBB.MODLine500,MOD09SUBB.MODSamp) = MOD09SUBB.FUSB9SWIR500;        
-                FUSB9SWIR500 = int16(FUSB9SWIR500);
-
-                FUSB9SWIR2500 = ones(Dims500)*(-9999);
-                FUSB9SWIR2500(MOD09SUBB.MODLine500,MOD09SUBB.MODSamp) = MOD09SUBB.FUSB9SWIR2500;        
-                FUSB9SWIR2500 = int16(FUSB9SWIR2500);
-
-                [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],11,FUSB9BLU500);
-                [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],12,FUSB9GRE500);
-                [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],9,FUSB9RED500);
-                [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],10,FUSB9NIR500);
-                [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],14,FUSB9SWIR500);
-                [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],15,FUSB9SWIR2500);
-                [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],7,FUSB9RED250);
-                [~] = writeHDF([main.output.fusionbrdf,HDFFileB.name],8,FUSB9NIR250);
-            
-            end
             
         end
 
