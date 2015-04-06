@@ -1,10 +1,10 @@
 % cloud_interp.m
-% Version 1.2.1
+% Version 1.3
 %
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 11/24/2014
-% Last Update: 2/11/2015
+% Last Update: 4/6/2015
 %
 % Input Arguments: 
 %   path - path to MOD09SUB m-files.
@@ -32,10 +32,13 @@
 % Updates of Version 1.2.1 - 2/11/2015
 %   1.Bug fixed.
 %
+% Updates of Version 1.3 - 4/6/2015
+%   1.Combined 250m and 500m fusion.
+%
 % Created on Github on 11/24/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-function cloud_interp(path,res,plat,outFile,disThres)
+function cloud_interp(path,plat,outFile,disThres)
 
   % set default value for disThres if not given
   if ~exist('disThres', 'var')
@@ -43,11 +46,11 @@ function cloud_interp(path,res,plat,outFile,disThres)
   end
 
   % get list of all valid files in the input directory
-  fileList = dir([path,plat,'09SUB*',num2str(res),'m*.mat']);
+  fileList = dir([path,plat,'09SUB*','ALL*.mat']);
 
   % check if list is empty
   if numel(fileList)<1
-    disp(['Cannot find any .mat file at ',num2str(res),'m resolution.']);
+    disp(['Cannot find any .mat file.']);
     return;
   end
 
@@ -63,10 +66,10 @@ function cloud_interp(path,res,plat,outFile,disThres)
     MOD09SUB = load([path,fileList(i).name]);
   
     % total number of swath observation
-    nPixel = numel(MOD09SUB.MODLine)*numel(MOD09SUB.MODSamp);
+    nPixel = numel(MOD09SUB.MODLine250)*numel(MOD09SUB.MODSamp250);
     
     % total cloudy
-    nCloud = sum(MOD09SUB.QACloud(:));
+    nCloud = sum(MOD09SUB.QACloud250(:));
     
     % insert result
     perCloud(i) = round(nCloud/nPixel*1000)/10;
