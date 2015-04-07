@@ -1,11 +1,11 @@
 # gen_preview.R
-# Version 1.3
+# Version 1.4
 # Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 11/30/2014
-# Last Update: 1/21/2015
+# Last Update: 4/7/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -37,6 +37,9 @@
 #   2.Bugs fixed.
 #   3.Updated comments.
 #
+# Updates of Version 1.4 - 4/7/2015
+#   1.Adjusted for a major update in the main program.
+#
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
 
@@ -54,7 +57,7 @@ eval(parse(text=script),envir=.GlobalEnv)
 # Input Arguments: 
 #   file (String) - input SwathSub .mat file
 #   outFile (String) - output file with .png extension
-#   subType (String) - the type of the input SwathSub ('SUB','FUS', or 'BRDF')
+#   subType (String) - the type of the input SwathSub ('SUB' or 'FUS')
 #   res (Integer) - resolution of the image (250 or 500)
 #   comp (Vector) - composite of the preview image (default 5,4,3)
 #   stretch (Vector) - stretch of the image (default 0-5000)
@@ -70,8 +73,6 @@ gen_preview <- function(file,outFile,subType='SUB',res=500,
     MOD <- 'MOD09'
   }else if(subType=='FUS'){
     MOD <- 'FUS09' 
-  }else if(subType=='BRDF'){
-    MOD <- 'FUSB9' 
   }else{
     cat('Invalid subType.\n')
     return(-1)
@@ -88,8 +89,8 @@ gen_preview <- function(file,outFile,subType='SUB',res=500,
     MOD09SUB <- readMat(file)
   
     # grab dimension information
-    line <- length(unlist(MOD09SUB['MODLine'],use.names=F))
-    samp <- length(unlist(MOD09SUB['MODSamp'],use.names=F))
+    line <- length(unlist(MOD09SUB[paste('MODLine',res,sep='')],use.names=F))
+    samp <- length(unlist(MOD09SUB[paste('MODSamp',res,sep='')],use.names=F))
   
     # initiate surface reflectance array
     if(res==500){
@@ -105,27 +106,27 @@ gen_preview <- function(file,outFile,subType='SUB',res=500,
     }
   
     # grab each band
-    sr[,,1] <- matrix(unlist(MOD09SUB[paste('MOD09','RED',sep='')],use.names=F),line,samp)
-    sr[,,2] <- matrix(unlist(MOD09SUB[paste('MOD09','NIR',sep='')],use.names=F),line,samp)
-    sr[,,3] <- matrix(unlist(MOD09SUB['QACloud'],use.names=F),line,samp)
+    sr[,,1] <- matrix(unlist(MOD09SUB[paste('MOD09','RED',res,sep='')],use.names=F),line,samp)
+    sr[,,2] <- matrix(unlist(MOD09SUB[paste('MOD09','NIR',res,sep='')],use.names=F),line,samp)
+    sr[,,3] <- matrix(unlist(MOD09SUB[paste('QACloud',res,sep='')],use.names=F),line,samp)
     if(res==500){  
-      sr[,,4] <- matrix(unlist(MOD09SUB[paste('MOD09','BLU',sep='')],use.names=F),line,samp)
-      sr[,,5] <- matrix(unlist(MOD09SUB[paste('MOD09','GRE',sep='')],use.names=F),line,samp)
-      sr[,,6] <- matrix(unlist(MOD09SUB[paste('MOD09','SWIR',sep='')],use.names=F),line,samp)
-      sr[,,7] <- matrix(unlist(MOD09SUB[paste('MOD09','SWIR2',sep='')],use.names=F),line,samp)
+      sr[,,4] <- matrix(unlist(MOD09SUB[paste('MOD09','BLU',res,sep='')],use.names=F),line,samp)
+      sr[,,5] <- matrix(unlist(MOD09SUB[paste('MOD09','GRE',res,sep='')],use.names=F),line,samp)
+      sr[,,6] <- matrix(unlist(MOD09SUB[paste('MOD09','SWIR',res,sep='')],use.names=F),line,samp)
+      sr[,,7] <- matrix(unlist(MOD09SUB[paste('MOD09','SWIR2',res,sep='')],use.names=F),line,samp)
     }else{
       # calculate ndvi
       sr[,,4] <- (sr[,,2]-sr[,,1])/(sr[,,2]+sr[,,1])
     }
   
     # read fus data if subType is FUS or BRDF
-    sr2[,,1] <- matrix(unlist(MOD09SUB[paste(MOD,'RED',sep='')],use.names=F),line,samp)
-    sr2[,,2] <- matrix(unlist(MOD09SUB[paste(MOD,'NIR',sep='')],use.names=F),line,samp)
+    sr2[,,1] <- matrix(unlist(MOD09SUB[paste(MOD,'RED',res,sep='')],use.names=F),line,samp)
+    sr2[,,2] <- matrix(unlist(MOD09SUB[paste(MOD,'NIR',res,sep='')],use.names=F),line,samp)
     if(res==500){
-      sr2[,,3] <- matrix(unlist(MOD09SUB[paste(MOD,'BLU',sep='')],use.names=F),line,samp)
-      sr2[,,4] <- matrix(unlist(MOD09SUB[paste(MOD,'GRE',sep='')],use.names=F),line,samp)
-      sr2[,,5] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR',sep='')],use.names=F),line,samp)
-      sr2[,,6] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR2',sep='')],use.names=F),line,samp)
+      sr2[,,3] <- matrix(unlist(MOD09SUB[paste(MOD,'BLU',res,sep='')],use.names=F),line,samp)
+      sr2[,,4] <- matrix(unlist(MOD09SUB[paste(MOD,'GRE',res,sep='')],use.names=F),line,samp)
+      sr2[,,5] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR',res,sep='')],use.names=F),line,samp)
+      sr2[,,6] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR2',res,sep='')],use.names=F),line,samp)
     }else{
       sr2[,,3] <- (sr2[,,2]-sr2[,,1])/(sr2[,,2]+sr2[,,1])
     }
@@ -180,7 +181,7 @@ gen_preview <- function(file,outFile,subType='SUB',res=500,
 # Input Arguments: 
 #   path (String) - path to all input files
 #   output (String) - output location
-#   subType (String) - the type of the input SwathSub ('SUB','SUBF', or 'BRDF')
+#   subType (String) - the type of the input SwathSub ('SUB',or,'FUS')
 #   plat (String) - platform ('MOD' or 'MYD')
 #   res (Integer) - resolution of the image (250 or 500)
 #   comp (Vector) - composite of the preview image (default 5,4,3)
@@ -193,7 +194,7 @@ batch_gen_preview <- function(path,output,subType='SUB',plat='MOD',res=500,
                               comp=c(5,4,3),stretch=c(0,5000)){
   
   # find all files
-  pattern <- paste('.*',plat,'.*',res,'m.*.mat',sep='')
+  pattern <- paste('.*',plat,'.*','ALL','m.*.mat',sep='')
   fileList <- list.files(path=path,pattern=pattern,full.names=T,recursive=T)
 
   # check if we have files found
