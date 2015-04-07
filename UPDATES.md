@@ -7,6 +7,7 @@ Version 6.4 - 4/3/2015 - xjtang
 - Combined 250m and 500m fusion.  
 - Removed a unused feature that could cause license problem.  
 - Updated tools for combining 250m and 500m fusion.  
+- Remove two old tools that is no longer usable.  
 
 Version 6.3.1 - 3/24/2015 - xjtang  
 --------------
