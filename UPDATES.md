@@ -1,7 +1,7 @@
 Versions and Updates
 ==============
 
-Version 6.4 - 4/3/2015 - xjtang
+Version 6.4 - 4/7/2015 - xjtang
 --------------
 - Bugs fixed.  
 - Combined 250m and 500m fusion.  
