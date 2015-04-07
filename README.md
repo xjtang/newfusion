@@ -27,15 +27,15 @@ fusion_BRDFusion - The main fusion process with BRDF correction
 fusion_Change - Calculate difference image and change image  
 fusion_WriteHDF - Write the final outputs to new HDF files  
 fusion_WriteETM - Reproject and write difference image to ETM image  
-**Fusion with BRDF correction has not been tested since the last majot update.**   
+**fusion with BRDF correction has not been tested since the last majot update.**   
 
 **Supplimental Scripts:**  
 
 core - some key functions that will be used by the main scripts  
 ext - some external functions written by other authors  
 bash - bash scripts for running fusion in qshell  
-tool - some small tools for pre- / post- fusion analysis
-
+tool - some small tools for pre- / post- fusion analysis  
+**some tools have not been tested since the last majot update.** 
 
 Data
 ------
