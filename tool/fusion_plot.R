@@ -1,11 +1,11 @@
 # fusion_plot.R
-# Version 1.3
+# Version 1.4
 # Tools
 #
 # Project: Fusion
 # By Xiaojing Tang
 # Created On: 12/02/2014
-# Last Update: 12/28/2014
+# Last Update: 4/7/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -35,6 +35,9 @@
 #   1.Added support for 250m resolution.
 #   2.Bugs fixed.
 #
+# Updates of Version 1.4 - 4/7/2015
+#   1.Adjusted for major updated in the main program.
+#
 # Released on Github on 12/05/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
 
@@ -52,7 +55,6 @@ eval(parse(text=script),envir=.GlobalEnv)
 # Input Arguments: 
 #   file (String) - input fusion result .mat file
 #   outFile (String) - output file with .png extension
-#   fusType (String) - the type of the fusion result ('FUS', or 'BRDF')
 #   plat (String) - platform ('MOD' or 'MYD')
 #   res (Integer) - resolution of the image (250 or 500).
 #   cmask (Logical) - apply cloud mask or not
@@ -61,7 +63,7 @@ eval(parse(text=script),envir=.GlobalEnv)
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs=T){
+fusion_plot <- function(file,outFile,plat='MOD',res=500,cmask=T,rs=T){
   
   # set style
   pointMarker <- 16
@@ -70,16 +72,6 @@ fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs
   rsColor <- 46
   rslineColor <- 133
   axisLim <- c(0,5000)
-  
-  # check fusType
-  if(fusType=='FUS'){
-    MOD <- 'FUS09' 
-  }else if(fusType=='BRDF'){
-    MOD <- 'FUSB9' 
-  }else{
-    cat('Invalid fusType.\n')
-    return(-1)
-  }
   
   # check resolution
   if(res!=500&res!=250){
@@ -108,8 +100,8 @@ fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs
   MOD09SUB <- readMat(file)
   
   # grab dimension information
-  line <- length(unlist(MOD09SUB['MODLine'],use.names=F))
-  samp <- length(unlist(MOD09SUB['MODSamp'],use.names=F))
+  line <- length(unlist(MOD09SUB[paste('MODLine',res,sep='')],use.names=F))
+  samp <- length(unlist(MOD09SUB[paste('MODSamp',res,sep='')],use.names=F))
   
   # initiate surface reflectance array
   if(res==500){
@@ -119,18 +111,18 @@ fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs
   }
   
   # grab each band
-  sr[,1] <- unlist(MOD09SUB[paste('MOD09','RED',sep='')],use.names=F)
-  sr[,3] <- unlist(MOD09SUB[paste('MOD09','NIR',sep='')],use.names=F)
-  sr[,2] <- unlist(MOD09SUB[paste(MOD,'RED',sep='')],use.names=F)
-  sr[,4] <- unlist(MOD09SUB[paste(MOD,'NIR',sep='')],use.names=F)
-  sr[,7] <- unlist(MOD09SUB['QACloud'],use.names=F)
+  sr[,1] <- unlist(MOD09SUB[paste('MOD09','RED',res,sep='')],use.names=F)
+  sr[,3] <- unlist(MOD09SUB[paste('MOD09','NIR',res,sep='')],use.names=F)
+  sr[,2] <- unlist(MOD09SUB[paste(MOD,'RED',res,sep='')],use.names=F)
+  sr[,4] <- unlist(MOD09SUB[paste(MOD,'NIR',res,sep='')],use.names=F)
+  sr[,7] <- unlist(MOD09SUB[paste('QACloud',res,sep='')],use.names=F)
   # calculate ndvi
   sr[,5] <- (sr[,3]-sr[,1])/(sr[,3]+sr[,1])
   sr[,6] <- (sr[,4]-sr[,2])/(sr[,4]+sr[,2])
   # calculate SWIR if 500m resolution
   if(res==500){
-    sr[,8] <- unlist(MOD09SUB[paste('MOD09','SWIR',sep='')],use.names=F)
-    sr[,9] <- unlist(MOD09SUB[paste(MOD,'SWIR',sep='')],use.names=F)
+    sr[,8] <- unlist(MOD09SUB[paste('MOD09','SWIR',res,sep='')],use.names=F)
+    sr[,9] <- unlist(MOD09SUB[paste(MOD,'SWIR',res,sep='')],use.names=F)
   }
   
   # cloud masking
@@ -161,7 +153,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs
     abline(0,1,col=colors()[lineColor])
     if(rs){
       abline(coef(lmred)[1],coef(lmred)[2],col=colors()[rslineColor])
-      eq <- paste('MOD = ',round(coef(lmred)[2],2),'*',fusType,'+(',round(coef(lmred)[1],1),')',sep='')
+      eq <- paste('MOD = ',round(coef(lmred)[2],2),'*','FUS','+(',round(coef(lmred)[1],1),')',sep='')
       text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
       text(0,axisLim[2]-200,paste('R2=',round(summary(lmred)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
@@ -175,7 +167,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs
     abline(0,1,col=colors()[lineColor])
     if(rs){
       abline(coef(lmnir)[1],coef(lmnir)[2],col=colors()[rslineColor])
-      eq <- paste('MOD = ',round(coef(lmnir)[2],2),'*',fusType,'+(',round(coef(lmnir)[1],1),')',sep='')
+      eq <- paste('MOD = ',round(coef(lmnir)[2],2),'*','FUS','+(',round(coef(lmnir)[1],1),')',sep='')
       text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
       text(0,axisLim[2]-200,paste('R2=',round(summary(lmnir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
@@ -189,7 +181,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs
     abline(0,1,col=colors()[lineColor])
     if(rs){
       abline(coef(lmndvi)[1],coef(lmndvi)[2],col=colors()[rslineColor])
-      eq <- paste('MOD = ',round(coef(lmndvi)[2],2),'*',fusType,'+(',round(coef(lmndvi)[1],1),')',sep='')
+      eq <- paste('MOD = ',round(coef(lmndvi)[2],2),'*','FUS','+(',round(coef(lmndvi)[1],1),')',sep='')
       text(-1,1,eq,col=colors()[rsColor],pos=4,cex=1.5)
       text(-1,0.92,paste('R2=',round(summary(lmndvi)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
@@ -204,7 +196,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs
     abline(0,1,col=colors()[lineColor])
     if(rs){
       abline(coef(lmswir)[1],coef(lmswir)[2],col=colors()[rslineColor])
-      eq <- paste('MOD = ',round(coef(lmswir)[2],2),'*',fusType,'+(',round(coef(lmswir)[1],1),')',sep='')
+      eq <- paste('MOD = ',round(coef(lmswir)[2],2),'*','FUS','+(',round(coef(lmswir)[1],1),')',sep='')
       text(0,axisLim[2],eq,col=colors()[rsColor],pos=4,cex=1.5)
       text(0,axisLim[2]-200,paste('R2=',round(summary(lmswir)$r.squared,2),sep=''),col=colors()[rsColor],pos=4,cex=1.5)
     }
@@ -212,7 +204,7 @@ fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs
   
     # add overall title
     fileDate <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',file)
-    mTitle <- paste('MODIS ',MODIS,' ',fileDate,' TYPE=',fusType,' Res=',res,'m CMASK=',strLeft(cmask,1),sep='')
+    mTitle <- paste('MODIS ',MODIS,' ',fileDate,' TYPE=',''FUS,' Res=',res,'m CMASK=',strLeft(cmask,1),sep='')
     mtext(mTitle,outer = TRUE, cex = 1.5)
   
   # save plot
@@ -233,7 +225,6 @@ fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs
 # Input Arguments: 
 #   path (String) - path to all input files
 #   output (String) - output location
-#   fusType (String) - the type of the fusion result ('FUS', or 'BRDF')
 #   plat (String) - platform ('MOD' or 'MYD')
 #   res (Integer) - resolution of the image (250 or 500).
 #   cmask (Logical) - apply cloud mask or not
@@ -243,10 +234,10 @@ fusion_plot <- function(file,outFile,fusType='FUS',plat='MOD',res=500,cmask=T,rs
 #   r (Integer) - 0: Successful
 #
 batch_fusion_plot <- function(path,output,plat='MOD',res=500,
-                              fusType='FUS',cmask=T,rs=T){
+                              cmask=T,rs=T){
   
   # find all files
-  pattern <- paste('.*',plat,'.*',res,'m.*.mat',sep='')
+  pattern <- paste('.*',plat,'.*','ALL','m.*.mat',sep='')
   fileList <- list.files(path=path,pattern=pattern,full.names=T,recursive=T)
   
   # check if we have files found
@@ -265,8 +256,8 @@ batch_fusion_plot <- function(path,output,plat='MOD',res=500,
   for(i in 1:length(fileList)){
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
     time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
-    outFile <- paste(output,'/PLOT_',plat,fusType,'_',res,'m_',date,'_',time,'.png',sep='')
-    fusion_plot(fileList[i],outFile,fusType,plat,res,cmask,rs)
+    outFile <- paste(output,'/PLOT_',plat,'_',res,'m_',date,'_',time,'.png',sep='')
+    fusion_plot(fileList[i],outFile,plat,res,cmask,rs)
     cat(paste(outFile,'...done\n'))
   }
   
