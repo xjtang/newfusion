@@ -9,7 +9,6 @@
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
-%   sets (Structure) - model parameters.
 % 
 % Output Arguments: 
 %   CHG (Matrix) - time series of change.
@@ -23,18 +22,18 @@
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-function CHG = change(TS,sets)
+function CHG = change(TS)
     
     % costomized settings
-    % sets.minNoB = 10;
-    % sets.initNoB = 5;
-    % sets.nSD = 1.5;
-    % sets.nCosc = 5;
-    % sets.nSusp = 3;
-    % sets.outlr = 1;
-    % sets.nonfstmean = 10;
-    % sets.nonfstdev = 0.3;
-    % sets.nonfstedge = 5;
+    set.minNoB = 10;
+    set.initNoB = 5;
+    set.nSD = 1.5;
+    set.nCosc = 5;
+    set.nSusp = 3;
+    set.outlr = 1;
+    set.nonfstmean = 10;
+    set.nonfstdev = 0.3;
+    set.nonfstedge = 5;
 
     % analyse input TS 
     [nband,nob] = size(TS);
@@ -53,17 +52,17 @@ function CHG = change(TS,sets)
     
     % check total number of eligible observation
     [~,neb] = size(ETS);
-    if neb < sets.minNoB
+    if neb < set.minNoB
         CHG = -1;
         return 
     end
         
     % initilization
-    mainVec = TS(:,ETS(1:sets.initNoB));
-    if sets.outlr > 0
-        for i = 1:sets.outlr
+    mainVec = TS(:,ETS(1:set.initNoB));
+    if set.outlr > 0
+        for i = 1:set.outlr
             % remove outliers in the initial observations
-            subMean = trimmean(mainVec,(2/sets.initNoB*100),'round',2);
+            subMean = trimmean(mainVec,(2/set.initNoB*100),'round',2);
             nTS = abs(((1./subMean)'*mainVec)/nband-1);
             [~,TSmaxI] = max(nTS);
             mainVec(:,TSmaxI) = [];
@@ -83,7 +82,7 @@ function CHG = change(TS,sets)
     % check if this is a stable non-forest pixel
     pMean = mean(abs(initMean));
     pSTD = mean(initStd./initMean);
-    if pMean > sets.nonfstmean && pSTD > sets.nonfstdev 
+    if pMean > set.nonfstmean && pSTD > set.nonfstdev 
         nonFst = 1;
     end
     
@@ -100,9 +99,9 @@ function CHG = change(TS,sets)
         if nonFst == 0 
         
             % check if possible change occured
-            if xDev >= sets.nSD 
+            if xDev >= set.nSD 
                 % increment number of suspects and confessed
-                if j > sets.nCosc
+                if j > set.nCosc
                     nCosc = nCosc + 1;
                     nSusp = nSusp + 1;
                 end
@@ -116,12 +115,12 @@ function CHG = change(TS,sets)
                 % set result to stable
                 CHG(1,i) = 1;
                 % check if suspicious
-                if nSusp == 0 && j > sets.nCosc
+                if nSusp == 0 && j > set.nCosc
                     % safe
                     mainVec = [mainVec,TS(:,i)];  %#ok<*AGROW>
                     initMean = mean(mainVec,2);
                     initStd = std(mainVec,0,2);
-                elseif nSusp > sets.nCosc
+                elseif nSusp > set.nCosc
                     % stable found after confirmed change
                     nCosc = nCosc + 1;
                 else
@@ -136,8 +135,8 @@ function CHG = change(TS,sets)
             end
 
             % check if change can be confirmed
-            if nCosc == sets.nCosc
-                if nSusp >= sets.nSusp
+            if nCosc == set.nCosc
+                if nSusp >= set.nSusp
                     % change confirmed
                     CHG(1,posBreak) = 3;
                 else
@@ -153,7 +152,7 @@ function CHG = change(TS,sets)
         
         else
             % deal with stable non-forest pixel
-            if mean(abs(x)) > sets.nonfstedge
+            if mean(abs(x)) > set.nonfstedge
                 CHG(1,i) = 4;
             else
                 CHG(1,i) = 5;
