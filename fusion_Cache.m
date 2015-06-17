@@ -49,6 +49,13 @@ function fusion_Cache(main)
     % line by line processing
     for i = curLine
         
+        % check if this line is already processed
+        File.Check = dir([main.output.cache 'ts.r' i '*' '.mat']);
+        if numel(File.Check) >= 1
+            disp([DayStr ' already exist, skip this line.']);
+            continue;
+        end
+        
         % initialize
         TS = ones(samp,length(dates),nband);
         
