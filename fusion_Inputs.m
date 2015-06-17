@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 6.4
+% Version 6.5
 % Step 0
 % Main Inputs and Settings
 %
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 6/16/2015
+% Last Update: 6/17/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -64,17 +64,22 @@
 %   1.Added settings and parameters of the change detection model.
 %   2.Added support for change detection model.
 %
+% Updates of Version 6.5 - 6/17/2015 (by Xiaojing Tang)
+%   1.Added output folder for cache and change detection results.
+%   2.Added new input of path and row of Landsat.
+%   3.Implemented new file structure to support multiple Landsat scenes.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
-function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
+function main = fusion_Inputs(iData,iPlat,iBRDF,iSub,iScene)
 
     % check input argument
     if ~exist('iSub', 'var')
         iSub = [0,0];
     end
     if ~exist('iDis', 'var')
-        iDis = 0.1;
+        iDis = 0;
     end
     if ~exist('iBRDF', 'var')
         iBRDF = 0;
@@ -85,6 +90,9 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
     if ~exist('iPlat', 'var')
         iPlat = 'MOD';
     end
+    if ~exist('iScene', 'var')
+        iScene = [227,65];
+    end 
 
     % add the fusion package to system path
     addpath(genpath(fileparts(mfilename('fullpath'))));
@@ -95,11 +103,12 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
     
     % set up project main path
     main.path = iData;
+    main.outpath = [main.path 'P' iScene(1) 'R' iScene(2) '/'];
     
     % set input data location
         % main inputs:
         % Landsat ETM images to fuse
-        main.input.etm = [main.path 'MOD09ETM/'];
+        main.input.etm = [main.path 'MOD09ETM/P' iScene(1) 'R' iScene(2) '/'];
         % MODIS Surface Reflectance data (swath data)
         main.input.swath = [main.path iPlat '09/'];
 
@@ -120,35 +129,35 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
     % set output data location (create if not exist)
         % main outputs:
         % MODIS sub image that covers the Landsat ETM area
-        main.output.modsub = [main.path 'MOD09SUB/'];
+        main.output.modsub = [main.outpath 'MOD09SUB/'];
         if exist(main.output.modsub,'dir') == 0 
-            mkdir([main.path 'MOD09SUB']);
+            mkdir([main.outpath 'MOD09SUB']);
         end
         % fused MOD09SUB
-        main.output.modsubf = [main.path 'MOD09SUBF/'];
+        main.output.modsubf = [main.outpath 'MOD09SUBF/'];
         if exist(main.output.modsubf,'dir') == 0 
-            mkdir([main.path 'MOD09SUBF']);
+            mkdir([main.outpath 'MOD09SUBF']);
         end
         % MOD09SUB with change and difference image
-        main.output.modsubd = [main.path 'MOD09SUBD/'];
+        main.output.modsubd = [main.outpath 'MOD09SUBD/'];
         if exist(main.output.modsubd,'dir') == 0 
-            mkdir([main.path 'MOD09SUBD']);
+            mkdir([main.outpath 'MOD09SUBD']);
         end
         % fused synthetic MODIS image from ETM image
-        main.output.fusion = [main.path 'FUS09/'];
+        main.output.fusion = [main.outpath 'FUS09/'];
         if exist(main.output.fusion,'dir') == 0 
-            mkdir([main.path 'FUS09']);
+            mkdir([main.outpath 'FUS09']);
         end
         % difference between synthetic MODIS and true MODIS
-        main.output.dif = [main.path 'FUSDIF/'];
+        main.output.dif = [main.outpath 'FUSDIF/'];
         if exist(main.output.dif,'dir') == 0 
-            mkdir([main.path 'FUSDIF']);
+            mkdir([main.outpath 'FUSDIF']);
         end
         % changes detected
-        main.output.change = [main.path 'FUSCHG/'];
-        if exist(main.output.change,'dir') == 0 
-            mkdir([main.path 'FUSCHG']);
-        end
+        % main.output.change = [main.path 'FUSCHG/'];
+        % if exist(main.output.change,'dir') == 0 
+        %     mkdir([main.path 'FUSCHG']);
+        % end
         % a dump folder for temporaryly storing dumped data
         main.output.dump = [main.path 'DUMP/'];
         if exist(main.output.dump,'dir') == 0 
@@ -167,16 +176,28 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
             mkdir([main.path 'MOD09B']);
         end
         % BRDF corrected and fused MOD09SUB
-        main.output.modsubbrdf = [main.path 'MOD09SUBBRDF/'];
+        main.output.modsubbrdf = [main.outpath 'MOD09SUBBRDF/'];
         if exist(main.output.modsubbrdf,'dir') == 0 
-            mkdir([main.path 'MOD09SUBBRDF']);
+            mkdir([main.outpath 'MOD09SUBBRDF']);
         end
         % fused synthetic MODISimage with BRDF correction
-        main.output.fusionbrdf = [main.path 'FUS09B/'];
+        main.output.fusionbrdf = [main.outpath 'FUS09B/'];
         if exist(main.output.fusionbrdf,'dir') == 0 
-            mkdir([main.path 'FUS09B']);
+            mkdir([main.outpath 'FUS09B']);
         end
     
+        % from change detection
+        % cache of fusion time series
+        main.output.cache = [main.outpath 'CACHE/'];
+        if exist(main.output.cache,'dir') == 0 
+            mkdir([main.outpath 'CACHE']);
+        end
+        % change detection model results in matlab format
+        main.output.chgmat = [main.outpath 'FUSCHG/'];
+        if exist(main.output.chgmat,'dir') == 0 
+            mkdir([main.outpath 'FUSCHG']);
+        end
+        
         % from gridding process
         % gridded fusion result
         % main.output.fusGrid = [main.path 'FUSGRID/'];
@@ -195,13 +216,15 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
         % apply BRDF correction or not
         main.set.brdf = iBRDF;
         % discard ratio of Landsat image (% image discarded on the edge)
-        main.set.dis = 0;
+        main.set.dis = iDis;
         % correct for bias in difference map
         main.set.bias = 1;
         % max (0) or mean (1) in calculating difference map
         main.set.dif = 0;
         % job information
         main.set.job = iSub;
+        % Landsat scene
+        main.set.scene = iScene;
         
     % settings and parameters for the change detection model
         % minimun number of valid observation
