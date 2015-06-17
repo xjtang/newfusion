@@ -1,11 +1,11 @@
 % change.m
-% Version 1.1
+% Version 1.0
 % Core
 %
 % Project: Fusion
 % By: Xiaojing Tang
 % Created On: 3/31/2015
-% Last Update: 6/16/2015
+% Last Update: 6/15/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -18,36 +18,10 @@
 %   1.Call by other scripts with correct input and output arguments.
 %
 % Version 1.0 - 6/15/2015
-%   The script fits a time series model to fusion result of a pixel.
-%
-% Version 1.1 - 6/16/2015
-%   1.Added classification scheme into comments.
-%   2.Optimazed the model for real data.
+%   The script fits a time series model to fusion result of a pixel
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
-
-% Classification Scheme
-%
-% Intermediate:
-%  -1 - Ineligible Observation
-%   0 - Default Value
-%   1 - Stable Forest
-%   2 - Suspected Change
-%   3 - Confirmed Change
-%   4 - Stable Non-forest
-%   5 - Edge of Non-Forest
-%
-% Final:
-%  -1 - Ineligible Observation
-%   0 - Default Value
-%   1 - Stable Forest
-%   2 - Outlier (Cloud, Shadow ...)
-%   3 - Break
-%   4 - Changed
-%   5 - Edge of Change
-%   6 - Stable Non-forest
-%   7 - Edge of Non-forest
 
 function CHG = change(TS,sets)
     
@@ -61,8 +35,6 @@ function CHG = change(TS,sets)
     % sets.nonfstmean = 10;
     % sets.nonfstdev = 0.3;
     % sets.nonfstedge = 5;
-    % sets.weight = [1,1,1];
-    % sets.band = [3,4,5];
 
     % analyse input TS 
     [nband,nob] = size(TS);
@@ -70,7 +42,6 @@ function CHG = change(TS,sets)
     % initilize result
     CHG = zeros(2,nob);
     ETS = 1:nob;
-    sets.weight = sets.weight/sum(sets.weight);
 
     % complie eligible observations
     for i = nob:-1:1
@@ -92,10 +63,10 @@ function CHG = change(TS,sets)
     if sets.outlr > 0
         for i = 1:sets.outlr
             % remove outliers in the initial observations
-            subMean = (sets.weight*mainVec)/nband;
-            [~,TSmaxI] = max(subMean);
-            [~,TSminI] = min(subMean);
-            mainVec(:,[TSmaxI,TSminI]) = [];
+            subMean = trimmean(mainVec,(2/sets.initNoB*100),'round',2);
+            nTS = abs(((1./subMean)'*mainVec)/nband-1);
+            [~,TSmaxI] = max(nTS);
+            mainVec(:,TSmaxI) = [];
         end
     end
     initMean = mean(mainVec,2);
@@ -110,8 +81,8 @@ function CHG = change(TS,sets)
     nonFst = 0;
       
     % check if this is a stable non-forest pixel
-    pMean = sets.weight*abs(initMean);
-    pSTD = sets.weight*abs(initStd;
+    pMean = mean(abs(initMean));
+    pSTD = mean(initStd./initMean);
     if pMean > sets.nonfstmean && pSTD > sets.nonfstdev 
         nonFst = 1;
     end
@@ -123,7 +94,7 @@ function CHG = change(TS,sets)
         x = TS(:,i);
         xRes = abs(x-initMean);
         xNorm = xRes./initStd;
-        xDev = sets.weight*xNorm;
+        xDev = mean(xNorm);
         
         % check if this is a statble non-forest pixel
         if nonFst == 0 
@@ -182,7 +153,7 @@ function CHG = change(TS,sets)
         
         else
             % deal with stable non-forest pixel
-            if sets.weight*abs(x) > sets.nonfstedge
+            if mean(abs(x)) > sets.nonfstedge
                 CHG(1,i) = 4;
             else
                 CHG(1,i) = 5;
