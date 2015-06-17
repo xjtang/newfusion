@@ -5,7 +5,7 @@
 % Project: Fusion
 % By: Xiaojing Tang
 % Created On: 3/31/2015
-% Last Update: 6/16/2015
+% Last Update: 6/17/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -20,9 +20,10 @@
 % Version 1.0 - 6/15/2015
 %   The script fits a time series model to fusion result of a pixel.
 %
-% Version 1.1 - 6/16/2015
+% Version 1.1 - 6/17/2015
 %   1.Added classification scheme into comments.
 %   2.Optimazed the model for real data.
+%   3.Added weighting system.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
