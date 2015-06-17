@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 6.4
+% Version 6.3
 % Step 0
 % Main Inputs and Settings
 %
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 6/15/2015
+% Last Update: 4/3/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -59,10 +59,6 @@
 %
 % Update of Version 6.3 - 4/3/2015 (by Xiaojing Tang)
 %   1.Combined 250m and 500m fusion.
-%
-% Updates of Version 6.4 - 6/15/2015 (by Xiaojing Tang)
-%   1.Added settings and parameters of the change detection model.
-%   2.Added support for change detection model.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -200,28 +196,6 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
         main.set.bias = 1;
         % max (0) or mean (1) in calculating difference map
         main.set.dif = 0;
-        % job information
-        main.set.job = iSub;
-        
-    % settings and parameters for the change detection model
-        % minimun number of valid observation
-        main.model.minNoB = 10;
-        % number of observations to initialize the model
-        main.model.initNoB = 5;
-        % coefficiant of std in change detection
-        main.model.nSD = 1.5;
-        % number of consective observation of detect change
-        main.model.nCosc = 5;
-        % number of suspective observation to confirm the change
-        main.model.nSusp = 3;
-        % number of outlier to remove in initialization
-        main.model.outlr = 1;
-        % threshold of mean to detect non-forest pixel
-        main.model.nonfstmean = 10;
-        % threshold of std to detect non-forest pixel
-        main.model.nonfstdev = 0.3;
-        % threshold of detecting edging pixel in stable non-forest pixel
-        main.model.nonfstedge = 5;
         
     % image properties
         % grab the first ETM file
