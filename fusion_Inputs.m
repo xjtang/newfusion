@@ -6,7 +6,7 @@
 % Project: Fusion
 % By Xiaojing Tang
 % Created On: 9/16/2013
-% Last Update: 6/15/2015
+% Last Update: 6/16/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -60,7 +60,7 @@
 % Update of Version 6.3 - 4/3/2015 (by Xiaojing Tang)
 %   1.Combined 250m and 500m fusion.
 %
-% Updates of Version 6.4 - 6/15/2015 (by Xiaojing Tang)
+% Updates of Version 6.4 - 6/16/2015 (by Xiaojing Tang)
 %   1.Added settings and parameters of the change detection model.
 %   2.Added support for change detection model.
 %
@@ -222,6 +222,10 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
         main.model.nonfstdev = 0.3;
         % threshold of detecting edging pixel in stable non-forest pixel
         main.model.nonfstedge = 5;
+        % bands used for change detection
+        main.model.band = [3,4,5];
+        % weight of each band in change detection
+        main.model.weight = [1,1,1];
         
     % image properties
         % grab the first ETM file
