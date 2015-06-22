@@ -34,7 +34,6 @@ function fusion_Cache(main)
     samp = length(main.etm.sample);
     line = length(main.etm.line);
     nband = main.etm.band;
-    dates = main.date.etm;
     
     % calculate the lines that will be processed by this job
     njob = main.set.job(2);
@@ -45,6 +44,9 @@ function fusion_Cache(main)
         stop = floor(line/njob);
         curLine = start:njob:stop;
     end
+    
+    % find existing fusion time series images
+    fusImage = dir([main.output.dif main.set.scene(1) main.set.scene(2) '*']);
     
     % line by line processing
     for i = curLine
@@ -57,20 +59,27 @@ function fusion_Cache(main)
         end
         
         % initialize
-        TS = ones(samp,length(dates),nband);
+        TS = ones(samp,numel(dates),nband)*(-9999);
         
         % loop through images
-        
-        
-        
-        % work on individual pixel
-        for j = 1:samp
-        
-        
-        
-        
-        
+        for j = i:numel(fusImage)
+            
+            % get date information
+            DayStr = num2str(dates(i));
+
+            % check if image exist
+            File.Check = dir([main.output.dif plat '*' DayStr '*']);
+            if numel(File.Check) >= 1
+                disp([DayStr ' dif image does not exist, skip this date.']);
+                continue;
+            end
+            
+            
+            
+            
         end
+        
+        
             
             
     end
