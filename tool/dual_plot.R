@@ -2,8 +2,8 @@
 # Version 1.0
 # Tools
 #
-# Project: Fusion
-# By Xiaojing Tang
+# Project: New Fusion
+# By xjtang
 # Created On: 3/12/2015
 # Last Update: 3/15/2015
 #

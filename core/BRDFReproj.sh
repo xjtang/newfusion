@@ -2,8 +2,8 @@
 # Version 1.0
 # Core
 #
-# Project: Fusion
-# By: Xiaojing Tang
+# Project: New fusion
+# By: xjtang
 # Created On: 11/5/2014
 #
 # Input Arguments:
@@ -15,7 +15,7 @@
 # 
 # Output Arguments: NA
 #
-# Usage: 
+# Instruction: 
 #   1.Call by other scripts with correct input and output arguments.
 #
 # Version 1.0 - 11/5/2014

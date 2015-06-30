@@ -1,8 +1,8 @@
 % cloud_interp.m
 % Version 1.3
 %
-% Project: Fusion
-% By Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: 11/24/2014
 % Last Update: 4/6/2015
 %
@@ -15,7 +15,7 @@
 %   
 % Output Arguments: NA
 %
-% Usage: 
+% Instruction: 
 %   1.Generate MOD09SUB m-files with the main fusion codes.
 %   2.Run this script with correct input arguments.
 %

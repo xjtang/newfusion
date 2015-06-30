@@ -2,9 +2,8 @@
 % Version 6.1
 % Core
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: Unknown
 % Last Update: 9/19/2014
 %
@@ -15,23 +14,18 @@
 % Output Arguments: 
 %   Output (Matrix) - Interpolated results
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 6.0 - Unknown
-%   This script interpolates MODIS 1km latitude/longitude to obtain 
-%       500m/250m latitude/longitude.
-%   The 1 km latitude/longitude in MODIS swath can "NOT" be simply 
-%       resampled to 500m/250m.
-%   One MODIS scan is defined as every 10/20/40 (1000m/500m/250m) pixels 
-%       along the track direction.
+% Version 6.0 - Unknown (by Q. Xin)
+%   This script interpolates MODIS 1km latitude/longitude to obtain 500m/250m latitude/longitude.
+%   The 1 km latitude/longitude in MODIS swath can "NOT" be simply resampled to 500m/250m.
+%   One MODIS scan is defined as every 10/20/40 (1000m/500m/250m) pixels along the track direction.
 %   Bilinear interpolation is used within each MODIS scan.
-%   There is a need to account for 0.5 pixel shift in the scan direction, 
-%       and 0.75 pixel shift in the track direction.
-%   Linear extrapolation is used for the first and last 1/2 (500m/250m, 
-%       respectively) pixels.
+%   There is a need to account for 0.5 pixel shift in the scan direction, and 0.75 pixel shift in the track direction.
+%   Linear extrapolation is used for the first and last 1/2 (500m/250m, respectively) pixels.
 %
-% Updates of Version 6.1 - 9/19/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 9/19/2014
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.

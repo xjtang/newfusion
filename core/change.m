@@ -2,8 +2,8 @@
 % Version 1.1
 % Core
 %
-% Project: Fusion
-% By: Xiaojing Tang
+% Project: New fusion
+% By xjtang
 % Created On: 3/31/2015
 % Last Update: 6/17/2015
 %

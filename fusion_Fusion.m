@@ -3,9 +3,8 @@
 % Step 3
 % Main Fusion Process
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: Unknown
 % Last Update: 4/4/2014
 %
@@ -15,7 +14,7 @@
 %
 % Output Arguments: NA
 %
-% Usage: 
+% Instruction: 
 %   1.Customize the main input file (fusion_inputs.m) with proper settings
 %       for specific project.
 %   2.Run fusion_Inputs() first and get the returned structure of inputs
@@ -23,12 +22,12 @@
 %       generated.
 %   4.Run this function with the stucture of inputs as the input argument.
 %
-% Version 6.0 - Unknown
+% Version 6.0 - Unknown (by Q. Xin)
 %   This script creates MODIS swath data based on Landsat synthetic data.
 %   This script saves the results as Matlab object called MOD09SUB that 
 %       contains the data and related metadata.
 %
-% Updates of Version 6.1 - 10/1/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 10/1/2014 
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
@@ -38,19 +37,19 @@
 %   7.The code now save output to MOD09SUBF instead of overwriting old
 %       files.
 %
-% Updates of Version 6.1.1 - 10/15/2014 (by Xiaojing Tang)
+% Updates of Version 6.1.1 - 10/15/2014 
 %   1.The script now checks for existing results and skip.
 %
-% Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
+% Updates of Version 6.2 - 11/24/2014 
 %   1.Bugs Fixed.
 %   2.Added support of 250m fusion.
 %   3.Updated comments.
 %   4.Added support for Aqua.
 %
-% Updates of Version 6.2.1 - 12/18/2014 (by Xiaojing Tang)
+% Updates of Version 6.2.1 - 12/18/2014 
 %   1.Set ETM value to nan if it is 0
 %
-% Updates of Version 6.3 - 4/4/2015 (by Xiaojing Tang)
+% Updates of Version 6.3 - 4/4/2015 
 %   1.Combined 250 and 500 fusion.
 %   2.Bug fixed
 %

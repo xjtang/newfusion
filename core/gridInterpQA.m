@@ -2,9 +2,8 @@
 % Version 6.1
 % Core
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: Unknown
 % Last Update: 9/18/2014
 %
@@ -16,25 +15,19 @@
 %   MOD09GA (Structure) - Subset of MODIS grided data over the area of the 
 %       ETM image and the corresponding geometry information (interpolated).
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 6.0 - Unknown
-%   This script gets decoded 500m QA data from 1000m QA data in MOD09GA 
-%       (gridded data).
+% Version 6.0 - Unknown (by Q. Xin)
+%   This script gets decoded 500m QA data from 1000m QA data in MOD09GA (gridded data).
 %   This interpolation is simply done by resampling.
-%   MOD09GA.MODISQA contains the original 1000m QA dataset (uint16) 
-%       obtained from MOD09GA.
-%   MOD09GA.QAWater  contains a masking image for water by decoding uint16 
-%       QA data. (0 is land and  1 is water)
-%   MOD09GA.QACloud  contains a masking image for cloud by decoding uint16 
-%       QA data. (0 is non-cloud and  1 is cloud)
-%   MOD09GA.QACloudB  contains a masking image for buffered clouds by 
-%       decoding uint16 QA data. (0 is non-cloud and  1 is cloud).
-%   Every 7 pixels around clouds defined in QACloud are also considered as 
-%       clouds in QACloudB.
+%   MOD09GA.MODISQA contains the original 1000m QA dataset (uint16) obtained from MOD09GA.
+%   MOD09GA.QAWater  contains a masking image for water by decoding uint16 QA data. (0 is land and  1 is water)
+%   MOD09GA.QACloud  contains a masking image for cloud by decoding uint16 QA data. (0 is non-cloud and  1 is cloud)
+%   MOD09GA.QACloudB  contains a masking image for buffered clouds by decoding uint16 QA data. (0 is non-cloud and  1 is cloud).
+%   Every 7 pixels around clouds defined in QACloud are also considered as clouds in QACloudB.
 %
-% Updates of Version 6.1 - 9/18/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 9/18/2014 
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.

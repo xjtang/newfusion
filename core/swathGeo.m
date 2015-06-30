@@ -2,9 +2,8 @@
 % Version 6.1
 % Core
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: Unknown
 % Last Update: 9/17/2014
 %
@@ -17,14 +16,14 @@
 %   SizeAlongScan (Vector, Double) - vector of pixel sizes along scan line.
 %   SizeAlongTrack (Vector, Double) - vector of pixels size along track.
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 6.0 - Unknown
+% Version 6.0 - Unknown (by Q. Xin)
 %   This script generates array of MODIS swath observation geometry for the
 %       whole swath
 %
-% Updates of Version 6.1 - 9/17/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 9/17/2014 
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.

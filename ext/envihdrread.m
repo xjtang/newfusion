@@ -3,8 +3,7 @@
 % External
 %
 % Project: CCDC
-% By Zhe Zhu
-% Updated By: Xiaojing Tang
+% By Z. Zhu
 % Created On: Unknown
 % Last Update: 10/8/2014
 %
@@ -19,14 +18,14 @@
 %   bands (Integer) - number of bands in the image
 %   interleave (String) - interleave of the iamge
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 1.0 - Unknown
+% Version 1.0 - Unknown (by Z. Zhu)
 %   Function to retrieve information from envi header file.
 %   Used in Zhe Zhu's CCD Model.
 %
-% Updates of Version 1.1 Fusion SP - 10/8/2014 (by Xiaojing Tang)
+% Updates of Version 1.1 Fusion SP - 10/8/2014 (by xjtang)
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.

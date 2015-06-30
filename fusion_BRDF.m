@@ -3,9 +3,8 @@
 % Step 1
 % BRDF Correction
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New Fusion
+% By: xjtang
 % Created On: Unknown
 % Last Update: 11/24/2014
 %
@@ -15,17 +14,15 @@
 % 
 % Output Arguments: NA
 %
-% Usage: 
-%   1.Customize the main input file (fusion_inputs.m) with proper settings
-%       for specific project.
+% Instruction: 
+%   1.Customize the main input file (fusion_inputs.m) with proper settings for specific project.
 %   2.Run fusion_Inputs() first and get the returned structure of inputs
 %   3.Run this function with the stucture of inputs as the input argument.
 %
-% Version 6.0 - Unknown
-%   This script extracts MOD43A1 (BRDF parameters) data and reproject them
-%       to match Landat image.
+% Version 6.0 - Unknown (by Q. Xin)
+%   This script extracts MOD43A1 (BRDF parameters) data and reproject them to match Landat image.
 %
-% Updates of Version 6.1 - 10/1/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 10/1/2014
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
@@ -34,7 +31,7 @@
 %   6.User gdal_translate instead of MRT to resample.
 %   7.The code now creates the BRDF coefficinet output file by itself.
 %
-% Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
+% Updates of Version 6.2 - 11/24/2014
 %   1.Added support for MODIS Aqua.
 %
 % Released on Github on 10/15/2014, check Github Commits for updates afterwards.

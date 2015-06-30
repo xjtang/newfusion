@@ -2,9 +2,8 @@
 % Version 6.1
 % Core
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: Unknown
 % Last Update: 9/17/2014
 %
@@ -18,14 +17,13 @@
 %   Distance (Double): distance in meters betwee the two points.
 %   Bearing (Double): bearing in degree from the stating point.
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 6.0 - Unknown
-%   Calculate distance between two points on earth's surface given their 
-%       latitudes and longitudes.
+% Version 6.0 - Unknown (by Q. Xin)
+%   Calculate distance between two points on earth's surface given their latitudes and longitudes.
 %
-% Updates of Version 6.1 - 9/17/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 9/17/2014 
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.

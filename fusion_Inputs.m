@@ -1,10 +1,10 @@
 % fusion_Inputs.m
-% Version 6.5
+% Version 1.5
 % Step 0
 % Main Inputs and Settings
 %
-% Project: Fusion
-% By Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: 9/16/2013
 % Last Update: 6/17/2015
 %
@@ -12,59 +12,55 @@
 %   iDate (String) - main path to the data.
 %   iPlat (String) - platform, MOD for Terra, MYD for Aqua.
 %   iBRDF (Integer) - 0: BRDF off; 1: BRDF on.
-%   iDis (Double) - Percenatble of data discarded at the edge of Landsat
-%       image (0.1 as 10%).
-%   iSub (Vector, Interger) - process a subset of the data.
-%       e.g. [1 50] means divide into 50 parts and process the 1st. 
-%       [0 0] means do all in one job.
+%   iDis (Double) - Percenatble of data discarded at the edge of Landsat image (0.1 as 10%).
+%   iSub (Vector, Interger) - process a subset of the data. e.g. [1 50] means divide into 50 parts and process the 1st. [0 0] means do all in one job.
 % 
 % Output Arguments: 
 %   mainInputs (Structure) - main inputs for the whole fusion process
 %
-% Usage: 
+% Instruction: 
 %   1.Customize the inputs and settings for your fusion project.
 %   2.Run this stript first to create a new structure of all inputs
 %   3.Use the created inputs as input arguments for other function
 %
-% Version 6.0 - 10/8/2014 (by Xiaojing Tang)
+% Version 1.0 - 10/8/2014 
 %   This script newly created for Fusion update 6.1
-%   This script serves as a single repository for all inputs and settings
-%       for the fusion process
+%   This script serves as a single repository for all inputs and settings for the fusion process
 %
-% Updates of Version 6.1 - 10/14/2014 (by Xiaojing Tang)
+% Updates of Version 1.1 - 10/14/2014 
 %   1.This script now loads the hrf module
 %
-% Updates of Version 6.1.1 - 11/24/2014 (by Xiaojing Tang)
+% Updates of Version 1.1.1 - 11/24/2014 
 %   1.Improved main input structure.
 %   2.Updated comments.
 %   3.Bug fixed.
 %
-% Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
+% Updates of Version 1.2 - 11/24/2014 
 %   1.Added support for MODIS Aqua.
 %
-% Updates of Version 6.2.1 - 12/15/2014 (by Xiaojing Tang)
+% Updates of Version 1.2.1 - 12/15/2014 
 %   1.Added a dump folder for collecting dumped data.
 %   2.Added missing ;.
 %   3.Removed unused folder.
 %
-% Updates of Version 6.2.2 - 2/10/2015 (by Xiaojing Tang)
+% Updates of Version 1.2.2 - 2/10/2015 
 %   1.Added new output folders to hold change and difference maps.
 %   2.Adjusted output folders.
 %   3.Added a extra parameter for bias correction.
 %
-% Updates of Version 6.2.3 - 3/31/2015 (by Xiaojing Tang)
+% Updates of Version 1.2.3 - 3/31/2015 
 %   1.Fixed a bug when MOD09GA is missing.
 %   2.Added a new option.
 %   3.Renamed the output folder for dif image.
 %
-% Update of Version 6.3 - 4/3/2015 (by Xiaojing Tang)
+% Update of Version 1.3 - 4/3/2015 
 %   1.Combined 250m and 500m fusion.
 %
-% Updates of Version 6.4 - 6/16/2015 (by Xiaojing Tang)
+% Updates of Version 1.4 - 6/16/2015 
 %   1.Added settings and parameters of the change detection model.
 %   2.Added support for change detection model.
 %
-% Updates of Version 6.5 - 6/17/2015 (by Xiaojing Tang)
+% Updates of Version 1.5 - 6/17/2015 
 %   1.Added output folder for cache and change detection results.
 %   2.Added new input of path and row of Landsat.
 %   3.Implemented new file structure to support multiple Landsat scenes.

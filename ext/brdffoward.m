@@ -3,9 +3,7 @@
 % External
 %
 % Project: BRDF
-% By Feng Gao
-% Modified By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% By F. Gao
 % Created On: Unknown
 % Last Update: 9/29/2014
 %
@@ -18,14 +16,14 @@
 % Output Arguments: 
 %   refl (Double) - BRDF corrected reflectance
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 1.0 - Unknown
+% Version 1.0 - Unknown (by Q. Xin)
 %   Function to convert BRDF parameters into reflectance
 %   Rewritten from Feng Gao's BRDF forward model.
 %
-% Updates of Version 1.1 - 9/29/2014 (by Xiaojing Tang)
+% Updates of Version 1.1 - 9/29/2014 (by xjtang)
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
