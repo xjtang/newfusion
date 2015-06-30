@@ -8,12 +8,10 @@
 % Last Update: 9/18/2014
 %
 % Input Arguments:
-%   MOD09GA (Structure) - Subset of MODIS grided data over the area of the 
-%       ETM image and the corresponding geometry information.
+%   MOD09GA (Structure) - Subset of MODIS grided data over the area of the ETM image and the corresponding geometry information.
 % 
 % Output Arguments: 
-%   MOD09GA (Structure) - Subset of MODIS grided data over the area of the 
-%       ETM image and the corresponding geometry information (interpolated).
+%   MOD09GA (Structure) - Subset of MODIS grided data over the area of the ETM image and the corresponding geometry information (interpolated).
 %
 % Instruction: 
 %   1.Call by other scripts with correct input and output arguments.

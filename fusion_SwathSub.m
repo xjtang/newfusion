@@ -28,8 +28,7 @@
 %   3.Modified for work flow of fusion version 6.1.
 %   4.Changed from script to function
 %   5.Modified the code to incorporate the use of fusion_inputs structure.
-%   6.Added processing of two other MODIS land bands (correspond to Landsat 
-%       band 5 and 7)
+%   6.Added processing of two other MODIS land bands (correspond to Landsat band 5 and 7)
 %
 % Updates of Version 6.1.1 - 10/10/2014 
 %   1.automatically skip if output file already exist.

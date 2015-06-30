@@ -20,8 +20,7 @@
 %   1.Call by other scripts with correct input and output arguments.
 %
 % Version 6.0 - Unknown (by Q. Xin)
-%   This script generates array of MODIS swath observation geometry for the
-%       whole swath
+%   This script generates array of MODIS swath observation geometry for the whole swath
 %
 % Updates of Version 6.1 - 9/17/2014 
 %   1.Updated comments.
