@@ -90,6 +90,6 @@ Version 6.1 - 10/15/2014
 - Released on Github.
 - remastered and operational.
 
-Version 6.0 - Unknown (by Qinchuan Xin)
+Version 6.0 - Unknown (by Q. Xin)
 --------------
 - Operational version of the original fusion project.
