@@ -1,15 +1,16 @@
 % cloud_interp.m
-% Version 1.3
+% Version 1.3.1
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 11/24/2014
-% Last Update: 4/6/2015
+% Last Update: 7/1/2015
 %
 % Input Arguments: 
 %   path - path to MOD09SUB m-files.
 %   res - resolusion of MODIS swath.
 %   plat - paltform MOD/MYD
+%   scene - Landsat scene path and row [227 65]
 %   outFile - output file.
 %   disThres - the cloud threshold for discarding the swath data.
 %   
@@ -35,10 +36,13 @@
 % Updates of Version 1.3 - 4/6/2015
 %   1.Combined 250m and 500m fusion.
 %
+% Updates of Version 1.3.1 - 7/1/2015
+%   1.Adde Landsat scene information.
+%
 % Created on Github on 11/24/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-function cloud_interp(path,plat,outFile,disThres)
+function cloud_interp(path,plat,scene,outFile,disThres)
 
   % set default value for disThres if not given
   if ~exist('disThres', 'var')
@@ -78,7 +82,7 @@ function cloud_interp(path,plat,outFile,disThres)
     dateDOY(i) = str2num(fileList(i).name((p+4):(p+6)));
   
     % discard current swath if cloud percent larger than certain threshold
-    dumpDir = [path '../DUMP/SUBCLD/'];
+    dumpDir = [path '../DUMP/P' scene(1) 'R' scene(2) '/SUBCLD/'];
     if exist(dumpDir,'dir') == 0 
         mkdir(dumpDir);
     end

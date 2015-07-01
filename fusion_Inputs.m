@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 6/17/2015
+% Last Update: 7/1/2015
 %
 % Input Arguments: 
 %   iDate (String) - main path to the data.
@@ -60,10 +60,12 @@
 %   1.Added settings and parameters of the change detection model.
 %   2.Added support for change detection model.
 %
-% Updates of Version 1.5 - 6/17/2015 
+% Updates of Version 1.5 - 7/1/2015 
 %   1.Added output folder for cache and change detection results.
 %   2.Added new input of path and row of Landsat.
 %   3.Implemented new file structure to support multiple Landsat scenes.
+%   4.Added output folder for files created by tools.
+%   5.Adjusted some names of output folder.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -104,7 +106,7 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub,iScene)
     % set input data location
         % main inputs:
         % Landsat ETM images to fuse
-        main.input.etm = [main.path 'MOD09ETM/P' iScene(1) 'R' iScene(2) '/'];
+        main.input.etm = [main.path 'ETMSYN/P' iScene(1) 'R' iScene(2) '/'];
         % MODIS Surface Reflectance data (swath data)
         main.input.swath = [main.path iPlat '09/'];
 
@@ -130,24 +132,24 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub,iScene)
             mkdir([main.outpath 'MOD09SUB']);
         end
         % fused MOD09SUB
-        main.output.modsubf = [main.outpath 'MOD09SUBF/'];
+        main.output.modsubf = [main.outpath 'MOD09FUS/'];
         if exist(main.output.modsubf,'dir') == 0 
-            mkdir([main.outpath 'MOD09SUBF']);
+            mkdir([main.outpath 'MOD09FUS']);
         end
         % MOD09SUB with change and difference image
-        main.output.modsubd = [main.outpath 'MOD09SUBD/'];
+        main.output.modsubd = [main.outpath 'MOD09DIF/'];
         if exist(main.output.modsubd,'dir') == 0 
-            mkdir([main.outpath 'MOD09SUBD']);
+            mkdir([main.outpath 'MOD09DIF']);
         end
         % fused synthetic MODIS image from ETM image
-        main.output.fusion = [main.outpath 'FUS09/'];
+        main.output.fusion = [main.outpath 'ETMFUS/'];
         if exist(main.output.fusion,'dir') == 0 
-            mkdir([main.outpath 'FUS09']);
+            mkdir([main.outpath 'ETMFUS']);
         end
         % difference between synthetic MODIS and true MODIS
-        main.output.dif = [main.outpath 'FUSDIF/'];
+        main.output.dif = [main.outpath 'ETMDIF/'];
         if exist(main.output.dif,'dir') == 0 
-            mkdir([main.outpath 'FUSDIF']);
+            mkdir([main.outpath 'ETMDIF']);
         end
         % changes detected
         % main.output.change = [main.path 'FUSCHG/'];
@@ -159,27 +161,32 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub,iScene)
         if exist(main.output.dump,'dir') == 0 
             mkdir([main.path 'DUMP']);
         end
+        % a folder that contains all files that will be created by tools
+        main.output.vault = [main.path 'VAULT/'];
+        if exist(main.output.vault,'dir') == 0 
+            mkdir([main.path 'VAULT']);
+        end
         
         % from BRDF correction
         % BRDF parameters at Landsat scale
-        main.output.etmBRDF = [main.path 'ETMBRDF/'];
+        main.output.etmBRDF = [main.path 'BRDFETM/'];
         if exist(main.output.etmBRDF,'dir') == 0 
-            mkdir([main.path 'ETMBRDF']);
+            mkdir([main.path 'BRDFETM']);
         end
         % BRDF coefficients grabbed from the BRDF product
-        main.output.modBRDF = [main.path 'MOD09B/'];
+        main.output.modBRDF = [main.path 'BRDF/'];
         if exist(main.output.modBRDF,'dir') == 0 
-            mkdir([main.path 'MOD09B']);
+            mkdir([main.path 'BRDF']);
         end
         % BRDF corrected and fused MOD09SUB
-        main.output.modsubbrdf = [main.outpath 'MOD09SUBBRDF/'];
+        main.output.modsubbrdf = [main.outpath 'BRDFSUB/'];
         if exist(main.output.modsubbrdf,'dir') == 0 
-            mkdir([main.outpath 'MOD09SUBBRDF']);
+            mkdir([main.outpath 'BRDFSUB']);
         end
         % fused synthetic MODISimage with BRDF correction
-        main.output.fusionbrdf = [main.outpath 'FUS09B/'];
+        main.output.fusionbrdf = [main.outpath 'BRDFFUS/'];
         if exist(main.output.fusionbrdf,'dir') == 0 
-            mkdir([main.outpath 'FUS09B']);
+            mkdir([main.outpath 'BRDFFUS']);
         end
     
         % from change detection
@@ -189,9 +196,9 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub,iScene)
             mkdir([main.outpath 'CACHE']);
         end
         % change detection model results in matlab format
-        main.output.chgmat = [main.outpath 'FUSCHG/'];
+        main.output.chgmat = [main.outpath 'CHG/'];
         if exist(main.output.chgmat,'dir') == 0 
-            mkdir([main.outpath 'FUSCHG']);
+            mkdir([main.outpath 'CHG']);
         end
         
         % from gridding process
