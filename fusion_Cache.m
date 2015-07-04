@@ -14,7 +14,7 @@
 % Output Arguments: NA
 %
 % Instruction: 
-%   1.Customize the main input file (fusion_inputs.m) with proper settings for specific project.
+%   1.Customize a config file for your project.
 %   2.Run fusion_Inputs() first and get the returned structure of inputs
 %   3.Run previous steps first to make sure required data are already generated.
 %   4.Run this function with the stucture of inputs as the input argument.
@@ -62,12 +62,12 @@ function fusion_Cache(main)
         % check if this line is already processed
         File.Check = dir([main.output.cache 'ts.r' i '.cache.mat']);
         if numel(File.Check) >= 1
-            disp([DayStr ' already exist, skip this line.']);
+            disp([i ' line already exist, skip this line.']);
             continue;
         end
         
         % initialize
-        TS.Data = ones(samp,numel(dates),nband)*(-9999);
+        TS.Data = ones(samp,numel(fusImage),nband+2)*(-9999);
         
         % loop through images
         for j = i:numel(fusImage)
@@ -78,7 +78,7 @@ function fusion_Cache(main)
             % check if image exist
             File.Check = dir(imgStack);
             if numel(File.Check) >= 1
-                disp([DayStr ' dif image does not exist, skip this date.']);
+                disp([fusImage(j).name ' image does not exist, skip this date.']);
                 continue;
             end
             
@@ -91,7 +91,7 @@ function fusion_Cache(main)
         end
         
         % save current line
-        save([main.output.cache 'ts.r' i '.cache.mat'],'TS')
+        save([main.output.cache 'ts.r' i '.cache.mat'],'-struct','TS')
         disp(['Done with line',i,' in ',num2str(toc,'%.f'),' seconds']);    
         
     end
