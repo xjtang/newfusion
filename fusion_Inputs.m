@@ -230,9 +230,9 @@ function main = fusion_Inputs(file,job)
         
         % from BRDF correction
         % BRDF parameters at Landsat scale
-        main.output.etmBRDF = [main.path 'BRDFETM/'];
+        main.output.etmBRDF = [main.outpath 'BRDFETM/'];
         if exist(main.output.etmBRDF,'dir') == 0 
-            mkdir([main.path 'BRDFETM']);
+            mkdir([main.outpath 'BRDFETM']);
         end
         % BRDF coefficients grabbed from the BRDF product
         main.output.modBRDF = [main.path 'BRDF/'];
