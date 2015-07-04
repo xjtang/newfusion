@@ -1,5 +1,5 @@
 % fusion_WriteETM.m
-% Version 1.3.1
+% Version 1.4
 % Step 6
 % Output Result
 %
@@ -14,7 +14,7 @@
 % Output Arguments: NA
 %
 % Instruction: 
-%   1.Customize the main input file (fusion_inputs.m) with proper settings for specific project.
+%   1.Customize a config file for your project.
 %   2.Run fusion_Inputs() first and get the returned structure of inputs
 %   3.Run previous steps first to make sure required data are already generated.
 %   4.Run this function with the stucture of inputs as the input argument.
@@ -43,8 +43,9 @@
 %   1.Implemented support for new data structure.
 %   2.Include Landsat path and row info in the result.
 %
-% Updates of Version 1.3.1 -7/1/2015
+% Updates of Version 1.4 -7/1/2015
 %   1.Changed output file name style.
+%   2.Combined two cloud mask.
 %
 % Released on Github on 1/30/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -133,6 +134,10 @@ function fusion_WriteETM(main)
             ETMImage(:,:,7) = Temp;
             ETMImage = int16(ETMImage);
    
+            % combine two cloud mask
+            ETMImage(:,:,8) = squeeze(ETMImage(:,:,8))|squeeze(ETMImage(:,:,9));
+            ETMImage(:,:,9) = [];
+            
             % save as ENVI imsge
             mkdir([main.output.dif,plat,main.set.scene(1),main.set.scene(2),DayStr,'T',TimeStr]);
             enviwrite([main.output.dif,plat,main.set.scene(1),main.set.scene(2),DayStr,'T',TimeStr,...
