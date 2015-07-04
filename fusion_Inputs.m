@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 7/3/2015
+% Last Update: 7/4/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -64,11 +64,12 @@
 %   4.Added output folder for files created by tools.
 %   5.Adjusted some names of output folder.
 %
-% Updates of Version 2.0 - 7/3/2015
+% Updates of Version 2.0 - 7/4/2015
 %   1.Added a new component that reads an external config file for model settings and parameters.
 %   2.Optimized user experience.
 %   3.Shrinked the number of input arguments.
 %   4.Fixed a bug of two digit landsat scene.
+%   5.Other bugs fixded
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -183,21 +184,21 @@ function main = fusion_Inputs(file,job)
         % Landsat ETM images to fuse
         main.input.etm = [main.path 'ETMSYN/P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
         % MODIS Surface Reflectance data (swath data)
-        main.input.swath = [main.path iPlat '09/'];
+        main.input.swath = [main.path modisPlatform '09/'];
 
         % for 250m resolution fusion process only:
         % gridded 250m resolution band 1 and 2 surface reflectance data
-        main.input.g250m = [main.path iPlat '09GQ/'];
+        main.input.g250m = [main.path modisPlatform '09GQ/'];
 
         % for BRDF correction process only:
         % daily gridded MODIS suface reflectance data
-        main.input.grid = [main.path iPlat '09GA/'];
+        main.input.grid = [main.path modisPlatform '09GA/'];
         % BRDF/Albedo model parameters product
         main.input.brdf = [main.path 'MCD43A1/'];
 
         % for gridding process only:
         % MODIS geolocation data
-        main.input.geo = [main.path iPlat '03/'];
+        main.input.geo = [main.path modisPlatform '03/'];
         
     % set output data location (create if not exist)
         % main outputs:
