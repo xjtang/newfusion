@@ -3,7 +3,7 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.0 - 6/30/2015  
+Version 1.0 - 7/3/2015  
 --------------
 - Change project name to the New Fusion (version 1.0).  
 - Bugs fixed.  
@@ -12,6 +12,8 @@ Version 1.0 - 6/30/2015
 - Adjusted data structure.  
 - Added support for multiple Landsat scene senario.  
 - Updated readme.  
+- Added new fusion function for change detection.
+- Implemented a config file that can be customized for each project.
 
 Fusion  
 --------------
