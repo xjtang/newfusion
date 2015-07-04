@@ -83,7 +83,7 @@ function main = fusion_Inputs(file,job)
     
     % check input argument
     if ~exist('file', 'var')
-        file = '/projectnb/landsat/projects/code/newfusion/config.m';
+        file = '/projectnb/landsat/projects/fusion/codes/new_fusion/config.m';
     end
     if (~exist('job', 'var'))||(min(job)<1)||(job(1)>job(2))
         job = [0,0];
@@ -98,7 +98,7 @@ function main = fusion_Inputs(file,job)
         % project information
         % data path
         if ~exist('dataPath', 'var')
-            dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/';
+            dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/2013/';
         end
         % landsat path and row
         if ~exist('landsatScene', 'var')

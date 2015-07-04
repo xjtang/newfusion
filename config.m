@@ -26,7 +26,7 @@
 % project information
     modisPlatform = 'MOD';          % MOD for Terra, MYD for Aqua
     landsatScene = [227,65];        % Landsat path and row
-    dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/';
+    dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/2013/';
                                     % data path
                                             
 % main settings
