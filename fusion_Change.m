@@ -14,7 +14,7 @@
 % Output Arguments: NA
 %
 % Instruction: 
-%   1.Customize the main input file (fusion_inputs.m) with proper settings for specific project.
+%   1.Customize a config file for your project.
 %   2.Run fusion_Inputs() first and get the returned structure of inputs
 %   3.Run previous steps first to make sure required data are already generated.
 %   4.Run this function with the stucture of inputs as the input argument.
@@ -26,7 +26,7 @@
 %----------------------------------------------------------------
 
 function fusion_Change(main)
-    
+
     % calculate the lines that will be processed by this job
     njob = main.set.job(2);
     thisjob = main.set.job(1);
@@ -43,14 +43,47 @@ function fusion_Change(main)
     % line by line processing
     for i = jobLine
         
+        % check if result already exist
+        File.Check = dir([main.output.chgmat 'ts.r' i '.chg.mat']);
+        if numel(File.Check) >= 1
+            disp([i ' line already exist, skip this line.']);
+            continue;  
+        end
+        
         % check if cache exist
+        File.Check = dir([main.output.cache 'ts.r' i '.cache.mat']);
+        if numel(File.Check) >= 1
+            disp([i ' line cache does not exist, skip this line.']);
+            continue;
+        end
         
+        % load TS cache
+        TS = load([main.output.cache 'ts.r' i '.cache.mat']);
+        samp = size(TS.Data,1);
+        nday = size(TS.Data,2);
         
+        % initialize
+        CHG.Date = TS.Date;
+        CHG.Data = ones(samp,nday,2)*(-9999);
         
-        
+        % pixel by pixel processing
+        for j = 1:samp
+            
+            % compose data
+            PTS = (squeeze(TS.Data(j,:,main.model.band)))';
+            CLD = squeeze(TS.Data(j,:,end));
+            CCTS = ones(length(main.model.band),nday);
+            for k = main.model.band
+                CCTS(k,:) = PTS(k,:).*not(CLD)+(-9999)*CLD;
+            end
+            
+            % detect change
+            CHG.Data(j,:,:) = change(CCTS,main.model);
+            
+        end
         
         % save current file
-        save([main.output.cache 'chg.r' i '.mat'],'CHG')
+        save([main.output.cache 'ts.r' i '.mat'],'CHG')
         disp(['Done with line',i,' in ',num2str(toc,'%.f'),' seconds']); 
         
     end
