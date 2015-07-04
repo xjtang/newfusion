@@ -1,5 +1,5 @@
 % fusion_Cache.m
-% Version 1.0
+% Version 1.0.1
 % Step 7
 % Cache Fusion Time Series
 %
@@ -21,6 +21,9 @@
 %
 % Version 1.0 - 7/1/2015
 %   This script caches the Landsat style fusion time series into mat files.
+%
+% Updates of Version 1.0.1 - 7/3/2015
+%   1.Fixed a bug caused by two digit landsat scene.
 %
 % Released on Github on 6/15/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -46,7 +49,7 @@ function fusion_Cache(main)
     tic;
     
     % find existing fusion time series images
-    fusImage = dir([main.output.dif 'M*D' main.set.scene(1) main.set.scene(2) '*']);
+    fusImage = dir([main.output.dif 'M*D' num2str(main.set.scene(1),'%03d') num2str(main.set.scene(2),'%03d') '*']);
     
     % get dates of images
     TS.Date = ones(numel(fusImage),2);

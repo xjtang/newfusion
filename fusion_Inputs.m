@@ -68,6 +68,7 @@
 %   1.Added a new component that reads an external config file for model settings and parameters.
 %   2.Optimized user experience.
 %   3.Shrinked the number of input arguments.
+%   4.Fixed a bug of two digit landsat scene.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -175,12 +176,12 @@ function main = fusion_Inputs(file,job)
         
     % set project main path
     main.path = dataPath;
-    main.outpath = [main.path 'P' iScene(1) 'R' iScene(2) '/'];
+    main.outpath = [main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
     
     % set input data location
         % main inputs:
         % Landsat ETM images to fuse
-        main.input.etm = [main.path 'ETMSYN/P' iScene(1) 'R' iScene(2) '/'];
+        main.input.etm = [main.path 'ETMSYN/P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
         % MODIS Surface Reflectance data (swath data)
         main.input.swath = [main.path iPlat '09/'];
 
