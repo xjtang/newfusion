@@ -1,27 +1,24 @@
 % fusion_Inputs.m
-% Version 1.5
+% Version 2.0
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 7/1/2015
+% Last Update: 7/3/2015
 %
 % Input Arguments: 
-%   iDate (String) - main path to the data.
-%   iPlat (String) - platform, MOD for Terra, MYD for Aqua.
-%   iBRDF (Integer) - 0: BRDF off; 1: BRDF on.
-%   iDis (Double) - Percenatble of data discarded at the edge of Landsat image (0.1 as 10%).
-%   iSub (Vector, Interger) - process a subset of the data. e.g. [1 50] means divide into 50 parts and process the 1st. [0 0] means do all in one job.
+%   file (String) - full path and file name to the config file
+%   job (Vector, Interger) - jobn information e.g. [1 50] means 1st job of total 50 jobs, [0 0] means single job.
 % 
 % Output Arguments: 
-%   mainInputs (Structure) - main inputs for the whole fusion process
+%   main (Structure) - main inputs for the whole fusion process
 %
 % Instruction: 
-%   1.Customize the inputs and settings for your fusion project.
-%   2.Run this stript first to create a new structure of all inputs
-%   3.Use the created inputs as input arguments for other function
+%   1.Customize a config file for your project.
+%   2.Run this stript with the config file to create a new structure of inputs.
+%   3.Use the created inputs as input arguments for other functions.
 %
 % Version 1.0 - 10/8/2014 
 %   This script newly created for Fusion update 6.1
@@ -67,40 +64,117 @@
 %   4.Added output folder for files created by tools.
 %   5.Adjusted some names of output folder.
 %
+% Updates of Version 2.0 - 7/3/2015
+%   1.Added a new component that reads an external config file for model settings and parameters.
+%   2.Optimized user experience.
+%   3.Shrinked the number of input arguments.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
-function main = fusion_Inputs(iData,iPlat,iBRDF,iSub,iScene)
-
-    % check input argument
-    if ~exist('iSub', 'var')
-        iSub = [0,0];
-    end
-    if ~exist('iDis', 'var')
-        iDis = 0;
-    end
-    if ~exist('iBRDF', 'var')
-        iBRDF = 0;
-    end
-    if ~exist('iData', 'var')
-        iData = '/projectnb/landsat/projects/fusion/srb_site/';
-    end
-    if ~exist('iPlat', 'var')
-        iPlat = 'MOD';
-    end
-    if ~exist('iScene', 'var')
-        iScene = [227,65];
-    end 
+function main = fusion_Inputs(file,job)
 
     % add the fusion package to system path
     addpath(genpath(fileparts(mfilename('fullpath'))));
-    
+
     % load module
     system('module load hdf/4.2.5');
     system('module load gdal/1.10.0');
     
-    % set up project main path
-    main.path = iData;
+    % check input argument
+    if ~exist('file', 'var')
+        file = '/projectnb/landsat/projects/code/newfusion/config.m';
+    end
+    if (~exist('job', 'var'))||(min(job)<1)||(job(1)>job(2))
+        job = [0,0];
+    end
+    
+    % load config file
+    if exist(file,'file')
+        run(file);
+    end
+    
+    % check if all parameters exist in config file
+        % project information
+        % data path
+        if ~exist('dataPath', 'var')
+            dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/';
+        end
+        % landsat path and row
+        if ~exist('landsatScene', 'var')
+            landsatScene = [227,65];
+        end
+        % modis platform
+        if ~exist('modisPlatform', 'var')
+            modisPlatform = 'MOD';
+        end
+        
+        % main settings
+        % BRDF switch
+        if ~exist('BRDF', 'var')
+            BRDF = 0;
+        end
+        % bias switch
+        if ~exist('BIAS', 'var')
+            BIAS = 1;
+        end
+        % discard ratio
+        if ~exist('discardRatio', 'var')
+            discardRatio = 0;
+        end
+        % difference map method
+        if ~exist('diffMethod', 'var')
+            diffMethod = 0;
+        end
+        
+        % model parameters
+        % BRDF switch
+        if ~exist('minNoB', 'var')
+            minNoB = 10;
+        end
+        % bias switch
+        if ~exist('initNoB', 'var')
+            initNoB = 5;
+        end
+        % discard ratio
+        if ~exist('nStandDev', 'var')
+            nStandDev = 1.5;
+        end
+        % difference map method
+        if ~exist('nConsecutive', 'var')
+            nConsecutive = 5;
+        end
+        % BRDF switch
+        if ~exist('nSuspect', 'var')
+            nSuspect = 3;
+        end
+        % bias switch
+        if ~exist('outlierRemove', 'var')
+            outlierRemove = 1;
+        end
+        % discard ratio
+        if ~exist('thresNonFstMean', 'var')
+            thresNonFstMean = 10;
+        end
+        % difference map method
+        if ~exist('thresNonFstStd', 'var')
+            thresNonFstStd = 0.3;
+        end
+        % bias switch
+        if ~exist('thresEdge', 'var')
+            thresEdge = 5;
+        end
+        % discard ratio
+        if ~exist('bandIncluded', 'var')
+            bandIncluded = [3,4,5];
+        end
+        % difference map method
+        if ~exist('bandWeight', 'var')
+            bandWeight = [1,1,1];
+        end
+        
+    % set project main path
+    main.path = dataPath;
     main.outpath = [main.path 'P' iScene(1) 'R' iScene(2) '/'];
     
     % set input data location
@@ -151,21 +225,6 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub,iScene)
         if exist(main.output.dif,'dir') == 0 
             mkdir([main.outpath 'ETMDIF']);
         end
-        % changes detected
-        % main.output.change = [main.path 'FUSCHG/'];
-        % if exist(main.output.change,'dir') == 0 
-        %     mkdir([main.path 'FUSCHG']);
-        % end
-        % a dump folder for temporaryly storing dumped data
-        main.output.dump = [main.path 'DUMP/'];
-        if exist(main.output.dump,'dir') == 0 
-            mkdir([main.path 'DUMP']);
-        end
-        % a folder that contains all files that will be created by tools
-        main.output.vault = [main.path 'VAULT/'];
-        if exist(main.output.vault,'dir') == 0 
-            mkdir([main.path 'VAULT']);
-        end
         
         % from BRDF correction
         % BRDF parameters at Landsat scale
@@ -201,57 +260,59 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub,iScene)
             mkdir([main.outpath 'CHG']);
         end
         
-        % from gridding process
-        % gridded fusion result
-        % main.output.fusGrid = [main.path 'FUSGRID/'];
-        % if exist(main.output.fusGrid,'dir') == 0 
-        %     mkdir([main.path 'FUSGRID']);
-        % end
-        % gridding parameters
-        % main.output.gridPara = [main.path 'GRIDPARA/'];
-        % if exist(main.output.gridPara,'dir') == 0 
-        %     mkdir([main.path 'GRIDPARA']);
-        % end
+        % other output folder
+        % a dump folder for temporaryly storing dumped data
+        main.output.dump = [main.path 'DUMP/'];
+        if exist(main.output.dump,'dir') == 0 
+            mkdir([main.path 'DUMP']);
+        end
+        % a folder that contains all files that will be created by tools
+        main.output.vault = [main.path 'VAULT/'];
+        if exist(main.output.vault,'dir') == 0 
+            mkdir([main.path 'VAULT']);
+        end
           
-    % settings and parameters
+    % project information
         % platform of MODIS
-        main.set.plat = iPlat;
-        % apply BRDF correction or not
-        main.set.brdf = iBRDF;
-        % discard ratio of Landsat image (% image discarded on the edge)
-        main.set.dis = iDis;
-        % correct for bias in difference map
-        main.set.bias = 1;
-        % max (0) or mean (1) in calculating difference map
-        main.set.dif = 0;
-        % job information
-        main.set.job = iSub;
+        main.set.plat = modisPlatform;
         % Landsat scene
-        main.set.scene = iScene;
+        main.set.scene = landsatScene;
+        % job information
+        main.set.job = job;
+        
+    % settings and parameters
+        % apply BRDF correction or not
+        main.set.brdf = BRDF;
+        % discard ratio of Landsat image (% image discarded on the edge)
+        main.set.dis = discardRatio;
+        % correct for bias in difference map
+        main.set.bias = BIAS;
+        % max (0) or mean (1) in calculating difference map
+        main.set.dif = diffMethod;
         
     % settings and parameters for the change detection model
         % minimun number of valid observation
-        main.model.minNoB = 10;
+        main.model.minNoB = minNoB;
         % number of observations to initialize the model
-        main.model.initNoB = 5;
+        main.model.initNoB = initNoB;
         % coefficiant of std in change detection
-        main.model.nSD = 1.5;
+        main.model.nSD = nStandDev;
         % number of consective observation of detect change
-        main.model.nCosc = 5;
+        main.model.nCosc = nConsecutive;
         % number of suspective observation to confirm the change
-        main.model.nSusp = 3;
+        main.model.nSusp = nSuspect;
         % number of outlier to remove in initialization
-        main.model.outlr = 1;
+        main.model.outlr = outlierRemove;
         % threshold of mean to detect non-forest pixel
-        main.model.nonfstmean = 10;
+        main.model.nonfstmean = thresNonFstMean;
         % threshold of std to detect non-forest pixel
-        main.model.nonfstdev = 0.3;
+        main.model.nonfstdev = thresNonFstStd;
         % threshold of detecting edging pixel in stable non-forest pixel
-        main.model.nonfstedge = 5;
+        main.model.nonfstedge = thresEdge;
         % bands used for change detection
-        main.model.band = [3,4,5];
+        main.model.band = bandIncluded;
         % weight of each band in change detection
-        main.model.weight = [1,1,1];
+        main.model.weight = bandWeight;
         
     % image properties
         % grab the first ETM file
@@ -295,21 +356,18 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub,iScene)
         end
     
     % divide into parts
-        if min(iSub>0)
-        
+        if min(job>0)       
             % calculate begining and ending
             total = numel(main.date.swath);
-            piece = floor(total/iSub(2));
-            start = 1+piece*(iSub(1)-1);
-            if iSub(1)<iSub(2)
+            piece = floor(total/job(2));
+            start = 1+piece*(job(1)-1);
+            if job(1)<job(2)
                 stop = start+piece-1;
             else
                 stop = total;
             end
-            
             % subset dates to be processed
             main.date.swath = main.date.swath(start:stop);
-            
         end
     
     % done
