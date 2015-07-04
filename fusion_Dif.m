@@ -14,7 +14,7 @@
 % Output Arguments: NA
 %
 % Instruction: 
-%   1.Customize the main input file (fusion_inputs.m) with proper settings for specific project.
+%   1.Customize a config file for your project.
 %   2.Run fusion_Inputs() first and get the returned structure of inputs
 %   3.Run previous steps first to make sure required data are already generated.
 %   4.Run this function with the stucture of inputs as the input argument.
