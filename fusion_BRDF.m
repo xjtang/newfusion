@@ -35,6 +35,7 @@
 %
 % Updates of Version 6.2.1 - 7/5/2015
 %   1.Fixed a major bug that may cause error when having multiple jobs.
+%   2.Fixed a bug that may cause unecessary calculation.
 %
 % Released on Github on 10/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -70,99 +71,106 @@ function fusion_BRDF(main)
         % create output file
         ori = [main.input.grid File.MOD09GA.name];
         des = File.MODBRDF;
-        if exist(des,'file')>0 & exist(File.ETMBRDF,'file')>0
-            disp([des ' already exist, skip one']);
+        if exist(des,'file')>0 
+            disp([des ' already exist, skip step one']);
+        else
+            % copy file
+            system(['cp ',ori,' ',des]);
+
+            % make sure all files exist
+            if numel(File.MOD09GA)<1
+                disp(['Cannot find MOD09GA for Julian Day: ', DayStr]);
+                continue;
+            elseif numel(File.MCD43A1)<1
+                disp(['Cannot find MCD43A1 for Julian Day: ', DayStr]);
+                continue;
+            elseif numel(File.MODBRDF)<1
+                disp(['Cannot find MODBRDF for Julian Day: ', DayStr]);
+                continue;
+            end
+
+            % read parameters of red and nir band for brdf correction
+            ParamRED = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band1'));
+            ParamNIR = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band2'));
+            ParamBLU = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band3'));
+            ParamGRE = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band4'));
+            ParamSWIR = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band6'));
+            ParamSWIR2 = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band7'));
+
+            % read sensor geometry information
+            VZA1km = double(hdfread([main.input.grid,File.MOD09GA.name],'SensorZenith_1'));
+            VAA1km = double(hdfread([main.input.grid,File.MOD09GA.name],'SensorAzimuth_1'));
+            SZA1km = double(hdfread([main.input.grid,File.MOD09GA.name],'SolarZenith_1'));
+            SAA1km = double(hdfread([main.input.grid,File.MOD09GA.name],'SolarAzimuth_1'));
+
+            % clean up the parameters
+            ParamBLU(ParamBLU>30000) = nan;
+            ParamBLU = ParamBLU/1000;
+            ParamGRE(ParamGRE>30000) = nan;
+            ParamGRE = ParamGRE/1000;
+            ParamRED(ParamRED>30000) = nan;
+            ParamRED = ParamRED/1000;
+            ParamNIR(ParamNIR>30000) = nan;
+            ParamNIR = ParamNIR/1000;
+            ParamSWIR(ParamSWIR>30000) = nan;
+            ParamSWIR = ParamSWIR/1000;
+            ParamSWIR2(ParamSWIR2>30000) = nan;
+            ParamSWIR2 = ParamSWIR2/1000;
+
+            % clean up sensor geometry
+            VZA1km(VZA1km<-30000) = nan; 
+            VAA1km(VAA1km<-30000) = nan; 
+            SZA1km(SZA1km<-30000) = nan; 
+            SAA1km(SAA1km<-30000) = nan; 
+
+            % split 1000m pixels into 500m pixels
+            VZA500 = kron(VZA1km,ones(2))/100;
+            VAA500 = kron(VAA1km,ones(2))/100;
+            SZA500 = kron(SZA1km,ones(2))/100;
+            SAA500 = kron(SAA1km,ones(2))/100;
+
+            % relative azimuth angle
+            RAA500 = mod(abs(SAA500-VAA500),180);
+
+            % brdf coefficient calculation
+            ReflBLU = brdffoward(ParamBLU(:,:,1),ParamBLU(:,:,2),ParamBLU(:,:,3),SZA500,VZA500,RAA500);
+            NadirReflBLU = brdffoward(ParamBLU(:,:,1),ParamBLU(:,:,2),ParamBLU(:,:,3),SZA500,zeros(2400),zeros(2400));
+            CoeffBLU = ReflBLU./NadirReflBLU*1000;
+
+            ReflGRE = brdffoward(ParamGRE(:,:,1),ParamGRE(:,:,2),ParamGRE(:,:,3),SZA500,VZA500,RAA500);
+            NadirReflGRE = brdffoward(ParamGRE(:,:,1),ParamGRE(:,:,2),ParamGRE(:,:,3),SZA500,zeros(2400),zeros(2400));
+            CoeffGRE = ReflGRE./NadirReflGRE*1000;
+
+            ReflRED = brdffoward(ParamRED(:,:,1),ParamRED(:,:,2),ParamRED(:,:,3),SZA500,VZA500,RAA500);
+            NadirReflRED = brdffoward(ParamRED(:,:,1),ParamRED(:,:,2),ParamRED(:,:,3),SZA500,zeros(2400),zeros(2400));
+            CoeffRED = ReflRED./NadirReflRED*1000;
+
+            ReflNIR = brdffoward(ParamNIR(:,:,1),ParamNIR(:,:,2),ParamNIR(:,:,3),SZA500,VZA500,RAA500);
+            NadirReflNIR = brdffoward(ParamNIR(:,:,1),ParamNIR(:,:,2),ParamNIR(:,:,3),SZA500,zeros(2400),zeros(2400));
+            CoeffNIR = ReflNIR./NadirReflNIR*1000;
+
+            ReflSWIR = brdffoward(ParamSWIR(:,:,1),ParamSWIR(:,:,2),ParamSWIR(:,:,3),SZA500,VZA500,RAA500);
+            NadirReflSWIR = brdffoward(ParamSWIR(:,:,1),ParamSWIR(:,:,2),ParamSWIR(:,:,3),SZA500,zeros(2400),zeros(2400));
+            CoeffSWIR = ReflSWIR./NadirReflSWIR*1000;
+
+            ReflSWIR2 = brdffoward(ParamSWIR2(:,:,1),ParamSWIR2(:,:,2),ParamSWIR2(:,:,3),SZA500,VZA500,RAA500);
+            NadirReflSWIR2 = brdffoward(ParamSWIR2(:,:,1),ParamSWIR2(:,:,2),ParamSWIR2(:,:,3),SZA500,zeros(2400),zeros(2400));
+            CoeffSWIR2 = ReflSWIR2./NadirReflSWIR2*1000;
+
+            % save BRDF Coefficient to MOD09BRDF
+            writeHDF(File.MODBRDF,12,int16(CoeffBLU));
+            writeHDF(File.MODBRDF,13,int16(CoeffGRE));
+            writeHDF(File.MODBRDF,10,int16(CoeffRED));
+            writeHDF(File.MODBRDF,11,int16(CoeffNIR));
+            writeHDF(File.MODBRDF,15,int16(CoeffSWIR));
+            writeHDF(File.MODBRDF,16,int16(CoeffSWIR2));
+        
+        end
+        
+        if exist(File.ETMBRDF,'file')>0
+            disp([des ' already exist, skip step one']);
             continue;
         end
-        system(['cp ',ori,' ',des]);
-
-        % make sure all files exist
-        if numel(File.MOD09GA)<1
-            disp(['Cannot find MOD09GA for Julian Day: ', DayStr]);
-            continue;
-        elseif numel(File.MCD43A1)<1
-            disp(['Cannot find MCD43A1 for Julian Day: ', DayStr]);
-            continue;
-        elseif numel(File.MODBRDF)<1
-            disp(['Cannot find MODBRDF for Julian Day: ', DayStr]);
-            continue;
-        end
-
-        % read parameters of red and nir band for brdf correction
-        ParamRED = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band1'));
-        ParamNIR = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band2'));
-        ParamBLU = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band3'));
-        ParamGRE = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band4'));
-        ParamSWIR = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band6'));
-        ParamSWIR2 = double(hdfread([main.input.brdf,File.MCD43A1.name],'BRDF_Albedo_Parameters_Band7'));
-
-        % read sensor geometry information
-        VZA1km = double(hdfread([main.input.grid,File.MOD09GA.name],'SensorZenith_1'));
-        VAA1km = double(hdfread([main.input.grid,File.MOD09GA.name],'SensorAzimuth_1'));
-        SZA1km = double(hdfread([main.input.grid,File.MOD09GA.name],'SolarZenith_1'));
-        SAA1km = double(hdfread([main.input.grid,File.MOD09GA.name],'SolarAzimuth_1'));
-
-        % clean up the parameters
-        ParamBLU(ParamBLU>30000) = nan;
-        ParamBLU = ParamBLU/1000;
-        ParamGRE(ParamGRE>30000) = nan;
-        ParamGRE = ParamGRE/1000;
-        ParamRED(ParamRED>30000) = nan;
-        ParamRED = ParamRED/1000;
-        ParamNIR(ParamNIR>30000) = nan;
-        ParamNIR = ParamNIR/1000;
-        ParamSWIR(ParamSWIR>30000) = nan;
-        ParamSWIR = ParamSWIR/1000;
-        ParamSWIR2(ParamSWIR2>30000) = nan;
-        ParamSWIR2 = ParamSWIR2/1000;
-
-        % clean up sensor geometry
-        VZA1km(VZA1km<-30000) = nan; 
-        VAA1km(VAA1km<-30000) = nan; 
-        SZA1km(SZA1km<-30000) = nan; 
-        SAA1km(SAA1km<-30000) = nan; 
-
-        % split 1000m pixels into 500m pixels
-        VZA500 = kron(VZA1km,ones(2))/100;
-        VAA500 = kron(VAA1km,ones(2))/100;
-        SZA500 = kron(SZA1km,ones(2))/100;
-        SAA500 = kron(SAA1km,ones(2))/100;
-        
-        % relative azimuth angle
-        RAA500 = mod(abs(SAA500-VAA500),180);
-
-        % brdf coefficient calculation
-        ReflBLU = brdffoward(ParamBLU(:,:,1),ParamBLU(:,:,2),ParamBLU(:,:,3),SZA500,VZA500,RAA500);
-        NadirReflBLU = brdffoward(ParamBLU(:,:,1),ParamBLU(:,:,2),ParamBLU(:,:,3),SZA500,zeros(2400),zeros(2400));
-        CoeffBLU = ReflBLU./NadirReflBLU*1000;
-
-        ReflGRE = brdffoward(ParamGRE(:,:,1),ParamGRE(:,:,2),ParamGRE(:,:,3),SZA500,VZA500,RAA500);
-        NadirReflGRE = brdffoward(ParamGRE(:,:,1),ParamGRE(:,:,2),ParamGRE(:,:,3),SZA500,zeros(2400),zeros(2400));
-        CoeffGRE = ReflGRE./NadirReflGRE*1000;
-        
-        ReflRED = brdffoward(ParamRED(:,:,1),ParamRED(:,:,2),ParamRED(:,:,3),SZA500,VZA500,RAA500);
-        NadirReflRED = brdffoward(ParamRED(:,:,1),ParamRED(:,:,2),ParamRED(:,:,3),SZA500,zeros(2400),zeros(2400));
-        CoeffRED = ReflRED./NadirReflRED*1000;
-
-        ReflNIR = brdffoward(ParamNIR(:,:,1),ParamNIR(:,:,2),ParamNIR(:,:,3),SZA500,VZA500,RAA500);
-        NadirReflNIR = brdffoward(ParamNIR(:,:,1),ParamNIR(:,:,2),ParamNIR(:,:,3),SZA500,zeros(2400),zeros(2400));
-        CoeffNIR = ReflNIR./NadirReflNIR*1000;
-        
-        ReflSWIR = brdffoward(ParamSWIR(:,:,1),ParamSWIR(:,:,2),ParamSWIR(:,:,3),SZA500,VZA500,RAA500);
-        NadirReflSWIR = brdffoward(ParamSWIR(:,:,1),ParamSWIR(:,:,2),ParamSWIR(:,:,3),SZA500,zeros(2400),zeros(2400));
-        CoeffSWIR = ReflSWIR./NadirReflSWIR*1000;
-
-        ReflSWIR2 = brdffoward(ParamSWIR2(:,:,1),ParamSWIR2(:,:,2),ParamSWIR2(:,:,3),SZA500,VZA500,RAA500);
-        NadirReflSWIR2 = brdffoward(ParamSWIR2(:,:,1),ParamSWIR2(:,:,2),ParamSWIR2(:,:,3),SZA500,zeros(2400),zeros(2400));
-        CoeffSWIR2 = ReflSWIR2./NadirReflSWIR2*1000;
-
-        % save BRDF Coefficient to MOD09BRDF
-        writeHDF(File.MODBRDF,12,int16(CoeffBLU));
-        writeHDF(File.MODBRDF,13,int16(CoeffGRE));
-        writeHDF(File.MODBRDF,10,int16(CoeffRED));
-        writeHDF(File.MODBRDF,11,int16(CoeffNIR));
-        writeHDF(File.MODBRDF,15,int16(CoeffSWIR));
-        writeHDF(File.MODBRDF,16,int16(CoeffSWIR2));
         
         % resample to Landsat size using gdal
         bash = [fileparts(mfilename('fullpath')),'/core/BRDFReproj.sh'];
