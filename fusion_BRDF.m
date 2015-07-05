@@ -177,7 +177,7 @@ function fusion_BRDF(main)
         system(['chmod u+x ',bash]);
         system([bash,' ',File.MODBRDF,' ',num2str(main.etm.utm),' ',num2str(main.etm.ulEast),' ',...
             num2str(main.etm.lrNorth),' ',num2str(main.etm.lrEast),' ',num2str(main.etm.ulNorth),' ',...
-            num2str(main.etm.res(1)),' ',num2str(main.etm.res(2)),' ',File.ETMBRDF,' ',main.set.job(1)]);
+            num2str(main.etm.res(1)),' ',num2str(main.etm.res(2)),' ',File.ETMBRDF,' ',num2str(main.set.job(1))]);
 
         % display message and end timer
         disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
