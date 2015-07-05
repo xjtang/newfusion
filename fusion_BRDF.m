@@ -1,5 +1,5 @@
 % fusion_BRDF.m
-% Version 6.2
+% Version 6.2.1
 % Step 1
 % BRDF Correction
 %
@@ -32,6 +32,9 @@
 %
 % Updates of Version 6.2 - 11/24/2014
 %   1.Added support for MODIS Aqua.
+%
+% Updates of Version 6.2.1 - 7/5/2015
+%   1.Fixed a major bug that may cause error when having multiple jobs.
 %
 % Released on Github on 10/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -166,7 +169,7 @@ function fusion_BRDF(main)
         system(['chmod u+x ',bash]);
         system([bash,' ',File.MODBRDF,' ',num2str(main.etm.utm),' ',num2str(main.etm.ulEast),' ',...
             num2str(main.etm.lrNorth),' ',num2str(main.etm.lrEast),' ',num2str(main.etm.ulNorth),' ',...
-            num2str(main.etm.res(1)),' ',num2str(main.etm.res(2)),' ',File.ETMBRDF]);
+            num2str(main.etm.res(1)),' ',num2str(main.etm.res(2)),' ',File.ETMBRDF,' ',main.set.job(1)]);
 
         % display message and end timer
         disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
