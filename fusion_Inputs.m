@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.0
+% Version 2.1
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 7/4/2015
+% Last Update: 7/5/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -70,6 +70,9 @@
 %   3.Shrinked the number of input arguments.
 %   4.Fixed a bug of two digit landsat scene.
 %   5.Other bugs fixded
+%
+% Updates of Version 2.1 - 7/5/2015
+%   1.Optimized the way of splitting jobs.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -359,17 +362,10 @@ function main = fusion_Inputs(file,job)
     
     % divide into parts
         if min(job>0)       
-            % calculate begining and ending
+            % total number of work load
             total = numel(main.date.swath);
-            piece = floor(total/job(2));
-            start = 1+piece*(job(1)-1);
-            if job(1)<job(2)
-                stop = start+piece-1;
-            else
-                stop = total;
-            end
-            % subset dates to be processed
-            main.date.swath = main.date.swath(start:stop);
+            % subset work load for each job
+            main.date.swath = main.date.swath(job(1):job(2):total);
         end
     
     % done
