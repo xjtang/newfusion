@@ -95,7 +95,7 @@ function fusion_BRDFusion(main)
 
         % read brdf coefficients
         ETMBRDF = multibandread([main.output.etmBRDF,File.ETMBRDF.name(1:(length(File.ETMBRDF.name)-4))],...
-            [numel(main.etm.line),numel(main.etm.sample),main.etm.band-1],'int16',0,'bsq','ieee-le');
+            [numel(main.etm.line),numel(main.etm.sample),6],'int16',0,'bsq','ieee-le');
         ETMBRDF(ETMBRDF<=0) = nan;
         ETMBRDF = ETMBRDF/1000;
 
