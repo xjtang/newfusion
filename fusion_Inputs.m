@@ -244,8 +244,8 @@ function main = fusion_Inputs(file,job)
             mkdir([main.path 'BRDF']);
         end
         % fused synthetic MODISimage with BRDF correction
-        main.output.fusionbrdf = [main.outpath 'BRDFFUS/'];
-        if exist(main.output.fusionbrdf,'dir') == 0 
+        main.output.modsubbrdf = [main.outpath 'BRDFFUS/'];
+        if exist(main.output.modsubbrdf,'dir') == 0 
             mkdir([main.outpath 'BRDFFUS']);
         end
     
