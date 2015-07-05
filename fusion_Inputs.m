@@ -73,6 +73,7 @@
 %
 % Updates of Version 2.1 - 7/5/2015
 %   1.Optimized the way of splitting jobs.
+%   2.Fixed output folder bug for BRDF result.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -241,11 +242,6 @@ function main = fusion_Inputs(file,job)
         main.output.modBRDF = [main.path 'BRDF/'];
         if exist(main.output.modBRDF,'dir') == 0 
             mkdir([main.path 'BRDF']);
-        end
-        % BRDF corrected and fused MOD09SUB
-        main.output.modsubbrdf = [main.outpath 'BRDFSUB/'];
-        if exist(main.output.modsubbrdf,'dir') == 0 
-            mkdir([main.outpath 'BRDFSUB']);
         end
         % fused synthetic MODISimage with BRDF correction
         main.output.fusionbrdf = [main.outpath 'BRDFFUS/'];
