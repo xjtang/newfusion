@@ -48,6 +48,7 @@
 % Updates of Version 6.3.1 - 7/5/2015
 %   1.Changed output file name style.
 %   2.Fixed a bug caused by thermal band.
+%   3.Fixed a bug on dates.
 %
 % Released on Github on 10/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -76,7 +77,7 @@ function fusion_BRDFusion(main)
     for I_Day = 1:numel(main.date.swath)
         
         % get date information of all images
-        Day = main.date.etm(I_Day);
+        Day = main.date.swath(I_Day);
         DayStr = num2str(Day);
 
         % check if result already exist
