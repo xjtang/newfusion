@@ -1,5 +1,5 @@
 % fusion_Change.m
-% Version 1.0
+% Version 1.0.1
 % Step 8
 % Detect Change
 %
@@ -21,6 +21,9 @@
 %
 % Version 1.0 - 7/1/2015
 %   This script detect change in fusion time series.
+%
+% Version 1.0.1 - 7/5/2015
+%   1.Fxied a num2str conversion bug.
 %
 % Released on Github on 7/1/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -44,21 +47,21 @@ function fusion_Change(main)
     for i = jobLine
         
         % check if result already exist
-        File.Check = dir([main.output.chgmat 'ts.r' i '.chg.mat']);
+        File.Check = dir([main.output.chgmat 'ts.r' num2str(i) '.chg.mat']);
         if numel(File.Check) >= 1
             disp([i ' line already exist, skip this line.']);
             continue;  
         end
         
         % check if cache exist
-        File.Check = dir([main.output.cache 'ts.r' i '.cache.mat']);
+        File.Check = dir([main.output.cache 'ts.r' num2str(i) '.cache.mat']);
         if numel(File.Check) >= 1
             disp([i ' line cache does not exist, skip this line.']);
             continue;
         end
         
         % load TS cache
-        TS = load([main.output.cache 'ts.r' i '.cache.mat']);
+        TS = load([main.output.cache 'ts.r' num2str(i) '.cache.mat']);
         samp = size(TS.Data,1);
         nday = size(TS.Data,2);
         
@@ -83,7 +86,7 @@ function fusion_Change(main)
         end
         
         % save current file
-        save([main.output.cache 'ts.r' i '.mat'],'CHG')
+        save([main.output.cache 'ts.r' num2str(i) '.mat'],'CHG')
         disp(['Done with line',i,' in ',num2str(toc,'%.f'),' seconds']); 
         
     end

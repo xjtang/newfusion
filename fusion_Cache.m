@@ -22,8 +22,9 @@
 % Version 1.0 - 7/1/2015
 %   This script caches the Landsat style fusion time series into mat files.
 %
-% Updates of Version 1.0.1 - 7/3/2015
+% Updates of Version 1.0.1 - 7/5/2015
 %   1.Fixed a bug caused by two digit landsat scene.
+%   2.Fixed a bug of num to str conversion.
 %
 % Released on Github on 6/15/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -63,7 +64,7 @@ function fusion_Cache(main)
     for i = jobLine
         
         % check if this line is already processed
-        File.Check = dir([main.output.cache 'ts.r' i '.cache.mat']);
+        File.Check = dir([main.output.cache 'ts.r' num2str(i) '.cache.mat']);
         if numel(File.Check) >= 1
             disp([i ' line already exist, skip this line.']);
             continue;
@@ -94,7 +95,7 @@ function fusion_Cache(main)
         end
         
         % save current line
-        save([main.output.cache 'ts.r' i '.cache.mat'],'-struct','TS')
+        save([main.output.cache 'ts.r' num2str(i) '.cache.mat'],'-struct','TS')
         disp(['Done with line',i,' in ',num2str(toc,'%.f'),' seconds']);    
         
     end
