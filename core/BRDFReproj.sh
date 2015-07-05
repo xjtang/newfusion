@@ -38,8 +38,8 @@ module load gdal/1.10.0
 cd $(dirname $9)
 
 # make temp folder
-if [ ! -d ./temp$10/ ]; then
-    mkdir ./temp$10
+if [ ! -d ./temp${10}/ ]; then
+    mkdir ./temp${10}
 fi
 
 # grab inputs
@@ -49,20 +49,20 @@ extent=$3' '$4' '$5' '$6
 res=$7' '$8
 
 # reproject all bands
-gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b03_1 ./temp$10/BRDFCoef_band1.tif
-gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b04_1 ./temp$10/BRDFCoef_band2.tif
-gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b01_1 ./temp$10/BRDFCoef_band3.tif
-gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b02_1 ./temp$10/BRDFCoef_band4.tif
-gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b06_1 ./temp$10/BRDFCoef_band5.tif
-gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b07_1 ./temp$10/BRDFCoef_band7.tif
+gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b03_1 ./temp${10}/BRDFCoef_band1.tif
+gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b04_1 ./temp${10}/BRDFCoef_band2.tif
+gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b01_1 ./temp${10}/BRDFCoef_band3.tif
+gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b02_1 ./temp${10}/BRDFCoef_band4.tif
+gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b06_1 ./temp${10}/BRDFCoef_band5.tif
+gdalwarp -t_srs '+proj=utm +zone='$zone' +datum=WGS84' -te $extent -tr $res HDF4_EOS:EOS_GRID:$file:MODIS_Grid_500m_2D:sur_refl_b07_1 ./temp${10}/BRDFCoef_band7.tif
 
 # stack results
-cd ./temp$10/
+cd ./temp${10}/
 gdal_merge.py -o $9 -of ENVI -init 1000 -n 1000 -separate ./BRDFCoef_band1.tif ./BRDFCoef_band2.tif ./BRDFCoef_band3.tif ./BRDFCoef_band4.tif ./BRDFCoef_band5.tif ./BRDFCoef_band7.tif
 
 # delete temp file
 cd ../
-rm -r ./temp$10
+rm -r ./temp${10}
 
 echo 'done!'
 
