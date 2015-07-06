@@ -25,6 +25,7 @@
 % Updates of Version 1.0.1 - 7/5/2015
 %   1.Fixed a bug caused by two digit landsat scene.
 %   2.Fixed a bug of num to str conversion.
+%   3.Fixed a nband bug.
 %
 % Released on Github on 6/15/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -71,7 +72,7 @@ function fusion_Cache(main)
         end
         
         % initialize
-        TS.Data = ones(samp,numel(fusImage),nband+2)*(-9999);
+        TS.Data = ones(samp,numel(fusImage),nband-1+2)*(-9999);
         
         % loop through images
         for j = i:numel(fusImage)
