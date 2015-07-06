@@ -67,7 +67,7 @@ function fusion_Cache(main)
         % check if this line is already processed
         File.Check = dir([main.output.cache 'ts.r' num2str(i) '.cache.mat']);
         if numel(File.Check) >= 1
-            disp([i ' line already exist, skip this line.']);
+            disp([num2str(i) ' line already exist, skip this line.']);
             continue;
         end
         
@@ -78,7 +78,7 @@ function fusion_Cache(main)
         for j = i:numel(fusImage)
             
             % find image stack
-            imgStack = [main.output.dif fusImage(j).name '/' fusImage(j).name '*stack'];
+            imgStack = dir([main.output.dif fusImage(j).name '/' fusImage(j).name '_stack']);
             
             % check if image exist
             File.Check = dir(imgStack);
