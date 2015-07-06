@@ -89,7 +89,7 @@ function fusion_Cache(main)
             end
             
             % load specific line from image
-            IMG = multibandread(imgStack,[line,samp,nband],'int16',0,main.etm.interleave,'ieee-le',{'Row',i});
+            IMG = multibandread(imgStack,[line,samp,nband-1+2],'int16',0,'bip','ieee-le',{'Row',i});
             
             % assign data 
             TS.Data(:,j,:) = squeeze(IMG);
