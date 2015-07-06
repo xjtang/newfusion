@@ -222,9 +222,9 @@ function main = fusion_Inputs(file,job)
             mkdir([main.outpath 'MOD09DIF']);
         end
         % fused synthetic MODIS image from ETM image
-        main.output.fusion = [main.outpath 'ETMFUS/'];
+        main.output.fusion = [main.outpath 'MODFUS/'];
         if exist(main.output.fusion,'dir') == 0 
-            mkdir([main.outpath 'ETMFUS']);
+            mkdir([main.outpath 'MODFUS']);
         end
         % difference between synthetic MODIS and true MODIS
         main.output.dif = [main.outpath 'ETMDIF/'];
