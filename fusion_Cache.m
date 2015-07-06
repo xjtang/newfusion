@@ -97,7 +97,7 @@ function fusion_Cache(main)
         
         % save current line
         save([main.output.cache 'ts.r' num2str(i) '.cache.mat'],'-struct','TS')
-        disp(['Done with line',i,' in ',num2str(toc,'%.f'),' seconds']);    
+        disp(['Done with line',num2str(i),' in ',num2str(toc,'%.f'),' seconds']);    
         
     end
 
