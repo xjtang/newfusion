@@ -25,6 +25,7 @@
 % Version 1.0.1 - 7/6/2015
 %   1.Fxied a num2str conversion bug.
 %   2.Fixed a variable bug.
+%   3.Fixed a band id bug.
 %
 % Released on Github on 7/1/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -77,7 +78,7 @@ function fusion_Change(main)
             PTS = (squeeze(TS.Data(j,:,main.model.band)))';
             CLD = squeeze(TS.Data(j,:,end));
             CCTS = ones(length(main.model.band),nday);
-            for k = main.model.band
+            for k = 1:length(main.model.band)
                 CCTS(k,:) = PTS(k,:).*not(CLD)+(-9999)*CLD;
             end
             
