@@ -75,10 +75,10 @@ function fusion_Cache(main)
         TS.Data = ones(samp,numel(fusImage),nband-1+2)*(-9999);
         
         % loop through images
-        for j = i:numel(fusImage)
+        for j = 1:numel(fusImage)
             
             % find image stack
-            imgStack = dir([main.output.dif fusImage(j).name '/' fusImage(j).name '_stack']);
+            imgStack = [main.output.dif fusImage(j).name '/' fusImage(j).name '_stack'];
             
             % check if image exist
             File.Check = dir(imgStack);
