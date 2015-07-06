@@ -56,8 +56,8 @@ function fusion_Change(main)
         
         % check if cache exist
         File.Check = dir([main.output.cache 'ts.r' num2str(i) '.cache.mat']);
-        if numel(File.Check) >= 1
-            disp([i ' line cache does not exist, skip this line.']);
+        if numel(File.Check) == 0
+            disp([num2str(i) ' line cache does not exist, skip this line.']);
             continue;
         end
         
