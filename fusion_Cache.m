@@ -82,7 +82,7 @@ function fusion_Cache(main)
             
             % check if image exist
             File.Check = dir(imgStack);
-            if numel(File.Check) >= 1
+            if numel(File.Check) == 1
                 disp([fusImage(j).name ' image does not exist, skip this date.']);
                 continue;
             end
