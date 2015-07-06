@@ -1,11 +1,11 @@
 % change.m
-% Version 1.1
+% Version 1.1.1
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 6/17/2015
+% Last Update: 7/6/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -20,10 +20,14 @@
 % Version 1.0 - 6/15/2015
 %   The script fits a time series model to fusion result of a pixel.
 %
-% Version 1.1 - 6/17/2015
+% Updates of Version 1.1 - 6/17/2015
 %   1.Added classification scheme into comments.
 %   2.Optimazed the model for real data.
 %   3.Added weighting system.
+%
+% Updates of Version 1.1.1 - 7/6/2015
+%   1.Bugs fixed.
+%   2.Tested.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -112,7 +116,7 @@ function CHG = change(TS,sets)
       
     % check if this is a stable non-forest pixel
     pMean = sets.weight*abs(initMean);
-    pSTD = sets.weight*abs(initStd;
+    pSTD = sets.weight*abs(initStd);
     if pMean > sets.nonfstmean && pSTD > sets.nonfstdev 
         nonFst = 1;
     end
