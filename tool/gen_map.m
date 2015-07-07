@@ -23,6 +23,7 @@
 %
 % Version 1.0 - 11/25/2014
 %   This script generates change map in envi format based on fusion result.
+%   Only DoC map available in this version.
 %
 % Created on Github on 11/24/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -76,10 +77,49 @@ function gen_map(file,filename,mapType)
     % line by line processing
     for i = etm.line
         
-        % read input file
+        % check if result exist
+        File.Check = dir([main.output.chgmat 'ts.r' num2str(i) '.chg.mat']);
+        if numel(File.Check) == 0
+            disp([num2str(i) ' line cache does not exist, skip this line.']);
+            continue;  
+        end
+        
+        % read input data
+        CHG = load([main.output.chgmat 'ts.r' num2str(i) '.chg.mat']);
+        
+        % processing
+        for j = etm.sample
+            
+            % subset data
+            X = squeeze(CHG(j,:,2));
+            
+            % see if this pixel is eligible
+            if max(X) <= 0
+                continue
+            end
+            
+            % different types of maps
+            if strcmp(mapType,'DoC') 
+                
+                
+                
+            else
+                disp('Invalid change type, abort.')
+                return
+            end
+            
+            % assign result
+            
+        end 
+        
+        % clear processed line
+        clear 'CHG';
         
     end
    
+    % export map
+    
+    
     % done
     
 end
