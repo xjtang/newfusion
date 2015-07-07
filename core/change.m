@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 7/6/2015
+% Last Update: 7/7/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
