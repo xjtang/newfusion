@@ -1,5 +1,5 @@
 % fusion_Change.m
-% Version 1.0.1
+% Version 1.1
 % Step 8
 % Detect Change
 %
@@ -22,11 +22,14 @@
 % Version 1.0 - 7/1/2015
 %   This script detect change in fusion time series.
 %
-% Version 1.0.1 - 7/7/2015
+% Updates of Version 1.0.1 - 7/6/2015
 %   1.Fxied a num2str conversion bug.
 %   2.Fixed a variable bug.
 %   3.Fixed a band id bug.
-%   4.Fixed a output bug.
+%
+% Updates of Version 1.1 - 7/7/2015
+%   1.Made adjustment for major change in core algorithm.
+%   2.Fixed a output bug.
 %
 % Released on Github on 7/1/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -70,7 +73,7 @@ function fusion_Change(main)
         
         % initialize
         CHG.Date = TS.Date;
-        CHG.Data = ones(samp,nday,2)*(-9999);
+        CHG.Data = ones(samp,nday)*(-9999);
         
         % pixel by pixel processing
         for j = 1:samp
@@ -84,7 +87,7 @@ function fusion_Change(main)
             end
             
             % detect change
-            CHG.Data(j,:,:) = change(CCTS,main.model);
+            CHG.Data(j,:) = change(CCTS,main.model);
             
         end
         
