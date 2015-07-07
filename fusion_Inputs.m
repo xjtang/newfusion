@@ -71,9 +71,10 @@
 %   4.Fixed a bug of two digit landsat scene.
 %   5.Other bugs fixded
 %
-% Updates of Version 2.1 - 7/5/2015
+% Updates of Version 2.1 - 7/6/2015
 %   1.Optimized the way of splitting jobs.
 %   2.Fixed output folder bug for BRDF result.
+%   3.Added a change map output folder.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -256,9 +257,14 @@ function main = fusion_Inputs(file,job)
             mkdir([main.outpath 'CACHE']);
         end
         % change detection model results in matlab format
-        main.output.chgmat = [main.outpath 'CHG/'];
+        main.output.chgmat = [main.outpath 'CHGMAT/'];
         if exist(main.output.chgmat,'dir') == 0 
-            mkdir([main.outpath 'CHG']);
+            mkdir([main.outpath 'CHGMAT']);
+        end
+        % change detection model results in matlab format
+        main.output.chgmap = [main.outpath 'CHGMAP/'];
+        if exist(main.output.chgmap,'dir') == 0 
+            mkdir([main.outpath 'CHGMAP']);
         end
         
         % other output folder
