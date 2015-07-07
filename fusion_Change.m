@@ -26,6 +26,7 @@
 %   1.Fxied a num2str conversion bug.
 %   2.Fixed a variable bug.
 %   3.Fixed a band id bug.
+%   4.Fixed a output bug.
 %
 % Released on Github on 7/1/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -88,7 +89,7 @@ function fusion_Change(main)
         end
         
         % save current file
-        save([main.output.cache 'ts.r' num2str(i) '.mat'],'CHG')
+        save([main.output.chgmat 'ts.r' num2str(i) '.chg.mat'],'CHG')
         disp(['Done with line',num2str(i),' in ',num2str(toc,'%.f'),' seconds']); 
         
     end
