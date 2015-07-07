@@ -89,7 +89,7 @@ function fusion_Change(main)
         
         % save current file
         save([main.output.cache 'ts.r' num2str(i) '.mat'],'CHG')
-        disp(['Done with line',i,' in ',num2str(toc,'%.f'),' seconds']); 
+        disp(['Done with line',num2str(i),' in ',num2str(toc,'%.f'),' seconds']); 
         
     end
     
