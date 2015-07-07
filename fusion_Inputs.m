@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.1
+% Version 2.2
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 7/5/2015
+% Last Update: 7/7/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -76,6 +76,10 @@
 %   2.Fixed output folder bug for BRDF result.
 %   3.Added a change map output folder.
 %
+% Updates of Version 2.2 - 7/7/2015
+%   1.Added a new setting for change map type.
+%   2.Split edging threshold into two.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -130,52 +134,60 @@ function main = fusion_Inputs(file,job)
             discardRatio = 0;
         end
         % difference map method
+        if ~exist('mapType', 'var')
+            mapType = 1;
+        end
+        % change map method
         if ~exist('diffMethod', 'var')
             diffMethod = 0;
         end
         
         % model parameters
-        % BRDF switch
+        % minimun number of valid observation
         if ~exist('minNoB', 'var')
             minNoB = 10;
         end
-        % bias switch
+        % number of observation or initialization
         if ~exist('initNoB', 'var')
             initNoB = 5;
         end
-        % discard ratio
+        % number of standard deviation to flag a suspect
         if ~exist('nStandDev', 'var')
             nStandDev = 1.5;
         end
-        % difference map method
+        % number of consecutive observation to detect change
         if ~exist('nConsecutive', 'var')
             nConsecutive = 5;
         end
-        % BRDF switch
+        % number of suspect to confirm a change
         if ~exist('nSuspect', 'var')
             nSuspect = 3;
         end
-        % bias switch
+        % switch for outlier removing in initialization
         if ~exist('outlierRemove', 'var')
             outlierRemove = 1;
         end
-        % discard ratio
+        % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
             thresNonFstMean = 10;
         end
-        % difference map method
+        % threshold of std for non-forest detection
         if ~exist('thresNonFstStd', 'var')
             thresNonFstStd = 0.3;
         end
-        % bias switch
-        if ~exist('thresEdge', 'var')
-            thresEdge = 5;
+        % threshold of detecting change edging pixel
+        if ~exist('thresChgEdge', 'var')
+            thresChgEdge = 5;
         end
-        % discard ratio
+        % threshold of detecting non-forest edging pixel
+        if ~exist('thresNonFstEdge', 'var')
+            thresNonFstEdge = 10;
+        end
+        % bands to be included in change detection
         if ~exist('bandIncluded', 'var')
             bandIncluded = [3,4,5];
         end
-        % difference map method
+        % weight on each band
         if ~exist('bandWeight', 'var')
             bandWeight = [1,1,1];
         end
@@ -296,6 +308,8 @@ function main = fusion_Inputs(file,job)
         main.set.bias = BIAS;
         % max (0) or mean (1) in calculating difference map
         main.set.dif = diffMethod;
+        % type of map to be generated, date(1)/month(2) of change, change only map (3)
+        main.set.map = mapType;
         
     % settings and parameters for the change detection model
         % minimun number of valid observation
@@ -314,8 +328,10 @@ function main = fusion_Inputs(file,job)
         main.model.nonfstmean = thresNonFstMean;
         % threshold of std to detect non-forest pixel
         main.model.nonfstdev = thresNonFstStd;
+        % threshold of detecting change edging pixel
+        main.model.chgedge = thresChgEdge;
         % threshold of detecting edging pixel in stable non-forest pixel
-        main.model.nonfstedge = thresEdge;
+        main.model.nonfstedge = thresNonFstEdge;
         % bands used for change detection
         main.model.band = bandIncluded;
         % weight of each band in change detection
