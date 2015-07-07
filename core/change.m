@@ -1,5 +1,5 @@
 % change.m
-% Version 1.1.1
+% Version 2.0
 % Core
 %
 % Project: New fusion
@@ -12,7 +12,7 @@
 %   sets (Structure) - model parameters.
 % 
 % Output Arguments: 
-%   CHG (Matrix) - time series of change.
+%   CHG (Vector) - time series of change.
 %
 % Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
@@ -30,28 +30,20 @@
 %   2.Tested.
 %   3.Fixed a dimension bug.
 %
+% Updates of Version 2.0 - 7/7/2015
+%   1.Completely redesigned the algorithm.
+%
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
 % Classification Scheme
-%
-% Intermediate:
-%  -1 - Ineligible Observation
-%   0 - Default Value
-%   1 - Stable Forest
-%   2 - Suspected Change
-%   3 - Confirmed Change
-%   4 - Stable Non-forest
-%   5 - Edge of Non-Forest
-%
-% Final:
 %  -1 - Ineligible Observation
 %   0 - Default Value
 %   1 - Stable Forest
 %   2 - Outlier (Cloud, Shadow ...)
 %   3 - Break
 %   4 - Changed
-%   5 - Edge of Change
+%   5 - Edge of change
 %   6 - Stable Non-forest
 %   7 - Edge of Non-forest
 
@@ -74,14 +66,14 @@ function CHG = change(TS,sets)
     [nband,nob] = size(TS);
     
     % initilize result
-    CHG = zeros(2,nob);
+    CHG = zeros(1,nob);
     ETS = 1:nob;
     sets.weight = sets.weight/sum(sets.weight);
 
     % complie eligible observations
     for i = nob:-1:1
         if max(TS(:,i)==-9999)
-            CHG(:,i) = -1;
+            CHG(i) = -1;
             ETS(i) = [];
         end
     end
@@ -106,13 +98,7 @@ function CHG = change(TS,sets)
     end
     initMean = mean(mainVec,2);
     initStd = std(mainVec,0,2);
-    tempVec = mainVec;
-    tempMean = initMean;
-    tempStd = initStd;
-    nCosc = 0;
-    nSusp = 0;
-    posBreak = -1;
-    j = 1;
+    CHGFlag = 0;
     nonFst = 0;
       
     % check if this is a stable non-forest pixel
@@ -123,104 +109,71 @@ function CHG = change(TS,sets)
     end
     
     % start sequnce
-    for i = ETS
+    for i = 1:length(ETS)
+        
+        % start count
         
         % calculate metrics
-        x = TS(:,i);
+        x = TS(:,ETS(i));
         xRes = abs(x-initMean);
         xNorm = xRes./initStd;
         xDev = sets.weight*xNorm;
         
         % check if this is a statble non-forest pixel
         if nonFst == 0 
-        
             % check if possible change occured
             if xDev >= sets.nSD 
-                % increment number of suspects and confessed
-                if j > sets.nCosc
-                    nCosc = nCosc + 1;
-                    nSusp = nSusp + 1;
-                end
-                % set result to suspect change 
-                CHG(1,i) = 2;
-                % store posible break point
-                if nCosc == 1
-                    posBreak = i;
+                % check if change already detected
+                if CHGFlag == 1
+                    % set result to changed
+                    CHG(ETS(i)) = 4;
+                else
+                    % see if this is a break
+                    if i < length(ETS)+1-sets.nCosc
+                        nSusp = 1;
+                        for k = (i+1):(i+sets.nCosc-1)
+                            xk = TS(:,ETS(k));
+                            xkRes = abs(xk-initMean);
+                            xkNorm = xkRes./initStd;
+                            xkDev = sets.weight*xkNorm;
+                            if xkDev >= sets.nSD
+                                nSusp = nSusp + 1;
+                            end
+                        end
+                        if nSusp >= sets.nSusp
+                            CHG(ETS(i)) = 3;
+                            CHGFlag = 1;
+                            continue;
+                        end
+                    end
+                    % this is an outlier
+                    CHG(ETS(i)) = 2;
                 end
             else
-                % set result to stable
-                CHG(1,i) = 1;
-                % check if suspicious
-                if nSusp == 0 && j > sets.nCosc
-                    % safe
-                    mainVec = [mainVec,TS(:,i)];  %#ok<*AGROW>
-                    initMean = mean(mainVec,2);
-                    initStd = std(mainVec,0,2);
-                elseif nSusp > sets.nCosc
-                    % stable found after confirmed change
-                    nCosc = nCosc + 1;
+                % check if change already detected
+                if CHGFlag == 1
+                    % set result to edge of change
+                    CHG(ETS(i)) = 5;
                 else
-                    % deal with suspicous stable observation
-                    nCosc = nCosc + 1;
-                    tempVec = [tempVec,TS(:,i)];
-                    tempMean = mean(tempVec,2);
-                    tempStd = std(tempVec,0,2);
-                end
-
-                j = j + 1;
-            end
-
-            % check if change can be confirmed
-            if nCosc == sets.nCosc
-                if nSusp >= sets.nSusp
-                    % change confirmed
-                    CHG(1,posBreak) = 3;
-                else
-                    % alert discarded
-                    nCosc = 0;
-                    nSusp = 0;
-                    posBreak = -1;
-                    mainVec = tempVec;
-                    initMean = tempMean;
-                    initStd = tempStd;
+                    % set result to stable
+                    CHG(ETS(i)) = 1;
+                    % update main vector
+                    if i > sets.initNoB
+                        mainVec = [mainVec,TS(:,ETS(i))];  %#ok<*AGROW>
+                        initMean = mean(mainVec,2);
+                        initStd = std(mainVec,0,2);
+                    end
                 end
             end
-        
         else
             % deal with stable non-forest pixel
-            if sets.weight*abs(x) > sets.nonfstedge
-                CHG(1,i) = 4;
+            if sets.weight*abs(x) >= sets.nonfstedge
+                CHG(ETS(i)) = 6;
             else
-                CHG(1,i) = 5;
+                CHG(ETS(i)) = 7;
             end
         end
     end
-
-    % finalize result    
-    CHGFlag = 0;
-    for i = 1:nob
-        if CHGFlag == 0
-            CHG(2,i) = CHG(1,i);
-            if CHG(1,i) == 3
-                CHGFlag = 1;
-            end
-        else
-            if CHG(1,i) == 1
-                CHG(2,i) = 5;
-            elseif CHG(1,i) == 2
-                CHG(2,i) = 4;
-            elseif CHG(1,i) == 4
-                CHG(2,i) = 6;
-            elseif CHG(1,i) == 5
-                CHG(2,i) = 7;
-            else
-                CHG(2,i) = CHG(1,i);
-            end
-        end
-    end
-    
-    % adjust dimension
-    CHG = CHG';
     
     % done
     
