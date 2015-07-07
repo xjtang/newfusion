@@ -28,6 +28,7 @@
 % Updates of Version 1.1.1 - 7/6/2015
 %   1.Bugs fixed.
 %   2.Tested.
+%   3.Fixed a dimension bug.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -217,6 +218,9 @@ function CHG = change(TS,sets)
             end
         end
     end
+    
+    % adjust dimension
+    CHG = CHG';
     
     % done
     
