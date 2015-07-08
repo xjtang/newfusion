@@ -62,6 +62,15 @@ function enviwrite(filename,data,UL,zone,typeID,res,interleave)
         bands = n_dims(3);
     end
 
+    % format data
+    if typeID == 2
+        data = int16(data);
+    elseif typeID == 3
+        data = int32(data);
+    else
+        data = double(data);
+    end
+
     % write image
     multibandwrite(data,filename,interleave);
 
