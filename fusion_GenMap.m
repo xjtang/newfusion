@@ -28,13 +28,13 @@
 function fusion_GenMap(main)
     
     % initialize
-    MAP = ones(length(etm.line),length(etm.sample))*-9999;
+    MAP = ones(length(main.etm.line),length(main.etm.sample))*-9999;
     
     % start timer
     tic;
     
     % line by line processing
-    for i = etm.line
+    for i = main.etm.line
         
         % check if result exist
         File.Check = dir([main.output.chgmat 'ts.r' num2str(i) '.chg.mat']);
@@ -47,7 +47,7 @@ function fusion_GenMap(main)
         CHG = load([main.output.chgmat 'ts.r' num2str(i) '.chg.mat']);
         
         % processing
-        for j = etm.sample
+        for j = main.etm.sample
             
             % subset data
             X = squeeze(CHG.Data(j,:));
