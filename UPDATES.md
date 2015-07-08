@@ -15,6 +15,7 @@ Version 1.0 - 7/6/2015
 - Added new fusion function for change detection.  
 - Implemented a config file that can be customized for each project.  
 - All main function tested.  
+- Added new fusion function to generate change map.  
 
 Fusion  
 --------------
