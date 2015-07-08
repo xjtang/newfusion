@@ -47,8 +47,9 @@
 %   1.Changed output file name style.
 %   2.Combined two cloud mask.
 %
-% Updates of Version 1.4.1 - 7/3/2015
+% Updates of Version 1.4.1 - 7/7/2015
 %   1.Fixed a bug cause by two digit landsat scene.
+%   2.Added new input argument for called function.
 %
 % Released on Github on 1/30/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -145,7 +146,7 @@ function fusion_WriteETM(main)
             mkdir([main.output.dif,plat,num2str(main.set.scene(1),'%03d'),num2str(main.set.scene(2),'%03d'),DayStr,'T',TimeStr]);
             enviwrite([main.output.dif,plat,num2str(main.set.scene(1),'%03d'),num2str(main.set.scene(2),'%03d'),DayStr,'T',TimeStr,...
                 '/',plat,num2str(main.set.scene(1),'%03d'),num2str(main.set.scene(2),'%03d'),DayStr,'T',TimeStr,'_stack'],...
-                ETMImage,[main.etm.ulEast,main.etm.ulNorth],main.etm.utm);
+                ETMImage,[main.etm.ulEast,main.etm.ulNorth],main.etm.utm,2,[30,30],'bip');
             disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
             
         end
