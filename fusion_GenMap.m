@@ -88,7 +88,7 @@ function fusion_GenMap(main)
     end
     
     % export map
-    enviwrite(outFile,MAP,[main.etm.ulEast,main.etm.ulNorth],main.etm.utm);
+    enviwrite(outFile,MAP,[main.etm.ulEast,main.etm.ulNorth],main.etm.utm,3,[30,30],'bsq');
     
     % done
     
