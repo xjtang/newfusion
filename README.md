@@ -28,7 +28,9 @@ fusion_Dif - Calculate difference image and change image
 fusion_WriteHDF - Write the final outputs to new HDF files  
 fusion_WriteETM - Reproject and write difference image to ETM image  
 fusion_Cache - Cache all the fusion time series images into matlab file  
-config - Example of a configuration file  
+fusion_Change - Detect change in the fusion time series  
+fusion_GenMap - Generate change map in ENVI format  
+config - Example of a configuration file (optimized for a study site in Brazil)  
 
 **Supplimental Scripts:**  
 
