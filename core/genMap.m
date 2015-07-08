@@ -33,7 +33,7 @@
 function CLS = genMap(X,D,mapType,edgeThres)
     
     % initilize result
-    CLS = -9999;
+    CLS = -1;
 
     % different types of map
     if mapType == 2 
@@ -52,16 +52,16 @@ function CLS = genMap(X,D,mapType,edgeThres)
                 CLS = 5;
             end
             % confirmed changed
-            if max(X==3) == 2
+            if max(X==3) == 1
                 [~,breakPoint] = max(X==3);
                 CLS = 10;
             end
             % could be non-forest edge
-            if sum(X==5) >= edgeThres(2)
+            if sum(X==7) >= edgeThres(2)
                 CLS = 6;
             end
             % could be change edge
-            if sum(X==7) >= edgeThres(1)
+            if sum(X==5) >= edgeThres(1)
                 CLS = 11;
             end
     else
