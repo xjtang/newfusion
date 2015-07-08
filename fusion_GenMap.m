@@ -34,7 +34,7 @@ function fusion_GenMap(main)
     tic;
     
     % line by line processing
-    for i = main.etm.line
+    for i = (main.etm.line)'
         
         % check if result exist
         File.Check = dir([main.output.chgmat 'ts.r' num2str(i) '.chg.mat']);
