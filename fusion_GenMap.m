@@ -58,7 +58,7 @@ function fusion_GenMap(main)
             end
             
             % assign result
-            MAP(i,j) = genMap(X,CHG.Date,main.set.map,[main.model.chgedge,main.set.nonfstedge]);
+            MAP(i,j) = genMap(X,CHG.Date,main.set.map,[main.model.chgedge,main.model.nonfstedge]);
             
         end 
         
