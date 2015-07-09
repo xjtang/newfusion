@@ -1,5 +1,5 @@
 % fusion_Change.m
-% Version 1.1
+% Version 1.2
 % Step 8
 % Detect Change
 %
@@ -30,6 +30,9 @@
 % Updates of Version 1.1 - 7/7/2015
 %   1.Made adjustment for major change in core algorithm.
 %   2.Fixed a output bug.
+%
+% Updates of Version 1.2 - 7/9/2015
+%   1.Adjusted cloud mask so 250 and 500 data will get separate mask.
 %
 % Released on Github on 7/1/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -80,9 +83,13 @@ function fusion_Change(main)
             
             % compose data
             PTS = (squeeze(TS.Data(j,:,main.model.band)))';
-            CLD = squeeze(TS.Data(j,:,end));
             CCTS = ones(length(main.model.band),nday);
             for k = 1:length(main.model.band)
+                if main.model.band(k) > 6
+                    CLD = squeeze(TS.Data(j,:,end));
+                else
+                    CLD = squeeze(TS.Data(j,:,end-1));
+                end
                 CCTS(k,:) = PTS(k,:).*not(CLD)+(-9999)*CLD;
             end
             

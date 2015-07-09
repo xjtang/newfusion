@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 7/7/2015
+% Last Update: 7/9/2015
 %
 % Input Arguments: NA
 % 
@@ -20,7 +20,7 @@
 %   The file here is an example using default values.
 %   Make a copy of this file and custimize for you specific proiject.
 %
-% Updates of Version 1.1 - 7/7/2015
+% Updates of Version 1.1 - 7/9/2015
 %   1.Added a setting for type of change map to generate.
 %   2.Split edging threshold into two.
 %
@@ -51,7 +51,7 @@
     thresNonFstStd = 0.3;           % threshold of std for non-forest detection
     thresChgEdge = 5;               % threshold of detecting change edging pixel
     thresNonFstEdge = 10;           % threshold of detecting non-forest edging pixel
-    bandIncluded = [3,4,5];         % bands to be included in change detection
+    bandIncluded = [4,5,6];         % bands to be included in change detection (band 7/8 are 250m)
     bandWeight = [1,1,1];           % weight on each band
     
 % done
