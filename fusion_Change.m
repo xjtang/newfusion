@@ -90,6 +90,7 @@ function fusion_Change(main)
                 else
                     CLD = squeeze(TS.Data(j,:,end));
                 end
+                CLD(CLD<=0) = 0;
                 CCTS(k,:) = PTS(k,:).*not(CLD)+(-9999)*CLD;
             end
             
