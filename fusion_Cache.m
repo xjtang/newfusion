@@ -73,7 +73,7 @@ function fusion_Cache(main)
         end
         
         % initialize
-        TS.Data = ones(samp,numel(fusImage),nband-1+2)*(-9999);
+        TS.Data = ones(samp,numel(fusImage),nband-1+2+2)*(-9999);
         
         % loop through images
         for j = 1:numel(fusImage)
@@ -89,7 +89,7 @@ function fusion_Cache(main)
             end
             
             % load specific line from image
-            IMG = multibandread(imgStack,[line,samp,nband-1+2],'int16',0,'bip','ieee-le',{'Row',i});
+            IMG = multibandread(imgStack,[line,samp,nband-1+2+2],'int16',0,'bip','ieee-le',{'Row',i});
             
             % assign data 
             TS.Data(:,j,:) = squeeze(IMG);
