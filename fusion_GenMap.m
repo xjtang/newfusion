@@ -1,5 +1,5 @@
 % fusion_GenMap.m
-% Version 1.0
+% Version 1.0.1
 % Step 9
 % Generate Map
 
@@ -21,6 +21,9 @@
 %
 % Version 1.0 - 7/7/2015
 %   This script generates change map in envi format based on fusion result.
+%
+% Updates of Version 1.0.1 - 7/13/2015
+%   1.Added a new type of map.
 %
 % Created on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -76,6 +79,8 @@ function fusion_GenMap(main)
     elseif main.set.map == 2
         outFile = [main.output.chgmap 'MonthOfChange'];
     elseif main.set.map == 3
+        outFile = [main.output.chgmap 'ClassMap'];
+    elseif main.set.map == 4
         outFile = [main.output.chgmap 'ChangeOnly'];
     else
         outFile = [main.output.chgmap 'Unknown'];
