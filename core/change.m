@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 7/12/2015
+% Last Update: 7/13/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -33,6 +33,10 @@
 % Updates of Version 2.0 - 7/12/2015
 %   1.Completely redesigned the algorithm.
 %   2.Fixed a major bug.
+%
+% Updates of Version 2.1 - 7/13/2015
+%   1.Adjusted non-forest detection.
+%   2.Added post change detection filtering.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -101,7 +105,7 @@ function CHG = change(TS,sets)
     initStd = std(mainVec,0,2);
     CHGFlag = 0;
     
-    % start sequnce
+    % detect break
     for i = 1:length(ETS)
         
         % calculate metrics
@@ -157,6 +161,25 @@ function CHG = change(TS,sets)
             end
         end
 
+    end
+    
+    % post change detection clasification
+    if max(CHG==3) == 1
+        % check if pre-break and post-break is statistically different
+        [~,breakPoint] = max(CHG==3);
+        preBreak = TS(:,CHG(1:(breakPoint-1))>0);
+        postBreak = TS(:,CHG(breakPoint:end)>0);
+        if ttest2(preBreak,postBreak)
+            % false break, removethe break
+            
+        else
+            % true break, determine the class
+            
+            
+        end
+    else
+        % no break, check the full time series
+        
     end
     
     % check if this is a statble non-forest pixel
