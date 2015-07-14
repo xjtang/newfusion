@@ -9,7 +9,6 @@
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
-%   sets (Structure) - model parameters.
 % 
 % Output Arguments: 
 %   CHG (Vector) - time series of change.
@@ -52,20 +51,7 @@
 %   6 - Stable Non-forest
 %   7 - Edge of Non-forest
 
-function CHG = change(TS,sets)
-    
-    % costomized settings
-    % sets.minNoB = 10;
-    % sets.initNoB = 5;
-    % sets.nSD = 1.5;
-    % sets.nCosc = 5;
-    % sets.nSusp = 3;
-    % sets.outlr = 1;
-    % sets.nonfstmean = 10;
-    % sets.nonfstdev = 0.3;
-    % sets.nonfstedge = 5;
-    % sets.weight = [1,1,1];
-    % sets.band = [3,4,5];
+function CHG = change(TS)
 
     % analyse input TS 
     [nband,nob] = size(TS);
