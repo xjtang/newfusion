@@ -3,7 +3,7 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.0 - 7/6/2015  
+Version 1.0 - 7/14/2015  
 --------------
 - Change project name to the New Fusion (version 1.0).  
 - Bugs fixed.  
