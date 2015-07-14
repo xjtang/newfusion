@@ -4,7 +4,7 @@
 
 matlab -nodisplay -nojvm -singleCompThread << MATLAB_ENV
 cd ../
-main = fusion_Inputs('$2','$3',$4,[$5 $6])
+main = fusion_Inputs('$2',[$3 $4])
 $1(main)
 quit
 MATLAB_ENV

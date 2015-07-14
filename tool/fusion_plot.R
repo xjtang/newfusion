@@ -2,8 +2,8 @@
 # Version 1.4
 # Tools
 #
-# Project: Fusion
-# By Xiaojing Tang
+# Project: New Fusion
+# By xjtang
 # Created On: 12/02/2014
 # Last Update: 4/7/2015
 #
@@ -13,7 +13,7 @@
 # Output Arguments: 
 #   See specific function.
 #
-# Usage: 
+# Instruction: 
 #   1.Generate fusion results with fusion program.
 #   2.Use this script to generate plots of the results.
 #

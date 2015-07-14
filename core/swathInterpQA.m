@@ -2,39 +2,32 @@
 % Version 6.2
 % Core
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: Unknown
 % Last Update: 4/3/2015
 %
 % Input Arguments:
-%   MOD09SUB (Structure) - Subset of MODIS swath data over the area of the 
-%       ETM image and the corresponding geometry information.
+%   MOD09SUB (Structure) - Subset of MODIS swath data over the area of the ETM image and the corresponding geometry information.
 % 
 % Output Arguments: 
-%   MOD09SUB (Structure) - Subset of MODIS swath data over the area of the 
-%       ETM image and the corresponding geometry information (interpolated).
+%   MOD09SUB (Structure) - Subset of MODIS swath data over the area of the ETM image and the corresponding geometry information (interpolated).
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 6.0 - Unknown
-%   This script gets decoded 500m QA data from 1000m QA data in MOD09 
-%       (swath data).
-%   In the code, SwathScan defined the steps for MODIS scan (20 for 500 m
-%       and 40 for 250 m).
-%   MOD09SUB.QAWater is for water mask, MOD09SUB.QACloud for cloud mask, 
-%       MOD09SUB.QACloudB for buffered cloud mask.
-%   MOD09SUB.QALowAsl for aerosol mask, and MOD09SUB.QALowAslB is for 
-%       buffered aerosol mask.
+% Version 6.0 - Unknown (by Q. Xin)
+%   This script gets decoded 500m QA data from 1000m QA data in MOD09 (swath data).
+%   In the code, SwathScan defined the steps for MODIS scan (20 for 500m and 40 for 250m).
+%   MOD09SUB.QAWater is for water mask, MOD09SUB.QACloud for cloud mask, MOD09SUB.QACloudB for buffered cloud mask.
+%   MOD09SUB.QALowAsl for aerosol mask, and MOD09SUB.QALowAslB is for buffered aerosol mask.
 %
-% Updates of Version 6.1 - 9/18/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 9/18/2014 
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
 %
-% Updates of Version 6.2 - 4/3/2015 (by Xiaojing Tang)
+% Updates of Version 6.2 - 4/3/2015 
 %   1.Combined 250 and 500 fusion.
 %   2.Removed a unused feature that could cause license problem.
 %

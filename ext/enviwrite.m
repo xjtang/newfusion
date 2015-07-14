@@ -1,44 +1,55 @@
 % enviwrite.m
-% Version 1.1 Fusion SP
+% Version 1.1.1 Fusion SP
 % External
 %
 % Project: CCDC
-% By Zhe Zhu
-% Updated By: Xiaojing Tang
+% By Z. Zhu
 % Created On: Unknown
-% Last Update: 2/5/2015
+% Last Update: 7/8/2015
 %
 % Input Arguments:
 %   filename (String) -  full path and file name of the IMAGE file.
 %   data (Array) - data to write.
 %   UL (Vector) - coordinates of upper left corner
 %   zone (Integer) - UTM zone
+%   typeID (Integer) - data type
+%   res (Vector) - resolution
+%   interleave (String) - interleave
 %
 % Output Arguments: NA
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 1.0 - Unknown
+% Version 1.0 - Unknown (by Z. Zhu)
 %   Function to write matrix to ENVI format image.
 %   Used in Zhe Zhu's CCDC Model.
 %
-% Updates of Version 1.1 Fusion SP - 2/5/2015 (by Xiaojing Tang)
+% Updates of Version 1.1 Fusion SP - 2/5/2015 (by xjtang)
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
+%
+% Updates of Version 1.1.1 Fusion SP - 7/8/2015 (by xjtang)
+%   1.Added additional input arguments.   
 %
 % Released on Github on 2/5/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 
-function enviwrite(filename,data,UL,zone)
+function enviwrite(filename,data,UL,zone,typeID,res,interleave)
     
     % default setting
     % type = 'int16';
-    typeID = 2;
-    res = [30,30];
-    interleave = 'bip';
+    if ~exist('typeID','var')
+        typeID = 2;
+    end
+    if ~exist('res','var')
+        res = [30,30];
+    end
+    if ~exist('interleave','var')
+        interleave = 'bip';
+    end
     
     % get dimmension
     n_dims = size(data);
@@ -49,6 +60,15 @@ function enviwrite(filename,data,UL,zone)
     bands = 1;
     if length(n_dims) >= 3
         bands = n_dims(3);
+    end
+
+    % format data
+    if typeID == 2
+        data = int16(data);
+    elseif typeID == 3
+        data = int32(data);
+    else
+        data = double(data);
     end
 
     % write image

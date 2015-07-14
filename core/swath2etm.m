@@ -2,48 +2,46 @@
 % Version 6.3.1
 % Core
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: Unknown
 % Last Update: 4/4/2015
 %
 % Input Arguments:
 %   Swath (Matrix, Var) - MODIS swath data (change map usually).
-%   MOD09SUB (Structure) - Subset of MODIS swath data over the area of the 
-%       ETM image and the corresponding geometry information.
+%   MOD09SUB (Structure) - Subset of MODIS swath data over the area of the ETM image and the corresponding geometry information.
 %   ETMGeo (matrix) - geometry of each pixel of the ETM image.
 % 
 % Output Arguments: 
 %   ETM (Matrix, Var) - the resulting ETM image from MODIS swath data.
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 6.0 - Unknown
+% Version 6.0 - Unknown (by Q. Xin)
 %   This script reprojects MODIS change map into ETM resolution
 %
-% Updates of Version 6.1 - 9/17/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 9/17/2014 
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
 %   4.Initial value set to -9999 (-10000 originally).
 %
-% Updates of Version 6.2 - 12/14/2014 (by Xiaojing Tang)
+% Updates of Version 6.2 - 12/14/2014 
 %   1.Bugs fixed.
 %   2.Generate band difference map according to new fusion workflow.
 %
-% Updates of Version 6.3 - 1/26/2015 (by Xiaojing Tang)
+% Updates of Version 6.3 - 1/26/2015 
 %   1.Convert MODIS swath style data to ETM scale with specific setting.
 %   2.Operational with this version.
 %   3.Bugs fixed.
 %
-% Updates of Version 6.3.1 - 3/26/2015 (by Xiaojing Tang)
+% Updates of Version 6.3.1 - 3/26/2015 
 %   1.Changed output data structure.
 %   2.Bugs fixed.
 %   3.A bug caused by negative evalues in calculating max image is fixed.
 %
-% Updates of Version 6.4 - 4/4/2015 (by Xiaojing Tang)
+% Updates of Version 6.4 - 4/4/2015 
 %   1.Combined 250 and 500 fusion.
 %   2.Bug fixed.
 %

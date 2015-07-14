@@ -2,39 +2,32 @@
 % Version 6.1
 % Core
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: Unknown
 % Last Update: 9/17/2014
 %
 % Input Arguments:
-%   Lat (Vector, Double) - vector of latitude in degrees in WGS84
-%       (neg. for West).
-%   Lon (Vector, Double) - vector of longitude in degrees in WGS84
-%       (neg. for South).
-%   UTMzone (Integer) - UTM zone of the input locatios (neg. for Southern
-%       hemisphere).
+%   Lat (Vector, Double) - vector of latitude in degrees in WGS84 (neg. for West).
+%   Lon (Vector, Double) - vector of longitude in degrees in WGS84 (neg. for South).
+%   UTMzone (Integer) - UTM zone of the input locatios (neg. for Southern hemisphere).
 % 
 % Output Arguments: 
 %   Easting (Vector, Double) - vector of easting in meters.
 %   Northing (Vector, Double) - vector of northing in meters.
-%   UTMzone (Integer) - Corresponding UTM zone of the outputs (neg. for
-%       Southern hemisphere).
+%   UTMzone (Integer) - Corresponding UTM zone of the outputs (neg. for Southern hemisphere).
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %   2.Lat and Lon are required input arguments.
 %   3.UTMzone will be calculated if missing.
 %
-% Version 6.0 - Unknown
-%   Function to convert vectors of WGS84 Lat/Lon vectors into UTM
-%       coordinates.
-%   Calculate Easting and Northing for given Latitude, Longitude, and
-%       UTM zone.
+% Version 6.0 - Unknown (by Q. Xin)
+%   Function to convert vectors of WGS84 Lat/Lon vectors into UTM coordinates.
+%   Calculate Easting and Northing for given Latitude, Longitude, and UTM zone.
 %   Some code was extracted from utm2deg.m function by Rafael Palacios
 %
-% Updates of Version 6.1 - 9/17/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 9/17/2014 
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.

@@ -2,37 +2,34 @@
 % Version 6.2
 % Core
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New fusion
+% By xjtang
 % Created On: Unknown
 % Last Update: 4/3/2015
 %
 % Input Arguments:
 %   ETM (Matrix, Double) - Landsat ETM data.
-%   MOD09SUB (Structure) - Subset of MODIS swath data over the area of the 
-%       ETM image and the corresponding geometry information.
+%   MOD09SUB (Structure) - Subset of MODIS swath data over the area of the ETM image and the corresponding geometry information.
 %   ETMGeo (matrix) - geometry of each pixel of the ETM image.
 %   Thres4NaN (Single) - threshold for a MODIS pixel to be called as NA.
 % 
 % Output Arguments: 
 %   Swath (Vector, Double) - vector of swath data generated from ETM image.
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %   2.ETM, MOD09SUB, and ETMGeo are required input arguments.
 %   3.Thres4NaN will be 0.1 (<10%) if not specified.
 %
-% Version 6.0 - Unknown
-%   This script is designed to predict the MODIS swath observations from 
-%       Landsat ETM images.
+% Version 6.0 - Unknown (by Q. Xin)
+%   This script is designed to predict the MODIS swath observations from Landsat ETM images.
 %
-% Updates of Version 6.1 - 9/16/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 9/16/2014 
 %   1.Updated comments.
 %   2.Changed coding style
 %   3.Modified for work flow of fusion version 6.1
 %
-% Updates of Version 6.2 - 4/3/2015 (by Xiaojing Tang)
+% Updates of Version 6.2 - 4/3/2015 
 %   1.Combined 250 and 500 fusion.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.

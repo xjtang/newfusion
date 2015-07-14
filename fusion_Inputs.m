@@ -1,201 +1,341 @@
 % fusion_Inputs.m
-% Version 6.3
+% Version 2.2
 % Step 0
 % Main Inputs and Settings
 %
-% Project: Fusion
-% By Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: 9/16/2013
-% Last Update: 4/3/2015
+% Last Update: 7/7/2015
 %
 % Input Arguments: 
-%   iDate (String) - main path to the data.
-%   iPlat (String) - platform, MOD for Terra, MYD for Aqua.
-%   iBRDF (Integer) - 0: BRDF off; 1: BRDF on.
-%   iDis (Double) - Percenatble of data discarded at the edge of Landsat
-%       image (0.1 as 10%).
-%   iSub (Vector, Interger) - process a subset of the data.
-%       e.g. [1 50] means divide into 50 parts and process the 1st. 
-%       [0 0] means do all in one job.
+%   file (String) - full path and file name to the config file
+%   job (Vector, Interger) - jobn information e.g. [1 50] means 1st job of total 50 jobs, [0 0] means single job.
 % 
 % Output Arguments: 
-%   mainInputs (Structure) - main inputs for the whole fusion process
+%   main (Structure) - main inputs for the whole fusion process
 %
-% Usage: 
-%   1.Customize the inputs and settings for your fusion project.
-%   2.Run this stript first to create a new structure of all inputs
-%   3.Use the created inputs as input arguments for other function
+% Instruction: 
+%   1.Customize a config file for your project.
+%   2.Run this stript with the config file to create a new structure of inputs.
+%   3.Use the created inputs as input arguments for other functions.
 %
-% Version 6.0 - 10/8/2014 (by Xiaojing Tang)
+% Version 1.0 - 10/8/2014 
 %   This script newly created for Fusion update 6.1
-%   This script serves as a single repository for all inputs and settings
-%       for the fusion process
+%   This script serves as a single repository for all inputs and settings for the fusion process
 %
-% Updates of Version 6.1 - 10/14/2014 (by Xiaojing Tang)
+% Updates of Version 1.1 - 10/14/2014 
 %   1.This script now loads the hrf module
 %
-% Updates of Version 6.1.1 - 11/24/2014 (by Xiaojing Tang)
+% Updates of Version 1.1.1 - 11/24/2014 
 %   1.Improved main input structure.
 %   2.Updated comments.
 %   3.Bug fixed.
 %
-% Updates of Version 6.2 - 11/24/2014 (by Xiaojing Tang)
+% Updates of Version 1.2 - 11/24/2014 
 %   1.Added support for MODIS Aqua.
 %
-% Updates of Version 6.2.1 - 12/15/2014 (by Xiaojing Tang)
+% Updates of Version 1.2.1 - 12/15/2014 
 %   1.Added a dump folder for collecting dumped data.
 %   2.Added missing ;.
 %   3.Removed unused folder.
 %
-% Updates of Version 6.2.2 - 2/10/2015 (by Xiaojing Tang)
+% Updates of Version 1.2.2 - 2/10/2015 
 %   1.Added new output folders to hold change and difference maps.
 %   2.Adjusted output folders.
 %   3.Added a extra parameter for bias correction.
 %
-% Updates of Version 6.2.3 - 3/31/2015 (by Xiaojing Tang)
+% Updates of Version 1.2.3 - 3/31/2015 
 %   1.Fixed a bug when MOD09GA is missing.
 %   2.Added a new option.
 %   3.Renamed the output folder for dif image.
 %
-% Update of Version 6.3 - 4/3/2015 (by Xiaojing Tang)
+% Update of Version 1.3 - 4/3/2015 
 %   1.Combined 250m and 500m fusion.
+%
+% Updates of Version 1.4 - 6/16/2015 
+%   1.Added settings and parameters of the change detection model.
+%   2.Added support for change detection model.
+%
+% Updates of Version 1.5 - 7/1/2015 
+%   1.Added output folder for cache and change detection results.
+%   2.Added new input of path and row of Landsat.
+%   3.Implemented new file structure to support multiple Landsat scenes.
+%   4.Added output folder for files created by tools.
+%   5.Adjusted some names of output folder.
+%
+% Updates of Version 2.0 - 7/4/2015
+%   1.Added a new component that reads an external config file for model settings and parameters.
+%   2.Optimized user experience.
+%   3.Shrinked the number of input arguments.
+%   4.Fixed a bug of two digit landsat scene.
+%   5.Other bugs fixded
+%
+% Updates of Version 2.1 - 7/6/2015
+%   1.Optimized the way of splitting jobs.
+%   2.Fixed output folder bug for BRDF result.
+%   3.Added a change map output folder.
+%
+% Updates of Version 2.2 - 7/7/2015
+%   1.Added a new setting for change map type.
+%   2.Split edging threshold into two.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
-function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
-
-    % check input argument
-    if ~exist('iSub', 'var')
-        iSub = [0,0];
-    end
-    if ~exist('iDis', 'var')
-        iDis = 0.1;
-    end
-    if ~exist('iBRDF', 'var')
-        iBRDF = 0;
-    end
-    if ~exist('iData', 'var')
-        iData = '/projectnb/landsat/projects/fusion/srb_site/';
-    end
-    if ~exist('iPlat', 'var')
-        iPlat = 'MOD';
-    end
+function main = fusion_Inputs(file,job)
 
     % add the fusion package to system path
     addpath(genpath(fileparts(mfilename('fullpath'))));
-    
+
     % load module
     system('module load hdf/4.2.5');
     system('module load gdal/1.10.0');
     
-    % set up project main path
-    main.path = iData;
+    % check input argument
+    if ~exist('file', 'var')
+        file = '/projectnb/landsat/projects/fusion/codes/new_fusion/config.m';
+    end
+    if (~exist('job', 'var'))||(min(job)<1)||(job(1)>job(2))
+        job = [0,0];
+    end
+    
+    % load config file
+    if exist(file,'file')
+        run(file);
+    end
+    
+    % check if all parameters exist in config file
+        % project information
+        % data path
+        if ~exist('dataPath', 'var')
+            dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/2013/';
+        end
+        % landsat path and row
+        if ~exist('landsatScene', 'var')
+            landsatScene = [227,65];
+        end
+        % modis platform
+        if ~exist('modisPlatform', 'var')
+            modisPlatform = 'MOD';
+        end
+        
+        % main settings
+        % BRDF switch
+        if ~exist('BRDF', 'var')
+            BRDF = 0;
+        end
+        % bias switch
+        if ~exist('BIAS', 'var')
+            BIAS = 1;
+        end
+        % discard ratio
+        if ~exist('discardRatio', 'var')
+            discardRatio = 0;
+        end
+        % difference map method
+        if ~exist('mapType', 'var')
+            mapType = 1;
+        end
+        % change map method
+        if ~exist('diffMethod', 'var')
+            diffMethod = 0;
+        end
+        
+        % model parameters
+        % minimun number of valid observation
+        if ~exist('minNoB', 'var')
+            minNoB = 10;
+        end
+        % number of observation or initialization
+        if ~exist('initNoB', 'var')
+            initNoB = 5;
+        end
+        % number of standard deviation to flag a suspect
+        if ~exist('nStandDev', 'var')
+            nStandDev = 1.5;
+        end
+        % number of consecutive observation to detect change
+        if ~exist('nConsecutive', 'var')
+            nConsecutive = 5;
+        end
+        % number of suspect to confirm a change
+        if ~exist('nSuspect', 'var')
+            nSuspect = 3;
+        end
+        % switch for outlier removing in initialization
+        if ~exist('outlierRemove', 'var')
+            outlierRemove = 1;
+        end
+        % threshold of mean for non-forest detection
+        if ~exist('thresNonFstMean', 'var')
+            thresNonFstMean = 10;
+        end
+        % threshold of std for non-forest detection
+        if ~exist('thresNonFstStd', 'var')
+            thresNonFstStd = 0.3;
+        end
+        % threshold of detecting change edging pixel
+        if ~exist('thresChgEdge', 'var')
+            thresChgEdge = 5;
+        end
+        % threshold of detecting non-forest edging pixel
+        if ~exist('thresNonFstEdge', 'var')
+            thresNonFstEdge = 10;
+        end
+        % bands to be included in change detection
+        if ~exist('bandIncluded', 'var')
+            bandIncluded = [3,4,5];
+        end
+        % weight on each band
+        if ~exist('bandWeight', 'var')
+            bandWeight = [1,1,1];
+        end
+        
+    % set project main path
+    main.path = dataPath;
+    main.outpath = [main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
     
     % set input data location
         % main inputs:
         % Landsat ETM images to fuse
-        main.input.etm = [main.path 'MOD09ETM/'];
+        main.input.etm = [main.path 'ETMSYN/P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
         % MODIS Surface Reflectance data (swath data)
-        main.input.swath = [main.path iPlat '09/'];
+        main.input.swath = [main.path modisPlatform '09/'];
 
         % for 250m resolution fusion process only:
         % gridded 250m resolution band 1 and 2 surface reflectance data
-        main.input.g250m = [main.path iPlat '09GQ/'];
+        main.input.g250m = [main.path modisPlatform '09GQ/'];
 
         % for BRDF correction process only:
         % daily gridded MODIS suface reflectance data
-        main.input.grid = [main.path iPlat '09GA/'];
+        main.input.grid = [main.path modisPlatform '09GA/'];
         % BRDF/Albedo model parameters product
         main.input.brdf = [main.path 'MCD43A1/'];
 
         % for gridding process only:
         % MODIS geolocation data
-        main.input.geo = [main.path iPlat '03/'];
+        main.input.geo = [main.path modisPlatform '03/'];
         
     % set output data location (create if not exist)
         % main outputs:
         % MODIS sub image that covers the Landsat ETM area
-        main.output.modsub = [main.path 'MOD09SUB/'];
+        main.output.modsub = [main.outpath 'MOD09SUB/'];
         if exist(main.output.modsub,'dir') == 0 
-            mkdir([main.path 'MOD09SUB']);
+            mkdir([main.outpath 'MOD09SUB']);
         end
         % fused MOD09SUB
-        main.output.modsubf = [main.path 'MOD09SUBF/'];
+        main.output.modsubf = [main.outpath 'MOD09FUS/'];
         if exist(main.output.modsubf,'dir') == 0 
-            mkdir([main.path 'MOD09SUBF']);
+            mkdir([main.outpath 'MOD09FUS']);
         end
         % MOD09SUB with change and difference image
-        main.output.modsubd = [main.path 'MOD09SUBD/'];
+        main.output.modsubd = [main.outpath 'MOD09DIF/'];
         if exist(main.output.modsubd,'dir') == 0 
-            mkdir([main.path 'MOD09SUBD']);
+            mkdir([main.outpath 'MOD09DIF']);
         end
         % fused synthetic MODIS image from ETM image
-        main.output.fusion = [main.path 'FUS09/'];
+        main.output.fusion = [main.outpath 'MODFUS/'];
         if exist(main.output.fusion,'dir') == 0 
-            mkdir([main.path 'FUS09']);
+            mkdir([main.outpath 'MODFUS']);
         end
         % difference between synthetic MODIS and true MODIS
-        main.output.dif = [main.path 'FUSDIF/'];
+        main.output.dif = [main.outpath 'ETMDIF/'];
         if exist(main.output.dif,'dir') == 0 
-            mkdir([main.path 'FUSDIF']);
+            mkdir([main.outpath 'ETMDIF']);
         end
-        % changes detected
-        main.output.change = [main.path 'FUSCHG/'];
-        if exist(main.output.change,'dir') == 0 
-            mkdir([main.path 'FUSCHG']);
+        
+        % from BRDF correction
+        % BRDF parameters at Landsat scale
+        main.output.etmBRDF = [main.outpath 'BRDFETM/'];
+        if exist(main.output.etmBRDF,'dir') == 0 
+            mkdir([main.outpath 'BRDFETM']);
         end
+        % BRDF coefficients grabbed from the BRDF product
+        main.output.modBRDF = [main.path 'BRDF/'];
+        if exist(main.output.modBRDF,'dir') == 0 
+            mkdir([main.path 'BRDF']);
+        end
+        % fused synthetic MODISimage with BRDF correction
+        main.output.modsubbrdf = [main.outpath 'BRDFFUS/'];
+        if exist(main.output.modsubbrdf,'dir') == 0 
+            mkdir([main.outpath 'BRDFFUS']);
+        end
+    
+        % from change detection
+        % cache of fusion time series
+        main.output.cache = [main.outpath 'CACHE/'];
+        if exist(main.output.cache,'dir') == 0 
+            mkdir([main.outpath 'CACHE']);
+        end
+        % change detection model results in matlab format
+        main.output.chgmat = [main.outpath 'CHGMAT/'];
+        if exist(main.output.chgmat,'dir') == 0 
+            mkdir([main.outpath 'CHGMAT']);
+        end
+        % change detection model results in matlab format
+        main.output.chgmap = [main.outpath 'CHGMAP/'];
+        if exist(main.output.chgmap,'dir') == 0 
+            mkdir([main.outpath 'CHGMAP']);
+        end
+        
+        % other output folder
         % a dump folder for temporaryly storing dumped data
         main.output.dump = [main.path 'DUMP/'];
         if exist(main.output.dump,'dir') == 0 
             mkdir([main.path 'DUMP']);
         end
-        
-        % from BRDF correction
-        % BRDF parameters at Landsat scale
-        main.output.etmBRDF = [main.path 'ETMBRDF/'];
-        if exist(main.output.etmBRDF,'dir') == 0 
-            mkdir([main.path 'ETMBRDF']);
+        % a folder that contains all files that will be created by tools
+        main.output.vault = [main.path 'VAULT/'];
+        if exist(main.output.vault,'dir') == 0 
+            mkdir([main.path 'VAULT']);
         end
-        % BRDF coefficients grabbed from the BRDF product
-        main.output.modBRDF = [main.path 'MOD09B/'];
-        if exist(main.output.modBRDF,'dir') == 0 
-            mkdir([main.path 'MOD09B']);
-        end
-        % BRDF corrected and fused MOD09SUB
-        main.output.modsubbrdf = [main.path 'MOD09SUBBRDF/'];
-        if exist(main.output.modsubbrdf,'dir') == 0 
-            mkdir([main.path 'MOD09SUBBRDF']);
-        end
-        % fused synthetic MODISimage with BRDF correction
-        main.output.fusionbrdf = [main.path 'FUS09B/'];
-        if exist(main.output.fusionbrdf,'dir') == 0 
-            mkdir([main.path 'FUS09B']);
-        end
-    
-        % from gridding process
-        % gridded fusion result
-        % main.output.fusGrid = [main.path 'FUSGRID/'];
-        % if exist(main.output.fusGrid,'dir') == 0 
-        %     mkdir([main.path 'FUSGRID']);
-        % end
-        % gridding parameters
-        % main.output.gridPara = [main.path 'GRIDPARA/'];
-        % if exist(main.output.gridPara,'dir') == 0 
-        %     mkdir([main.path 'GRIDPARA']);
-        % end
           
-    % settings and parameters
+    % project information
         % platform of MODIS
-        main.set.plat = iPlat;
+        main.set.plat = modisPlatform;
+        % Landsat scene
+        main.set.scene = landsatScene;
+        % job information
+        main.set.job = job;
+        
+    % settings and parameters
         % apply BRDF correction or not
-        main.set.brdf = iBRDF;
+        main.set.brdf = BRDF;
         % discard ratio of Landsat image (% image discarded on the edge)
-        main.set.dis = 0;
+        main.set.dis = discardRatio;
         % correct for bias in difference map
-        main.set.bias = 1;
+        main.set.bias = BIAS;
         % max (0) or mean (1) in calculating difference map
-        main.set.dif = 0;
+        main.set.dif = diffMethod;
+        % type of map to be generated, date(1)/month(2) of change, change only map (3)
+        main.set.map = mapType;
+        
+    % settings and parameters for the change detection model
+        % minimun number of valid observation
+        main.model.minNoB = minNoB;
+        % number of observations to initialize the model
+        main.model.initNoB = initNoB;
+        % coefficiant of std in change detection
+        main.model.nSD = nStandDev;
+        % number of consective observation of detect change
+        main.model.nCosc = nConsecutive;
+        % number of suspective observation to confirm the change
+        main.model.nSusp = nSuspect;
+        % number of outlier to remove in initialization
+        main.model.outlr = outlierRemove;
+        % threshold of mean to detect non-forest pixel
+        main.model.nonfstmean = thresNonFstMean;
+        % threshold of std to detect non-forest pixel
+        main.model.nonfstdev = thresNonFstStd;
+        % threshold of detecting change edging pixel
+        main.model.chgedge = thresChgEdge;
+        % threshold of detecting edging pixel in stable non-forest pixel
+        main.model.nonfstedge = thresNonFstEdge;
+        % bands used for change detection
+        main.model.band = bandIncluded;
+        % weight of each band in change detection
+        main.model.weight = bandWeight;
         
     % image properties
         % grab the first ETM file
@@ -239,21 +379,11 @@ function main = fusion_Inputs(iData,iPlat,iBRDF,iSub)
         end
     
     % divide into parts
-        if min(iSub>0)
-        
-            % calculate begining and ending
+        if min(job>0)       
+            % total number of work load
             total = numel(main.date.swath);
-            piece = floor(total/iSub(2));
-            start = 1+piece*(iSub(1)-1);
-            if iSub(1)<iSub(2)
-                stop = start+piece-1;
-            else
-                stop = total;
-            end
-            
-            % subset dates to be processed
-            main.date.swath = main.date.swath(start:stop);
-            
+            % subset work load for each job
+            main.date.swath = main.date.swath(job(1):job(2):total);
         end
     
     % done

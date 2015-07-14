@@ -2,8 +2,8 @@
 # Version 1.1
 # Tools
 #
-# Project: Fusion
-# By Xiaojing Tang
+# Project: New Fusion
+# By xjtang
 # Created On: 11/26/2014
 # Last Update: 12/14/2014
 #
@@ -14,7 +14,7 @@
 #   
 # Output Arguments: NA
 #
-# Usage: 
+# Instruction: 
 #   1.Generate cloud stats with other tools.
 #   2.Use this script to make plot.
 #

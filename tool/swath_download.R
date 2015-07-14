@@ -2,8 +2,8 @@
 # Version 1.1
 # Tools
 #
-# Project: Fusion
-# By Xiaojing Tang
+# Project: New Fusion
+# By xjtang
 # Created On: 11/9/2014
 # Last Update: 2/20/2015
 #
@@ -15,7 +15,7 @@
 #   
 # Output Arguments: NA
 #
-# Usage: 
+# Instruction: 
 #   1.Install package RCurl and bitops.
 #   2.Search for swath data on the LAADS website.
 #   3.Submit your order.

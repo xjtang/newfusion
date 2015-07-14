@@ -2,9 +2,8 @@
 % Version 6.1
 % Core
 %
-% Project: Fusion
-% By Qinchuan Xin
-% Updated By: Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: Unknown
 % Last Update: 9/17/2014
 %
@@ -14,29 +13,24 @@
 %   UTMZone (Integer) - Corresponding UTM zone of the inputs (zone only).
 % 
 % Output Arguments: 
-%   Lat (Vector, Double) - vector of latitude in degrees in WGS84 
-%       (neg. for West).
-%   Lon (Vector, Double) - vector of longitude in degrees in WGS84
-%       (neg. for South).
+%   Lat (Vector, Double) - vector of latitude in degrees in WGS84 (neg. for West).
+%   Lon (Vector, Double) - vector of longitude in degrees in WGS84 (neg. for South).
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %   2.UTMEast, UTMNorth, and UTMZone are required input arguments.
 %   3.Hemisphere will be North if not specified.
 %
-% Version 6.0 - Unknown
-%   Function to convert vectors of UTM coordinates into WGS 84 Lat/Lon
-%       vectors.
-%   Calculate Latitude and Longitude in degrees given UTM Easting, Northing
-%       and UTM zones.
+% Version 6.0 - Unknown (by Q. Xin)
+%   Function to convert vectors of UTM coordinates into WGS 84 Lat/Lon vectors.
+%   Calculate Latitude and Longitude in degrees given UTM Easting, Northing and UTM zones.
 %   Some code was extracted from utm2deg.m function by Rafael Palacios
 %
-% Updates of Version 6.1 - 9/17/2014 (by Xiaojing Tang)
+% Updates of Version 6.1 - 9/17/2014 
 %   1.Updated comments.
 %   2.Changed coding style.
 %   3.Modified for work flow of fusion version 6.1.
-%   4.Handle negative UTM zone as southern hemisphere (used to be extra
-%       input argument in previous version).
+%   4.Handle negative UTM zone as southern hemisphere (used to be extra input argument in previous version).
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------

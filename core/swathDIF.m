@@ -2,8 +2,8 @@
 % Version 1.0
 % Core
 %
-% Project: Fusion
-% By: Xiaojing Tang
+% Project: New Fusion
+% By xjtang
 % Created On: 1/17/2015
 % Last Update: 1/19/2015
 %
@@ -19,7 +19,7 @@
 % Output Arguments: 
 %   DIF (Matrix, Var) - the difference image.
 %
-% Usage: 
+% Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
 %
 % Version 6.0 - 1/19/2015

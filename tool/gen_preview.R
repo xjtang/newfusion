@@ -2,8 +2,8 @@
 # Version 1.4
 # Tools
 #
-# Project: Fusion
-# By Xiaojing Tang
+# Project: New Fusion
+# By xjtang
 # Created On: 11/30/2014
 # Last Update: 4/7/2015
 #
@@ -13,7 +13,7 @@
 # Output Arguments: 
 #   See specific function.
 #
-# Usage: 
+# Instruction: 
 #   1.Generate SwathSub with fusion program.
 #   2.Use this script to generate preview image.
 #   3.NDVI grey scale image at 250 resolution.
