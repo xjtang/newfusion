@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 7/13/2015
+% Last Update: 7/14/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -34,7 +34,7 @@
 %   1.Completely redesigned the algorithm.
 %   2.Fixed a major bug.
 %
-% Updates of Version 2.1 - 7/13/2015
+% Updates of Version 2.1 - 7/14/2015
 %   1.Adjusted non-forest detection.
 %   2.Added post change detection filtering.
 %
@@ -163,29 +163,24 @@ function CHG = change(TS,sets)
 
     end
     
-    % post change detection clasification
+    % post change detection refining
+    % split data into pre-break and post-break
     if max(CHG==3) == 1
-        % check if pre-break and post-break is statistically different
-        [~,breakPoint] = max(CHG==3);
-        preBreak = TS(:,CHG(1:(breakPoint-1))>0);
-        postBreak = TS(:,CHG(breakPoint:end)>0);
-        if ttest2(preBreak,postBreak)
-            % false break, removethe break
-            
-        else
-            % true break, determine the class
-            
-            
-        end
+        % break exist
+        preBreakClean = TS(:,CHG==1);
+        preBreak = TS(:,(CHG>0)&(CHG<3));
+        postBreak = TS(:,CHG>=3);
+        CHGFlag = 1;
     else
-        % no break, check the full time series
-        
+        % no break
+        preBreakClean = TS(:,CHG==1);
+        CHGFlag = 0;
     end
     
-    % check if this is a statble non-forest pixel
-    pMean = sets.weight*abs(initMean);
-    pSTD = sets.weight*abs(initStd);
-    if pMean > sets.nonfstmean && pSTD > sets.nonfstdev 
+    % see if pre-brake is non-forest
+    pMean = sets.weight*abs(mean(preBreakClean,2));
+    pSTD = sets.weight*abs(std(preBreakClean,0,2));
+    if pMean > sets.nonfstmean || pSTD > sets.nonfstdev 
         % deal with stable non-forest pixel
         for i = 1:length(ETS)
             x = TS(:,ETS(i));
@@ -193,6 +188,17 @@ function CHG = change(TS,sets)
                 CHG(ETS(i)) = 6;
             else
                 CHG(ETS(i)) = 7;
+            end
+        end
+    else
+        % pre-break is forest, check if post-break exist
+        if CHGFlag == 1
+            % compare pre-break and post-break
+            if manova1([preBreak;postBreak],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]) == 0
+                % this is a false break
+                CHG(CHG==3) = 2;
+                CHG(CHG==4) = 2;
+                CHG(CHG==5) = 1;
             end
         end
     end
