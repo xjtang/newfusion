@@ -179,7 +179,7 @@ function CHG = change(TS,sets)
     % see if pre-brake is non-forest
     pMean = sets.weight*abs(mean(preBreakClean,2));
     pSTD = sets.weight*abs(std(preBreakClean,0,2));
-    if pMean > sets.nonfstmean || pSTD > sets.nonfstdev 
+    if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
         % deal with stable non-forest pixel
         for i = 1:length(ETS)
             x = TS(:,ETS(i));
