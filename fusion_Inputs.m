@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.2
+% Version 2.2.1
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 7/7/2015
+% Last Update: 7/16/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -80,6 +80,10 @@
 %   1.Added a new setting for change map type.
 %   2.Split edging threshold into two.
 %
+% Updates of Version 2.2.1 - 7/16/2015
+%   1.Added a spectral threshold for edge detecting. 
+%   2.Adjusted default value.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -135,7 +139,7 @@ function main = fusion_Inputs(file,job)
         end
         % difference map method
         if ~exist('mapType', 'var')
-            mapType = 1;
+            mapType = 3;
         end
         % change map method
         if ~exist('diffMethod', 'var')
@@ -149,15 +153,15 @@ function main = fusion_Inputs(file,job)
         end
         % number of observation or initialization
         if ~exist('initNoB', 'var')
-            initNoB = 5;
+            initNoB = 7;
         end
         % number of standard deviation to flag a suspect
         if ~exist('nStandDev', 'var')
-            nStandDev = 1.5;
+            nStandDev = 3.5;
         end
         % number of consecutive observation to detect change
         if ~exist('nConsecutive', 'var')
-            nConsecutive = 5;
+            nConsecutive = 4;
         end
         % number of suspect to confirm a change
         if ~exist('nSuspect', 'var')
@@ -169,11 +173,11 @@ function main = fusion_Inputs(file,job)
         end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 10;
+            thresNonFstMean = 450;
         end
         % threshold of std for non-forest detection
         if ~exist('thresNonFstStd', 'var')
-            thresNonFstStd = 0.3;
+            thresNonFstStd = 150;
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
@@ -183,13 +187,17 @@ function main = fusion_Inputs(file,job)
         if ~exist('thresNonFstEdge', 'var')
             thresNonFstEdge = 10;
         end
+        % spectral threshold for edge detecting
+        if ~exist('thresSpecEdge', 'var')
+            thresSpecEdge = 150;
+        end
         % bands to be included in change detection
         if ~exist('bandIncluded', 'var')
-            bandIncluded = [3,4,5];
+            bandIncluded = [4,5,6];
         end
         % weight on each band
         if ~exist('bandWeight', 'var')
-            bandWeight = [1,1,1];
+            bandWeight = [1,1.2,1.2];
         end
         
     % set project main path
@@ -332,6 +340,8 @@ function main = fusion_Inputs(file,job)
         main.model.chgedge = thresChgEdge;
         % threshold of detecting edging pixel in stable non-forest pixel
         main.model.nonfstedge = thresNonFstEdge;
+        % spectral threshold for edge detecting
+        main.model.specedge = thresSpecEdge;
         % bands used for change detection
         main.model.band = bandIncluded;
         % weight of each band in change detection
