@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.2.1
+% Version 2.2.2
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 7/16/2015
+% Last Update: 7/18/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -84,6 +84,10 @@
 %   1.Added a spectral threshold for edge detecting. 
 %   2.Adjusted default value.
 %
+% Updates of Version 2.2.2 - 7/18/2015
+%   1.Added a probable change threshold.
+%   2.Adjusted default values.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -153,7 +157,7 @@ function main = fusion_Inputs(file,job)
         end
         % number of observation or initialization
         if ~exist('initNoB', 'var')
-            initNoB = 7;
+            initNoB = 10;
         end
         % number of standard deviation to flag a suspect
         if ~exist('nStandDev', 'var')
@@ -169,15 +173,15 @@ function main = fusion_Inputs(file,job)
         end
         % switch for outlier removing in initialization
         if ~exist('outlierRemove', 'var')
-            outlierRemove = 1;
+            outlierRemove = 2;
         end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 450;
+            thresNonFstMean = 500;
         end
         % threshold of std for non-forest detection
         if ~exist('thresNonFstStd', 'var')
-            thresNonFstStd = 150;
+            thresNonFstStd = 200;
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
@@ -190,6 +194,10 @@ function main = fusion_Inputs(file,job)
         % spectral threshold for edge detecting
         if ~exist('thresSpecEdge', 'var')
             thresSpecEdge = 150;
+        end
+        % threshold for n observation after change to confirm change
+        if ~exist('thresProbChange', 'var')
+            thresProbChange = 8;
         end
         % bands to be included in change detection
         if ~exist('bandIncluded', 'var')
@@ -342,6 +350,8 @@ function main = fusion_Inputs(file,job)
         main.model.nonfstedge = thresNonFstEdge;
         % spectral threshold for edge detecting
         main.model.specedge = thresSpecEdge;
+        % threshold for n observation after change to confirm change
+        main.model.probThres = thresProbChange;
         % bands used for change detection
         main.model.band = bandIncluded;
         % weight of each band in change detection

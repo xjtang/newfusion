@@ -1,5 +1,5 @@
 % genMap.m
-% Version 1.1
+% Version 1.2
 % Core
 %
 % Project: New fusion
@@ -23,12 +23,18 @@
 %   The script translate change time series to a change class.
 %   Only date of change map is available in this version.
 %
-% Version 1.1 - 7/8/2015
+% Updates of Version 1.1 - 7/8/2015
 %   1.Added new type of change map.
 %   2.Bugs fixed.
 %
-% Version 1.0.1 - 7/13/2015
+% Updates of Version 1.1.1 - 7/13/2015
 %   1.Added a new type of change map.
+%
+% Updates of Version 1.2 - 7/18/2015
+%   1.Added a filtering mechanism for pixel that have a very late break.
+%   2.Added a new class for probable changed pixel.
+%   3.Removed a unnecessary line.
+%   4.Added explaination of classes.
 %
 % Released on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -38,8 +44,17 @@
 %   2 - month of change
 %   3 - class map
 %   4 - change only
+%
+% Classes
+%   -9999 - no data
+%   1 - stable
+%   5 - stable non-forest
+%   6 - stable non-forest edge
+%   10 - change
+%   11 - change edge
+%   12 - probable change
 
-function CLS = genMap(X,D,mapType,edgeThres)
+function CLS = genMap(X,D,mapType,edgeThres,probThres)
     
     % initilize result
     CLS = -1;
@@ -62,7 +77,6 @@ function CLS = genMap(X,D,mapType,edgeThres)
             end
             % confirmed changed
             if max(X==3) == 1
-                [~,breakPoint] = max(X==3);
                 CLS = 10;
             end
             % could be non-forest edge
@@ -73,36 +87,42 @@ function CLS = genMap(X,D,mapType,edgeThres)
             if sum(X==5) >= edgeThres(1)
                 CLS = 11;
             end
+            % probable change
+            if s(um(X==4)+sum(X==5)+1) < probThres
+                CLS = 12;
+            end       
     elseif mapType == 4
         % change only map
         % confirmed changed
         if max(X==3) == 1
-            [~,breakPoint] = max(X==3);
+            CLS = 10;
             % could be change edge
             if sum(X==5) >= edgeThres(1)
                 CLS = 11;
-            else
-                CLS = 10;
             end
+            % probable change
+            if s(um(X==4)+sum(X==5)+1) < probThres
+                CLS = 12;
+            end   
         else
             CLS = 0;
         end
     else
         % date of change map (default)
         % deal with different types of change
-            % stable forest
-            if (max(X)<=2)&&(max(X)>=1)
-                CLS = 0;
-            end
-            % stable non-forest
-            if max(X) >= 6
-                CLS = 1;
-            end
-            % confirmed changed
-            if max(X==3) == 1
-                [~,breakPoint] = max(X==3);
-                CLS = D(breakPoint,1);
-            end
+        % stable forest
+        if (max(X)<=2)&&(max(X)>=1)
+            CLS = 0;
+        end
+        % stable non-forest
+        if max(X) >= 6
+            CLS = 1;
+        end
+        % confirmed changed
+        if (max(X==3) == 1)
+            [~,breakPoint] = max(X==3);
+            CLS = D(breakPoint,1);
+        end
     end
     
     % done
