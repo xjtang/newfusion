@@ -1,11 +1,11 @@
 % change.m
-% Version 2.0.1
+% Version 2.2
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 7/16/2015
+% Last Update: 7/18/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -38,8 +38,12 @@
 %   2.Added post change detection filtering.
 %   3.Bug fixed.
 %
-% Updates of Version 2.0.1 - 7/16/2015
+% Updates of Version 2.1.1 - 7/16/2015
 %   1.Added a spectral threshold for edge detecting.
+%
+% Updates of Version 2.2 - 7/18/2015
+%   1.Added another mechanism to check if a false break pixel is non-forest.
+%   2.Removed a unused variable.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -71,7 +75,7 @@ function CHG = change(TS,sets)
     % sets.band = [3,4,5];
 
     % analyse input TS 
-    [nband,nob] = size(TS);
+    [~,nob] = size(TS);
     
     % initilize result
     CHG = zeros(1,nob);
@@ -202,6 +206,19 @@ function CHG = change(TS,sets)
                 CHG(CHG==3) = 2;
                 CHG(CHG==4) = 2;
                 CHG(CHG==5) = 1;
+                % check this pixel as a whole again if this is non-forest
+                pMean = sets.weight*abs(mean(TS(:,CHG==1),2));
+                pSTD = sets.weight*abs(std(TS(:,CHG==1),0,2));
+                if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
+                    for i = 1:length(ETS)
+                        x = TS(:,ETS(i));
+                        if sets.weight*abs(x) >= sets.specedge
+                            CHG(ETS(i)) = 6;
+                        else
+                            CHG(ETS(i)) = 7;
+                        end
+                    end
+                end
             end
         end
     end
