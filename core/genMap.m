@@ -88,7 +88,7 @@ function CLS = genMap(X,D,mapType,edgeThres,probThres)
                 CLS = 11;
             end
             % probable change
-            if s(um(X==4)+sum(X==5)+1) < probThres
+            if (sum(X==4)+sum(X==5)+1) < probThres
                 CLS = 12;
             end       
     elseif mapType == 4
