@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 7/7/2015
-% Last Update: 7/13/2015
+% Last Update: 7/19/2015
 %
 % Input Arguments:
 %   X (Vector) - change time series
@@ -30,11 +30,12 @@
 % Updates of Version 1.1.1 - 7/13/2015
 %   1.Added a new type of change map.
 %
-% Updates of Version 1.2 - 7/18/2015
+% Updates of Version 1.2 - 7/19/2015
 %   1.Added a filtering mechanism for pixel that have a very late break.
 %   2.Added a new class for probable changed pixel.
 %   3.Removed a unnecessary line.
 %   4.Added explaination of classes.
+%   5.Fixed a bug.
 %
 % Released on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -78,6 +79,10 @@ function CLS = genMap(X,D,mapType,edgeThres,probThres)
             % confirmed changed
             if max(X==3) == 1
                 CLS = 10;
+                % probable change
+                if (sum(X==4)+sum(X==5)+1) < probThres
+                    CLS = 12;
+                end 
             end
             % could be non-forest edge
             if sum(X==7) >= edgeThres(2)
@@ -87,10 +92,6 @@ function CLS = genMap(X,D,mapType,edgeThres,probThres)
             if sum(X==5) >= edgeThres(1)
                 CLS = 11;
             end
-            % probable change
-            if (sum(X==4)+sum(X==5)+1) < probThres
-                CLS = 12;
-            end       
     elseif mapType == 4
         % change only map
         % confirmed changed
