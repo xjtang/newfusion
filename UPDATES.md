@@ -3,6 +3,13 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.1 - 7/20/2015  
+--------------
+- Added a new mechanism for false break non-forest check.  
+- Added a new parameter for probable change detecting.  
+- Added a spectral threshold for edge detecting.  
+- Bugs fixed.  
+  
 Version 1.0 - 7/14/2015  
 --------------
 - Change project name to the New Fusion (version 1.0).  
