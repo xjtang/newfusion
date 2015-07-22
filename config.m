@@ -32,6 +32,10 @@
 %   1.Added a new threshold for probable change detecting.
 %   2.Adjusted default value.
 %
+% Updates of Version 1.1.3 - 7/22/2015
+%   1.Threshold for edge finding percentized.
+%   2.Adjusted default value.
+%
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -57,8 +61,8 @@
     outlierRemove = 2;              % switch for outlier removing in initialization
     thresNonFstMean = 500;          % threshold of mean for non-forest detection
     thresNonFstStd = 200;           % threshold of std for non-forest detection
-    thresChgEdge = 5;               % threshold of detecting change edging pixel
-    thresNonFstEdge = 10;           % threshold of detecting non-forest edging pixel
+    thresChgEdge = 0.4;             % threshold of detecting change edging pixel
+    thresNonFstEdge = 0.25;         % threshold of detecting non-forest edging pixel
     thresSpecEdge = 150;            % spectral threshold for edge detecting
     thresProbChange = 8;            % threshold for n observation after change to confirm change
     bandIncluded = [4,5,6];         % bands to be included in change detection (band 7/8 are 250m)

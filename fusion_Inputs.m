@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.2.2
+% Version 2.2.3
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 7/18/2015
+% Last Update: 7/22/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -88,6 +88,11 @@
 %   1.Added a probable change threshold.
 %   2.Adjusted default values.
 %
+% Updates of Version 2.2.3 - 7/22/2015
+%   1.Threshold for edge finding percentized.
+%   2.Adjusted default value.
+%   3.Fixed a typo in comment.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -142,13 +147,14 @@ function main = fusion_Inputs(file,job)
             discardRatio = 0;
         end
         % difference map method
-        if ~exist('mapType', 'var')
-            mapType = 3;
-        end
-        % change map method
         if ~exist('diffMethod', 'var')
             diffMethod = 0;
         end
+        % change map method
+        if ~exist('mapType', 'var')
+            mapType = 3;
+        end
+
         
         % model parameters
         % minimun number of valid observation
@@ -185,11 +191,11 @@ function main = fusion_Inputs(file,job)
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
-            thresChgEdge = 5;
+            thresChgEdge = 0.4;
         end
         % threshold of detecting non-forest edging pixel
         if ~exist('thresNonFstEdge', 'var')
-            thresNonFstEdge = 10;
+            thresNonFstEdge = 0.25;
         end
         % spectral threshold for edge detecting
         if ~exist('thresSpecEdge', 'var')
