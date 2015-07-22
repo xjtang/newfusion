@@ -6,6 +6,7 @@ New Fusion
 Version 1.2 - 7/22/2015  
 --------------
 - Optimized the outlier removing process in initialization in change detection.  
+- Threshold for edge finding are percentized.  
   
 Version 1.1 - 7/20/2015  
 --------------
