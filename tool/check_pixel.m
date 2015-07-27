@@ -291,31 +291,32 @@ function R = check_pixel(file,row,col)
         
     % visualize results
         % calculate y axis
-        Y = floor(R.date/1000)+mod(R.date,1000)/365.25;
+        Y = floor(double(R.date)/1000)+mod(double(R.date),1000)/365.25;
         % make plot
         figure();
         for i = 1:nband
             subplot(nband,1,i);
+            hold on;
             if max(CHG==1) == 1
-                plot(Y(CHG==1),TS(CHG==1),'g.','MarkerSize',15);
+                plot(Y(CHG==1),TS(i,CHG==1),'g.','MarkerSize',15);
             end
             if max(CHG==2) == 1
-                plot(Y(CHG==2),TS(CHG==2),'k.','MarkerSize',15);
+                plot(Y(CHG==2),TS(i,CHG==2),'k.','MarkerSize',15);
             end
             if max(CHG==3) == 1
-                plot(Y(CHG==3),TS(CHG==3),'r.','MarkerSize',15);
+                plot(Y(CHG==3),TS(i,CHG==3),'r.','MarkerSize',15);
             end
             if max(CHG==4) == 1
-                plot(Y(CHG==4),TS(CHG==4),'b.','MarkerSize',15);
+                plot(Y(CHG==4),TS(i,CHG==4),'b.','MarkerSize',15);
             end
             if max(CHG==5) == 1
-                plot(Y(CHG==5),TS(CHG==5),'c.','MarkerSize',15);
+                plot(Y(CHG==5),TS(i,CHG==5),'c.','MarkerSize',15);
             end
             if max(CHG==6) == 1
-                plot(Y(CHG==6),TS(CHG==6),'b.','MarkerSize',15);
+                plot(Y(CHG==6),TS(i,CHG==6),'b.','MarkerSize',15);
             end
             if max(CHG==7) == 1
-                plot(Y(CHG==7),TS(CHG==7),'c.','MarkerSize',15);
+                plot(Y(CHG==7),TS(i,CHG==7),'c.','MarkerSize',15);
             end
             title(['Band ' num2str(bandIncluded(i))]);
             set(gca,'XTick',floor(Y(1)):(1/12):(floor(Y(1))+1));
