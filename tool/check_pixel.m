@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/22/2015
-% Last Update: 7/26/2015
+% Last Update: 7/27/2015
 %
 % Input Arguments: 
 %   file - path to config file
@@ -19,7 +19,7 @@
 %   1.Generate cache files of fusion time series.
 %   2.Run this script with correct input arguments.
 %
-% Version 1.0 - 7/26/2015
+% Version 1.0 - 7/27/2015
 %   This script gathers intermediate outputs of change detection on individual pixel.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
@@ -224,17 +224,17 @@ function R = check_pixel(file,row,col)
                     CHG(CHG==4) = 2;
                     CHG(CHG==5) = 1;
                     % check this pixel as a whole again if this is non-forest
-                    pMean = sets.weight*abs(mean(TS(:,CHG==1),2));
-                    pSTD = sets.weight*abs(std(TS(:,CHG==1),0,2));
+                    pMean = bandWeight*abs(mean(TS(:,CHG==1),2));
+                    pSTD = bandWeight*abs(std(TS(:,CHG==1),0,2));
                     R.pMean2 = pMean;
                     R.pSTD2 = pSTD;
-                    if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
-                        for i = 1:length(ETS)
+                    if pMean >= thresNonFstMean || pSTD >= thresNonFstStd
+                        for i = 1:nob
                             x = TS(:,ETS(i));
-                            if sets.weight*abs(x) >= sets.specedge
-                                CHG(ETS(i)) = 6;
+                            if bandWeight*abs(x) >= thresSpecEdge
+                                CHG(i) = 6;
                             else
-                                CHG(ETS(i)) = 7;
+                                CHG(i) = 7;
                             end
                         end
                     end
@@ -245,14 +245,41 @@ function R = check_pixel(file,row,col)
         R.chg2 = CHG;
      
     % assign class
-    
-    
+        % initilize result
+        CLS = -1;
+        % stable forest
+        if (max(CHG)<=2)&&(max(CHG)>=1)
+            CLS = 0;
+        end
+        % stable non-forest
+        if max(CHG) >= 6
+            CLS = 5;
+            % could be non-forest edge
+            if sum(CHG==7)/sum(CHG>=6) >= thresNonFstEdge
+                CLS = 6;
+            end
+        end
+        % confirmed changed
+        if max(CHG==3) == 1
+            CLS = 10;
+            % probable change
+            if (sum(CHG==4)+sum(CHG==5)+1) < thresProbChange
+                CLS = 12;
+            end 
+            % could be change edge
+            if sum(CHG==5)/sum(CHG>=3) >= thresChgEdge
+                CLS = 11;
+            end
+        end
+        % date of change
+        if (max(CHG==3) == 1)
+            [~,breakPoint] = max(CHG==3);
+            R.chgDate = raw.Date(breakPoint);
+        end
+        % record result
+        R.class = CLS;
         
     % visualize results
-    
-    
-    
-    
     
     % done
     
