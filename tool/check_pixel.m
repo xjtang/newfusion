@@ -1,5 +1,5 @@
 % check_pixel.m
-% Version 1.0
+% Version 1.1
 % Tools
 %
 % Project: New Fusion
@@ -21,6 +21,9 @@
 %
 % Version 1.0 - 7/27/2015
 %   This script gathers intermediate outputs of change detection on individual pixel.
+%
+% Updates of Version 1.1 - 7/27/2015
+%   1.Added the ploting feature.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -75,7 +78,7 @@ function R = check_pixel(file,row,col)
     
     % remove unavailable observation
     TS = raw.Data(:,max(raw.Data>(-9999)));
-    [~,nob] = size(TS);
+    [nband,nob] = size(TS);
     % record raw reflectance data
     R.model.nob = nob;
     R.ts = TS;
@@ -201,8 +204,8 @@ function R = check_pixel(file,row,col)
         % see if pre-brake is non-forest
         pMean = bandWeight*abs(mean(preBreakClean,2));
         pSTD = bandWeight*abs(std(preBreakClean,0,2));
-        R.pMean = pMean;
-        R.pSTD = pSTD;
+        R.preMean = pMean;
+        R.preSTD = pSTD;
         if pMean >= thresNonFstMean || pSTD >= thresNonFstStd 
             % deal with stable non-forest pixel
             for i = 1:nob
@@ -219,15 +222,22 @@ function R = check_pixel(file,row,col)
                 % compare pre-break and post-break
                 R.manova = manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]);
                 if manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]) == 0
-                    % this is a false break
-                    CHG(CHG==3) = 2;
-                    CHG(CHG==4) = 2;
-                    CHG(CHG==5) = 1;
+                    % make sure post break is non-forest
+                    pMean = bandWeight*abs(mean(postBreak,2));
+                    pSTD = bandWeight*abs(std(postBreak,0,2));
+                    R.postMean = pMean;
+                    R.postSTD = pSTD;
+                    if pMean >= thresNonFstMean || pSTD >= thresNonFstStd 
+                        % this is a false break
+                        CHG(CHG==3) = 2;
+                        CHG(CHG==4) = 2;
+                        CHG(CHG==5) = 1;
+                    end
                     % check this pixel as a whole again if this is non-forest
                     pMean = bandWeight*abs(mean(TS(:,CHG==1),2));
                     pSTD = bandWeight*abs(std(TS(:,CHG==1),0,2));
-                    R.pMean2 = pMean;
-                    R.pSTD2 = pSTD;
+                    R.allMean = pMean;
+                    R.allSTD = pSTD;
                     if pMean >= thresNonFstMean || pSTD >= thresNonFstStd
                         for i = 1:nob
                             x = TS(:,ETS(i));
@@ -272,7 +282,7 @@ function R = check_pixel(file,row,col)
             end
         end
         % date of change
-        if (max(CHG==3) == 1)
+        if max(CHG==3) == 1
             [~,breakPoint] = max(CHG==3);
             R.chgDate = raw.Date(breakPoint);
         end
@@ -280,6 +290,39 @@ function R = check_pixel(file,row,col)
         R.class = CLS;
         
     % visualize results
+        % calculate y axis
+        Y = floor(R.date/1000)+mod(R.date,1000)/365.25;
+        % make plot
+        figure();
+        for i = 1:nband
+            subplot(nband,1,i);
+            if max(CHG==1) == 1
+                plot(Y(CHG==1),TS(CHG==1),'g.','MarkerSize',15);
+            end
+            if max(CHG==2) == 1
+                plot(Y(CHG==2),TS(CHG==2),'k.','MarkerSize',15);
+            end
+            if max(CHG==3) == 1
+                plot(Y(CHG==3),TS(CHG==3),'r.','MarkerSize',15);
+            end
+            if max(CHG==4) == 1
+                plot(Y(CHG==4),TS(CHG==4),'b.','MarkerSize',15);
+            end
+            if max(CHG==5) == 1
+                plot(Y(CHG==5),TS(CHG==5),'c.','MarkerSize',15);
+            end
+            if max(CHG==6) == 1
+                plot(Y(CHG==6),TS(CHG==6),'b.','MarkerSize',15);
+            end
+            if max(CHG==7) == 1
+                plot(Y(CHG==7),TS(CHG==7),'c.','MarkerSize',15);
+            end
+            title(['Band ' num2str(bandIncluded(i))]);
+            set(gca,'XTick',floor(Y(1)):(1/12):(floor(Y(1))+1));
+            set(gca,'XTickLabel',{'1','2','3','4','5','6','7','8','9','10','11','12'});
+            xlabel('Date');
+            ylabel('Fusion');
+        end
     
     % done
     
