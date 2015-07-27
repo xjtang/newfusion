@@ -24,6 +24,7 @@
 %
 % Updates of Version 1.1 - 7/27/2015
 %   1.Added the ploting feature.
+%   2.Bug fixed.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -222,17 +223,10 @@ function R = check_pixel(file,row,col)
                 % compare pre-break and post-break
                 R.manova = manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]);
                 if manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]) == 0
-                    % make sure post break is non-forest
-                    pMean = bandWeight*abs(mean(postBreak,2));
-                    pSTD = bandWeight*abs(std(postBreak,0,2));
-                    R.postMean = pMean;
-                    R.postSTD = pSTD;
-                    if pMean >= thresNonFstMean || pSTD >= thresNonFstStd 
-                        % this is a false break
-                        CHG(CHG==3) = 2;
-                        CHG(CHG==4) = 2;
-                        CHG(CHG==5) = 1;
-                    end
+                    % this is a false break
+                    CHG(CHG==3) = 2;
+                    CHG(CHG==4) = 2;
+                    CHG(CHG==5) = 1;
                     % check this pixel as a whole again if this is non-forest
                     pMean = bandWeight*abs(mean(TS(:,CHG==1),2));
                     pSTD = bandWeight*abs(std(TS(:,CHG==1),0,2));
@@ -247,6 +241,18 @@ function R = check_pixel(file,row,col)
                                 CHG(i) = 7;
                             end
                         end
+                    end
+                else
+                    % make sure post break is non-forest
+                    pMean = bandWeight*abs(mean(postBreak,2));
+                    pSTD = bandWeight*abs(std(postBreak,0,2));
+                    R.postMean = pMean;
+                    R.postSTD = pSTD;
+                    if pMean < thresNonFstMean && pSTD < thresNonFstStd 
+                        % this is a false break
+                        CHG(CHG==3) = 2;
+                        CHG(CHG==4) = 2;
+                        CHG(CHG==5) = 1;
                     end
                 end
             end

@@ -206,15 +206,10 @@ function CHG = change(TS,sets)
         if CHGFlag == 1
             % compare pre-break and post-break
             if manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]) == 0
-                % make sure post break is non-forest
-                pMean = sets.weight*abs(mean(postBreak,2));
-                pSTD = sets.weight*abs(std(postBreak,0,2));
-                if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
-                    % this is a false break
-                    CHG(CHG==3) = 2;
-                    CHG(CHG==4) = 2;
-                    CHG(CHG==5) = 1;
-                end
+                % this is a false break
+                CHG(CHG==3) = 2;
+                CHG(CHG==4) = 2;
+                CHG(CHG==5) = 1;
                 % check this pixel as a whole again if this is non-forest
                 pMean = sets.weight*abs(mean(TS(:,CHG==1),2));
                 pSTD = sets.weight*abs(std(TS(:,CHG==1),0,2));
@@ -227,6 +222,16 @@ function CHG = change(TS,sets)
                             CHG(ETS(i)) = 7;
                         end
                     end
+                end
+            else
+                % make sure post break is non-forest
+                pMean = sets.weight*abs(mean(postBreak,2));
+                pSTD = sets.weight*abs(std(postBreak,0,2));
+                if pMean < sets.nonfstmean && pSTD < sets.nonfstdev 
+                    % this is a false break
+                    CHG(CHG==3) = 2;
+                    CHG(CHG==4) = 2;
+                    CHG(CHG==5) = 1;
                 end
             end
         end
