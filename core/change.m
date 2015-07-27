@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 7/22/2015
+% Last Update: 7/28/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -45,8 +45,9 @@
 %   1.Added another mechanism to check if a false break pixel is non-forest.
 %   2.Removed a unused variable.
 %
-% Updates of Version 2.3 - 7/22/2015
+% Updates of Version 2.3 - 7/28/2015
 %   1.Optimize the outlier removing process in initialization.
+%   2.Added a machanism to check whether post-break is non-forest.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -205,10 +206,15 @@ function CHG = change(TS,sets)
         if CHGFlag == 1
             % compare pre-break and post-break
             if manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]) == 0
-                % this is a false break
-                CHG(CHG==3) = 2;
-                CHG(CHG==4) = 2;
-                CHG(CHG==5) = 1;
+                % make sure post break is non-forest
+                pMean = sets.weight*abs(mean(postBreak,2));
+                pSTD = sets.weight*abs(std(postBreak,0,2));
+                if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
+                    % this is a false break
+                    CHG(CHG==3) = 2;
+                    CHG(CHG==4) = 2;
+                    CHG(CHG==5) = 1;
+                end
                 % check this pixel as a whole again if this is non-forest
                 pMean = sets.weight*abs(mean(TS(:,CHG==1),2));
                 pSTD = sets.weight*abs(std(TS(:,CHG==1),0,2));
