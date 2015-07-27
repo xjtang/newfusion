@@ -94,7 +94,7 @@ function R = check_pixel(file,row,col)
             for i = 1:outlierRemove
                 % remove outliers in the initial observations
                 initMean = mean(mainVec,2);
-                mainVecDev = sets.weight*abs(mainVec-repmat(initMean,1,sets.initNoB+1-i));
+                mainVecDev = initNoB*abs(mainVec-repmat(initMean,1,sets.initNoB+1-i));
                 [~,TSmaxI] = max(mainVecDev);
                 mainVec(:,TSmaxI) = [];
             end
