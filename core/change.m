@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 7/27/2015
+% Last Update: 7/28/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -45,10 +45,11 @@
 %   1.Added another mechanism to check if a false break pixel is non-forest.
 %   2.Removed a unused variable.
 %
-% Updates of Version 2.3 - 7/27/2015
+% Updates of Version 2.3 - 7/28/2015
 %   1.Optimize the outlier removing process in initialization.
 %   2.Added a machanism to check whether post-break is non-forest.
 %   3.Added a outlier removing process for post-break check.
+%   4.Bug fix.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -230,7 +231,7 @@ function CHG = change(TS,sets)
                     for i = 1:sets.outlr
                         % remove outliers in post-break
                         pMean = mean(postBreak,2);
-                        pMeanDev = sets.weight*abs(postBreak-repmat(pMean,1,size(postBreak,2)+1-i));
+                        pMeanDev = sets.weight*abs(postBreak-repmat(pMean,1,size(postBreak,2)));
                         [~,TSmaxI] = max(pMeanDev);
                         postBreak(:,TSmaxI) = [];
                     end
