@@ -25,6 +25,7 @@
 % Updates of Version 1.1 - 7/27/2015
 %   1.Added the ploting feature.
 %   2.Bug fixed.
+%   3.Added a outlier removing process for post-break check.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -244,10 +245,21 @@ function R = check_pixel(file,row,col)
                     end
                 else
                     % make sure post break is non-forest
+                    if sets.outlr > 0
+                        for i = 1:outlierRemove
+                            % remove outliers in post-break
+                            pMean = mean(postBreak,2);
+                            R.postMean1 = pMean;
+                            pMeanDev = bandWeight*abs(postBreak-repmat(pMean,1,size(postBreak,2)+1-i));
+                            [~,TSmaxI] = max(pMeanDev);
+                            postBreak(:,TSmaxI) = [];
+                        end
+                    end
                     pMean = bandWeight*abs(mean(postBreak,2));
                     pSTD = bandWeight*abs(std(postBreak,0,2));
-                    R.postMean = pMean;
-                    R.postSTD = pSTD;
+                    R.postBreakClean = postBreak;
+                    R.postMean2 = pMean;
+                    R.postSTD2 = pSTD;
                     if pMean < thresNonFstMean && pSTD < thresNonFstStd 
                         % this is a false break
                         CHG(CHG==3) = 2;

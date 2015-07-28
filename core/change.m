@@ -48,6 +48,7 @@
 % Updates of Version 2.3 - 7/27/2015
 %   1.Optimize the outlier removing process in initialization.
 %   2.Added a machanism to check whether post-break is non-forest.
+%   3.Added a outlier removing process for post-break check.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -225,6 +226,15 @@ function CHG = change(TS,sets)
                 end
             else
                 % make sure post break is non-forest
+                if sets.outlr > 0
+                    for i = 1:sets.outlr
+                        % remove outliers in post-break
+                        pMean = mean(postBreak,2);
+                        pMeanDev = sets.weight*abs(postBreak-repmat(pMean,1,size(postBreak,2)+1-i));
+                        [~,TSmaxI] = max(pMeanDev);
+                        postBreak(:,TSmaxI) = [];
+                    end
+                end
                 pMean = sets.weight*abs(mean(postBreak,2));
                 pSTD = sets.weight*abs(std(postBreak,0,2));
                 if pMean < sets.nonfstmean && pSTD < sets.nonfstdev 
