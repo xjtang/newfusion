@@ -245,7 +245,7 @@ function R = check_pixel(file,row,col)
                     end
                 else
                     % make sure post break is non-forest
-                    if sets.outlr > 0
+                    if outlierRemove > 0
                         for i = 1:outlierRemove
                             % remove outliers in post-break
                             pMean = mean(postBreak,2);
