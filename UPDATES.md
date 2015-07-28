@@ -3,13 +3,14 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.2 - 7/27/2015  
+Version 1.2 - 7/28/2015  
 --------------
 - Optimized the outlier removing process in initialization in change detection.  
 - Threshold for edge finding are percentized.  
 - Added a new tool to examine change detection process of individual pixel.  
 - Added a post-break checking mechanism to eliminate false break.  
 - Added a outlier removing process for post-break check.  
+- Bugs fixed.  
   
 Version 1.1 - 7/20/2015  
 --------------
