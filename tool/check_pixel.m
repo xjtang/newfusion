@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/22/2015
-% Last Update: 7/27/2015
+% Last Update: 7/28/2015
 %
 % Input Arguments: 
 %   file - path to config file
@@ -22,7 +22,7 @@
 % Version 1.0 - 7/27/2015
 %   This script gathers intermediate outputs of change detection on individual pixel.
 %
-% Updates of Version 1.1 - 7/27/2015
+% Updates of Version 1.1 - 7/28/2015
 %   1.Added the ploting feature.
 %   2.Bug fixed.
 %   3.Added a outlier removing process for post-break check.
@@ -250,7 +250,7 @@ function R = check_pixel(file,row,col)
                             % remove outliers in post-break
                             pMean = mean(postBreak,2);
                             R.postMean1 = pMean;
-                            pMeanDev = bandWeight*abs(postBreak-repmat(pMean,1,size(postBreak,2)+1-i));
+                            pMeanDev = bandWeight*abs(postBreak-repmat(pMean,1,size(postBreak,2)));
                             [~,TSmaxI] = max(pMeanDev);
                             postBreak(:,TSmaxI) = [];
                         end
