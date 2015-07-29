@@ -1,11 +1,11 @@
 % check_pixel.m
-% Version 1.1
+% Version 1.1.1
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/22/2015
-% Last Update: 7/28/2015
+% Last Update: 7/29/2015
 %
 % Input Arguments: 
 %   file - path to config file
@@ -26,6 +26,9 @@
 %   1.Added the ploting feature.
 %   2.Bug fixed.
 %   3.Added a outlier removing process for post-break check.
+%
+% Updates of Version 1.1.1 - 7/29/2015
+%   1.Records more information from the config file.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -58,6 +61,14 @@ function R = check_pixel(file,row,col)
     R.model.probThres = thresProbChange;
     R.model.band = bandIncluded;
     R.model.weight = bandWeight;
+    R.sets.path = dataPath;
+    R.sets.scene = landsatScene;
+    R.sets.platform = modisPlatform;
+    R.sets.BRDF = BRDF;
+    R.sets.BIAS = BIAS;
+    R.sets.discardRatio = discardRatio;
+    R.sets.diffMethod = diffMethod;
+    R.sets.config = file;
     
     % check cache files location
     cachePath = [dataPath 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/CACHE/'];
