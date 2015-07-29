@@ -10,6 +10,7 @@ Version 1.2 - 7/28/2015
 - Added a new tool to examine change detection process of individual pixel.  
 - Added a post-break checking mechanism to eliminate false break.  
 - Added a outlier removing process for post-break check.  
+- Added a new tool to help tune the model parameters.  
 - Bugs fixed.  
   
 Version 1.1 - 7/20/2015  
