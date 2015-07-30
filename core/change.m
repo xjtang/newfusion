@@ -221,7 +221,7 @@ function CHG = change(TS,sets)
         % pre-break is forest, check if post-break exist
         if CHGFlag == 1
             % compare pre-break and post-break
-            if manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]) == 0
+            if manova1([preBreakClean';postBreak'],[ones(size(preBreakClean,2),1);(ones(size(postBreak,2),1)*2)]) == 0
                 % pre and post are the same, false break
                 CHGFlag = 0;
             else
