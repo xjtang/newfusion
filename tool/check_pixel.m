@@ -1,11 +1,11 @@
 % check_pixel.m
-% Version 1.1.1
+% Version 1.1.2
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/22/2015
-% Last Update: 7/29/2015
+% Last Update: 7/30/2015
 %
 % Input Arguments: 
 %   file - path to config file
@@ -31,6 +31,10 @@
 %   1.Records more information from the config file.
 %   2.Code adjusted according to change in the model.
 %   3.Bug fix.
+%
+% Updates of Version 1.1.2 - 7/30/2015
+%   1.Removed two return points that will cause the plotting to fail.
+%   2.Code adjusted saccording to change in the model.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -209,6 +213,17 @@ function R = check_pixel(file,row,col)
             CHGFlag = 1;
             R.preBreak = preBreak;
             R.postBreak = postBreak;
+            % remove outliers in post-break
+            if outlierRemove > 0
+                for i = 1:outlierRemove
+                    pMean = mean(postBreak,2);
+                    R.postMean1 = pMean;
+                    pMeanDev = bandWeight*abs(postBreak-repmat(pMean,1,size(postBreak,2)));
+                    [~,TSmaxI] = max(pMeanDev);
+                    postBreak(:,TSmaxI) = [];
+                end
+            end
+            R.postBreakClean = postBreak;
         else
             % no break
             preBreakClean = TS(:,CHG==1);
@@ -235,45 +250,40 @@ function R = check_pixel(file,row,col)
             % pre-break is forest, check if post-break exist
             if CHGFlag == 1
                 % compare pre-break and post-break
-                R.manova = manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]);
-                if manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]) > 0
-                    % pre and post different, make sure post break is non-forest
-                    if outlierRemove > 0
-                        for i = 1:outlierRemove
-                            % remove outliers in post-break
-                            pMean = mean(postBreak,2);
-                            R.postMean1 = pMean;
-                            pMeanDev = bandWeight*abs(postBreak-repmat(pMean,1,size(postBreak,2)));
-                            [~,TSmaxI] = max(pMeanDev);
-                            postBreak(:,TSmaxI) = [];
-                        end
-                    end
+                R.manova = manova1([preBreakClean';postBreak'],[ones(size(preBreakClean,2),1);(ones(size(postBreak,2),1)*2)]);
+                if R.manova == 0
+                    % pre and post are the same, false break
+                    CHGFlag = 0;
+                else
+                    % pre and post different, check if post is non-forest
                     pMean = bandWeight*abs(mean(postBreak,2));
                     pSTD = bandWeight*abs(std(postBreak,0,2));
-                    R.postBreakClean = postBreak;
                     R.postMean2 = pMean;
                     R.postSTD2 = pSTD;
-                    if pMean >= thresNonFstMean || pSTD >= thresNonFstStd 
-                        % break comfirmed
-                        return;
+                    if pMean < thresNonFstMean && pSTD < thresNonFstStd 
+                        % post-break is not non-forest, false break
+                        CHGFlag = 0;
                     end
                 end
-                % this is a false break
-                CHG(CHG==3) = 2;
-                CHG(CHG==4) = 2;
-                CHG(CHG==5) = 1;
-                % check this pixel as a whole again if this is non-forest
-                pMean = bandWeight*abs(mean(TS(:,CHG>=1),2));
-                pSTD = bandWeight*abs(std(TS(:,CHG>=1),0,2));
-                R.allMean = pMean;
-                R.allSTD = pSTD;
-                if pMean >= thresNonFstMean || pSTD >= thresNonFstStd
-                    for i = 1:nob
-                        x = TS(:,i);
-                        if bandWeight*abs(x) >= thresSpecEdge
-                            CHG(i) = 6;
-                        else
-                            CHG(i) = 7;
+                % deal with false break
+                if CHGFlag == 0
+                    % remove change flag
+                    CHG(CHG==3) = 2;
+                    CHG(CHG==4) = 2;
+                    CHG(CHG==5) = 1;
+                    % check this pixel as a whole again if this is non-forest
+                    pMean = bandWeight*abs(mean([preBreakClean,postBreak],2));
+                    pSTD = bandWeight*abs(std([preBreakClean,postBreak],0,2));
+                    R.allMean = pMean;
+                    R.allSTD = pSTD;
+                    if pMean >= thresNonFstMean || pSTD >= thresNonFstStd
+                        for i = 1:nob
+                            x = TS(:,i);
+                            if bandWeight*abs(x) >= thresSpecEdge
+                                CHG(i) = 6;
+                            else
+                                CHG(i) = 7;
+                            end
                         end
                     end
                 end
