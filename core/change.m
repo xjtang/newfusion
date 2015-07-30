@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 7/29/2015
+% Last Update: 7/30/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -51,9 +51,10 @@
 %   3.Added a outlier removing process for post-break check.
 %   4.Bug fix.
 %
-% Updates of Version 2.3.1 - 7/29/2015
+% Updates of Version 2.3.1 - 7/30/2015
 %   1.Make sure the pixel is checked as whole after removal of false break.
-%   2.Bug fix.
+%   2.Added outlier removing for post-break vector.
+%   3.Bug fix.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -187,6 +188,15 @@ function CHG = change(TS,sets)
         preBreakClean = TS(:,CHG==1);
         preBreak = TS(:,(CHG>0)&(CHG<3));
         postBreak = TS(:,CHG>=3);
+        % remove outliers in post break
+        if sets.outlr > 0
+            for i = 1:sets.outlr
+                pMean = mean(postBreak,2);
+                pMeanDev = sets.weight*abs(postBreak-repmat(pMean,1,size(postBreak,2)));
+                [~,TSmaxI] = max(pMeanDev);
+                postBreak(:,TSmaxI) = [];
+            end
+        end
         CHGFlag = 1;
     else
         % no break
@@ -211,38 +221,35 @@ function CHG = change(TS,sets)
         % pre-break is forest, check if post-break exist
         if CHGFlag == 1
             % compare pre-break and post-break
-            if manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]) > 0
-                % pre and post different, make sure post break is non-forest
-                if sets.outlr > 0
-                    for i = 1:sets.outlr
-                        % remove outliers in post-break
-                        pMean = mean(postBreak,2);
-                        pMeanDev = sets.weight*abs(postBreak-repmat(pMean,1,size(postBreak,2)));
-                        [~,TSmaxI] = max(pMeanDev);
-                        postBreak(:,TSmaxI) = [];
-                    end
-                end
+            if manova1([preBreak';postBreak'],[ones(size(preBreak,2),1);(ones(size(postBreak,2),1)*2)]) == 0
+                % pre and post are the same, false break
+                CHGFlag = 0;
+            else
+                % pre and post different, check if post is non-forest
                 pMean = sets.weight*abs(mean(postBreak,2));
                 pSTD = sets.weight*abs(std(postBreak,0,2));
-                if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
-                    % break comfirmed
-                    return;
+                if pMean < sets.nonfstmean && pSTD < sets.nonfstdev 
+                    % post-break is not non-forest, false break
+                    CHGFlag = 0;
                 end
             end
-            % this is a false break
-            CHG(CHG==3) = 2;
-            CHG(CHG==4) = 2;
-            CHG(CHG==5) = 1;
-            % check this pixel as a whole again if this is non-forest
-            pMean = sets.weight*abs(mean(TS(:,CHG>=1),2));
-            pSTD = sets.weight*abs(std(TS(:,CHG>=1),0,2));
-            if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
-                for i = 1:length(ETS)
-                    x = TS(:,ETS(i));
-                    if sets.weight*abs(x) >= sets.specedge
-                        CHG(ETS(i)) = 6;
-                    else
-                        CHG(ETS(i)) = 7;
+            % deal with false break
+            if CHGFlag == 0
+                % remove change flag
+                CHG(CHG==3) = 2;
+                CHG(CHG==4) = 2;
+                CHG(CHG==5) = 1;
+                % check this pixel as a whole again if this is non-forest
+                pMean = sets.weight*abs(mean([preBreakClean,postBreak],2));
+                pSTD = sets.weight*abs(std([preBreakClean,postBreak],0,2));
+                if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
+                    for i = 1:length(ETS)
+                        x = TS(:,ETS(i));
+                        if sets.weight*abs(x) >= sets.specedge
+                            CHG(ETS(i)) = 6;
+                        else
+                            CHG(ETS(i)) = 7;
+                        end
                     end
                 end
             end
