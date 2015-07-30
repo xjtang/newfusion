@@ -35,6 +35,7 @@
 % Updates of Version 1.1.2 - 7/30/2015
 %   1.Removed two return points that will cause the plotting to fail.
 %   2.Code adjusted saccording to change in the model.
+%   3.Plot axis now are the same.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -358,6 +359,7 @@ function R = check_pixel(file,row,col)
             end
             title(['Band ' num2str(bandIncluded(i))]);
             set(gca,'XTick',floor(Y(1)):(1/12):(floor(Y(1))+1));
+            set(gca,'YTick',-2000:1000:2000);
             set(gca,'XTickLabel',{'1','2','3','4','5','6','7','8','9','10','11','12'});
             xlabel('Date');
             ylabel('Fusion');
