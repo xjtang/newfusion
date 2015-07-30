@@ -53,6 +53,7 @@
 %
 % Updates of Version 2.3.1 - 7/29/2015
 %   1.Make sure the pixel is checked as whole after removal of false break.
+%   2.Bug fix.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -233,8 +234,8 @@ function CHG = change(TS,sets)
             CHG(CHG==4) = 2;
             CHG(CHG==5) = 1;
             % check this pixel as a whole again if this is non-forest
-            pMean = sets.weight*abs(mean(TS(:,CHG==1),2));
-            pSTD = sets.weight*abs(std(TS(:,CHG==1),0,2));
+            pMean = sets.weight*abs(mean(TS(:,CHG>=1),2));
+            pSTD = sets.weight*abs(std(TS(:,CHG>=1),0,2));
             if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
                 for i = 1:length(ETS)
                     x = TS(:,ETS(i));

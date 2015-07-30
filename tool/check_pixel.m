@@ -30,6 +30,7 @@
 % Updates of Version 1.1.1 - 7/29/2015
 %   1.Records more information from the config file.
 %   2.Code adjusted according to change in the model.
+%   3.Bug fix.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -262,8 +263,8 @@ function R = check_pixel(file,row,col)
                 CHG(CHG==4) = 2;
                 CHG(CHG==5) = 1;
                 % check this pixel as a whole again if this is non-forest
-                pMean = bandWeight*abs(mean(TS(:,CHG==1),2));
-                pSTD = bandWeight*abs(std(TS(:,CHG==1),0,2));
+                pMean = bandWeight*abs(mean(TS(:,CHG>=1),2));
+                pSTD = bandWeight*abs(std(TS(:,CHG>=1),0,2));
                 R.allMean = pMean;
                 R.allSTD = pSTD;
                 if pMean >= thresNonFstMean || pSTD >= thresNonFstStd

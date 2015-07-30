@@ -315,8 +315,8 @@ function [R,Model] = tune_model(var1,var2,var3)
                 CHG(CHG==4) = 2;
                 CHG(CHG==5) = 1;
                 % check this pixel as a whole again if this is non-forest
-                pMean = bandWeight*abs(mean(TS(:,CHG==1),2));
-                pSTD = bandWeight*abs(std(TS(:,CHG==1),0,2));
+                pMean = bandWeight*abs(mean(TS(:,CHG>=1),2));
+                pSTD = bandWeight*abs(std(TS(:,CHG>=1),0,2));
                 R.allMean = pMean;
                 R.allSTD = pSTD;
                 if pMean >= thresNonFstMean || pSTD >= thresNonFstStd
