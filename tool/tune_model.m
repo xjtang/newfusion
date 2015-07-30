@@ -405,7 +405,7 @@ function [R,Model] = tune_model(var1,var2,var3)
                 plot(Y(CHG==7),TS(i,CHG==7),'c.','MarkerSize',15);
             end
             title(['Band ' num2str(bandIncluded(i))]);
-            xlim([floor(Y(1)),floor(Y(1))+1)]);
+            xlim([floor(Y(1)),floor(Y(1))+1]);
             ylim([-2000,2000]);
             set(gca,'XTick',floor(Y(1)):(1/12):(floor(Y(1))+1));
             set(gca,'XTickLabel',{'1','2','3','4','5','6','7','8','9','10','11','12'});
