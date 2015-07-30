@@ -321,7 +321,7 @@ function [R,Model] = tune_model(var1,var2,var3)
                 R.allSTD = pSTD;
                 if pMean >= thresNonFstMean || pSTD >= thresNonFstStd
                     for i = 1:nob
-                        x = TS(:,ETS(i));
+                        x = TS(:,i);
                         if bandWeight*abs(x) >= thresSpecEdge
                             CHG(i) = 6;
                         else

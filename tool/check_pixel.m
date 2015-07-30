@@ -269,7 +269,7 @@ function R = check_pixel(file,row,col)
                 R.allSTD = pSTD;
                 if pMean >= thresNonFstMean || pSTD >= thresNonFstStd
                     for i = 1:nob
-                        x = TS(:,ETS(i));
+                        x = TS(:,i);
                         if bandWeight*abs(x) >= thresSpecEdge
                             CHG(i) = 6;
                         else
