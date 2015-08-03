@@ -1,7 +1,7 @@
 New Fusion 
 ======
 
-Ver. 1.2 (Beta)  
+Ver. 1.2 Release
 
 Near Real-Time Monitoring of Land Cover Disturbance by Fusion of MODIS and Landsat Data
 
