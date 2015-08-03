@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.2.3
+% Version 2.2.4
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 7/22/2015
+% Last Update: 8/3/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -93,6 +93,9 @@
 %   2.Adjusted default value.
 %   3.Fixed a typo in comment.
 %
+% Updates of Version 2.2.4 - 8/3/2015
+%   1.Adjusted default values.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -163,19 +166,19 @@ function main = fusion_Inputs(file,job)
         end
         % number of observation or initialization
         if ~exist('initNoB', 'var')
-            initNoB = 10;
+            initNoB = 8;
         end
         % number of standard deviation to flag a suspect
         if ~exist('nStandDev', 'var')
-            nStandDev = 3.5;
+            nStandDev = 2.5;
         end
         % number of consecutive observation to detect change
         if ~exist('nConsecutive', 'var')
-            nConsecutive = 4;
+            nConsecutive = 6;
         end
         % number of suspect to confirm a change
         if ~exist('nSuspect', 'var')
-            nSuspect = 3;
+            nSuspect = 6;
         end
         % switch for outlier removing in initialization
         if ~exist('outlierRemove', 'var')
@@ -183,19 +186,19 @@ function main = fusion_Inputs(file,job)
         end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 500;
+            thresNonFstMean = 350;
         end
         % threshold of std for non-forest detection
         if ~exist('thresNonFstStd', 'var')
-            thresNonFstStd = 200;
+            thresNonFstStd = 150;
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
-            thresChgEdge = 0.4;
+            thresChgEdge = 0.35;
         end
         % threshold of detecting non-forest edging pixel
         if ~exist('thresNonFstEdge', 'var')
-            thresNonFstEdge = 0.25;
+            thresNonFstEdge = 0.35;
         end
         % spectral threshold for edge detecting
         if ~exist('thresSpecEdge', 'var')
@@ -211,7 +214,7 @@ function main = fusion_Inputs(file,job)
         end
         % weight on each band
         if ~exist('bandWeight', 'var')
-            bandWeight = [1,1.2,1.2];
+            bandWeight = [1,1,1];
         end
         
     % set project main path
