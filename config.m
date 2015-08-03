@@ -1,11 +1,11 @@
 % config.m
-% Version 1.1.2
+% Version 1.1.4
 % Configuration File
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 7/22/2015
+% Last Update: 8/3/2015
 %
 % Input Arguments: NA
 % 
@@ -36,6 +36,9 @@
 %   1.Threshold for edge finding percentized.
 %   2.Adjusted default value.
 %
+% Updates of Version 1.1.4 - 8/3/2015
+%   1.Adjusted deault values.
+%
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -54,19 +57,19 @@
     
 % model parameters
     minNoB = 10;                    % minimun number of valid observation
-    initNoB = 10;                   % number of observation or initialization
-    nStandDev = 3.5;                % number of standard deviation to flag a suspect
-    nConsecutive = 4;               % number of consecutive observation to detect change
-    nSuspect = 3;                   % number of suspect to confirm a change
+    initNoB = 8;                    % number of observation or initialization
+    nStandDev = 2.5;                % number of standard deviation to flag a suspect
+    nConsecutive = 6;               % number of consecutive observation to detect change
+    nSuspect = 4;                   % number of suspect to confirm a change
     outlierRemove = 2;              % switch for outlier removing in initialization
-    thresNonFstMean = 500;          % threshold of mean for non-forest detection
-    thresNonFstStd = 200;           % threshold of std for non-forest detection
-    thresChgEdge = 0.4;             % threshold of detecting change edging pixel
-    thresNonFstEdge = 0.25;         % threshold of detecting non-forest edging pixel
+    thresNonFstMean = 350;          % threshold of mean for non-forest detection
+    thresNonFstStd = 150;           % threshold of std for non-forest detection
+    thresChgEdge = 0.35;            % threshold of detecting change edging pixel
+    thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel
     thresSpecEdge = 150;            % spectral threshold for edge detecting
     thresProbChange = 8;            % threshold for n observation after change to confirm change
     bandIncluded = [4,5,6];         % bands to be included in change detection (band 7/8 are 250m)
-    bandWeight = [1,1.2,1.2];       % weight on each band
+    bandWeight = [1,1,1];           % weight on each band
     
 % done
     
