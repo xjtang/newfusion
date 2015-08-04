@@ -3,6 +3,11 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.2.1 - 8/4/2015
+--------------
+- Added gitignore.  
+- Trying to update the documentation.  
+
 Version 1.2 - 8/3/2015  
 --------------
 - Optimized the outlier removing process in initialization in change detection.  
