@@ -46,14 +46,12 @@ Data
 **Required:**  
 
 MOD09 - MODIS Terra Surface Reflectance 5m L2 Swath  
-MOD09ETM - Synthetic Landsat ETM image   
+ETMSYN - Synthetic Landsat ETM image   
 
 **Optional:**  
 
 MOD09GA - MODIS Terra Surface Reflectance Daily L2G 500m and 1km Gridded Data  
 MCD43A1 - MODIS BRDF/Albedo Model Parameters Product  
-MOD09GQ - MODIS Terra Surface Reflectance Daily L2G 250m Gridded Data  
-MOD03 - MODIS Geolocation Data Set
 
 Instruction
 ------
