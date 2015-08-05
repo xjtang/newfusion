@@ -1,5 +1,4 @@
 # The New Fusion
--------------
 ## How to use:
 
 1. [Installation](installation.md)
