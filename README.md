@@ -75,7 +75,7 @@ Instruction
 - Open a Bash terminal  
 - Use fusion_Batch.sh to submit jobs to run specific fusion process  
 
-See the comments in each script for detailed instructions including description of input and output arguments. A complete fusion process follows these steps: Inputs -> BRDF -> SwathSub -> Fusion/FusionBRDF -> Dif -> WriteHDF -> WriteETM -> Cache -> Change
+See the comments in each script for detailed instructions including description of input and output arguments. A complete fusion process follows these steps: Inputs -> BRDF -> SwathSub -> Fusion/FusionBRDF -> Dif -> WriteHDF -> WriteETM -> Cache -> Change -> GenMap
 
 Dependencies
 ------
