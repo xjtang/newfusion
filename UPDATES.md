@@ -7,6 +7,7 @@ Version 1.2.1 - 8/4/2015
 --------------
 - Added gitignore.  
 - Trying to update the documentation.  
+- Improved the change detection model.  
 
 Version 1.2 - 8/3/2015  
 --------------
