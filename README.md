@@ -99,5 +99,5 @@ Xin, Q., Olofsson, P., Zhu, Z., Tan, B., & Woodcock, C. E. (2013). Toward near r
 
 Zhu, Z., & Woodcock, C. E. (2014). Continuous change detection and classification of land cover using all available Landsat data. Remote Sensing of Environment, 144, 152-171.  
 
-Zhu, Z., Woodcock, C. E., Holden, C., & Yang, Z. (2015). Generating synthetic Landsat images based on all available Landsat data : Predicting Landsat surface re fl ectance at any given time. Remote Sensing of Environment, 162, 67–83.  
+Zhu, Z., Woodcock, C. E., Holden, C., & Yang, Z. (2015). Generating synthetic Landsat images based on all available Landsat data : Predicting Landsat surface reflectance at any given time. Remote Sensing of Environment, 162, 67–83.  
 
