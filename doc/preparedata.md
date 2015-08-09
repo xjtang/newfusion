@@ -5,6 +5,14 @@ Preparingth input data is a key process before you can run the New Fusion model.
 #### Input Data
 The input data can be divided into two groups. The required data is required for all fusion process while the optional data is only needed for specific functions. You will be to run a complete fusion change detection process with only the required data. However utilizing the optional data may give you better results.  
 
+Required Data:  
+- MODIS Swath Data ([MOD09](http://modis-sr.ltdri.org/guide/MOD09_UserGuide_v1_3.pdf))
+- Landsat Synthetic Images (from [CCDC](http://www.sciencedirect.com/science/article/pii/S0034425714000248))
+
+Optional Data:  
+- MODIS BRDF Product ([MCD43A1](https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mcd43a1))
+- MODIS Daily Gridded Data ([MOD09GA](https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod09ga))
+
 #### MODIS Swath Data
 
 
