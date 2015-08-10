@@ -14,7 +14,7 @@ Optional Data:
 - MODIS Daily Gridded Data ([MOD09GA](https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod09ga))
 
 #### MODIS Swath Data
-The MODIS Terra/Aqua Surface Reflectance 5-minute L2 Swath Data (MOD09) provides MODIS surface reflectance for bands 1 and 2 (at 250m), bands 1 – 7 (at 500 m) and bands 1 – 16 (at 1 km resolution), multiresolution QA, and 1 km observation statistics. The swath data, different from regular gridded product, 
+The MODIS Terra/Aqua Surface Reflectance 5-minute L2 Swath Data (MOD09) provides MODIS surface reflectance for bands 1 and 2 (at 250m), bands 1 – 7 (at 500 m) and bands 1 – 16 (at 1 km resolution), multiresolution QA, and 1 km observation statistics. The swath data, different from commonly used gridded product, 
 
 #### Landsat Synthetic Images
 
@@ -23,6 +23,7 @@ The MODIS Terra/Aqua Surface Reflectance 5-minute L2 Swath Data (MOD09) provides
 
 
 #### Organize Data
+
 
 
 
