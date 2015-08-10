@@ -14,7 +14,11 @@ Optional Data:
 - MODIS Daily Gridded Data ([MOD09GA](https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod09ga))
 
 #### MODIS Swath Data
-The MODIS Terra/Aqua Surface Reflectance 5-minute L2 Swath Data (MOD09) provides MODIS surface reflectance for bands 1 and 2 (at 250m), bands 1 – 7 (at 500 m) and bands 1 – 16 (at 1 km resolution), multiresolution QA, and 1 km observation statistics. The swath data, different from commonly used gridded product, 
+The MODIS Terra/Aqua Surface Reflectance 5-minute L2 Swath Data (MOD09) provides MODIS surface reflectance for bands 1 and 2 (at 250m), bands 1 – 7 (at 500 m) and bands 1 – 16 (at 1 km resolution), multiresolution QA, and 1 km observation statistics. The swath data, different from commonly used gridded product, is the un-projected raw scan of the instrument (spectrally processed). It is stored in raster format but each pixel actually covers different sizes of area on the ground. The swath data come withs the location (lat, lon) of the center of each scan.   
+
+The Swath data can be downloaded from the NASA [LAADS](https://ladsweb.nascom.nasa.gov/data/search.html) website. You need to fill out an order indicating your study area and study time period as well as the satellite (Terra/Aqua) and product (MOD09) that you are looking for. You will recieve an email once your order is ready for download. Follow the link in the email and download the data that you ordered.  
+
+It is recommended that you download all available swath data for you study area and study time period so that the New Fusion model can build a denser time series and get more accurate results.  
 
 #### Landsat Synthetic Images
 
