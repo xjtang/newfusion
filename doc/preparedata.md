@@ -16,7 +16,7 @@ Optional Data:
 #### MODIS Swath Data
 The MODIS Terra/Aqua Surface Reflectance 5-minute L2 Swath Data (MOD09) provides MODIS surface reflectance for bands 1 and 2 (at 250m), bands 1 – 7 (at 500 m) and bands 1 – 16 (at 1 km resolution), multiresolution QA, and 1 km observation statistics. The swath data, different from commonly used gridded product, is the un-projected raw scan of the instrument (spectrally processed). It is stored in raster format but each pixel actually covers different sizes of area on the ground. The swath data come withs the location (lat, lon) of the center of each scan.   
 
-The Swath data can be downloaded from the NASA [LAADS](https://ladsweb.nascom.nasa.gov/data/search.html) website. You need to fill out an order indicating your study area and study time period as well as the satellite (Terra/Aqua) and product (MOD09) that you are looking for. You will recieve an email once your order is ready for download. Follow the link in the email and download the data that you ordered.  
+The Swath data can be downloaded from the NASA [LAADS](https://ladsweb.nascom.nasa.gov/data/search.html) website. You need to fill out an order indicating your study area and study time period as well as the satellite (Terra/Aqua), collection (5), and product (MOD09) that you are looking for. You will recieve an email once your order is ready for download. Follow the link in the email and download the data that you ordered.  
 
 It is recommended that you download all available swath data for you study area and study time period so that the New Fusion model can build a denser time series and get more accurate results. A single MODIS Swath images covers a very large area comparing to a Landsat scene. In most cases, the same swath will cover all your adjacent Landsat scenes so that you only need to download one set of Swath data even if your study area consists of multiple Landsat scenes.   
 
@@ -29,7 +29,24 @@ MODIS BRDF product (MCD43A1) and MODIS gridded daily product (MOD09GA) are neede
 Both products can be downloaded from the NASA [LAADS](https://ladsweb.nascom.nasa.gov/data/search.html) website. All available MOD09GA (Daily) and MCD43A1(every 16 days) should be downloaded for the same study area and study time period. Note that both products are stored in the format of MODIS Tile. The New Fusion model only supports single tile analysis for now. If your study area lays in between two MODIS tile, you can not use the BRDF correction feature of the New Fusion model.
 
 #### Organize Data
+All MODIS input data should be put into separate folders and keep their original names (e.g. MOD09, MCD43A1).The synthetic image of day xxx year yyyy should be named as "predyyyyxxx" and "predyyyyxxx.hdr". Images of each Landsat scene should be put in separate folder that is names with the path row of the scene (e.g. P227R065). And then all scenes need to be kept in one single folder named "ETMSYN".
 
+You will also need to create one single parent work folder to store all different types of inpur data mentioned above. Your work folder should look like the following example. All the outputs from the New Fusion Model will be saved in this output folder as well. The model will create necessary folders to organize the outputs.
+
+    workfolder/
+        ./MOD09/
+            ./MOD09.A2013001.1335.005.2015058030428.hdf
+              ...
+        ./ETMSYN/P227R065/
+            ./pred2013070
+            ./pred2013070.hdr
+              ...
+        ./MOD09GA/
+            ./MOD09GA.A2013001.h12v09.005.2015077040350.hdf
+              ...
+        ./MCD43A1/
+            ./MCD43A1.A2013001.h12v09.005.2013018090048.hdf
+              ...
 
 
 
