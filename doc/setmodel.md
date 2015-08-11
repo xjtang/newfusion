@@ -3,13 +3,40 @@
 The New Fusion model uses a single config file to specify all model settings and parameters. Before you can run the model, you need to customize the config file for your project. This page briefly explains the function of each model parameter. The New Fusion model itself has not been published in scientific jounals yet. We will update the information once the model is published and you will have better understanding of these parameters. If you want to test the model now it is recommended to start with the default values.
 
 #### The Config File
+The config file is actually a MATLAB sript file (xxx.m). You can find an example config file ([config.m](../config.m)) that comes with the New Fusion program. The easiest way to customize your own config file for your project is just to copy the example config file and edit your copy. You can either edit it in MATLAB or simply in any text editor. Here is what a config file would look like:
 
+    % project information
+        modisPlatform = 'MOD';          % MOD for Terra, MYD for Aqua
+        landsatScene = [227,65];        % Landsat path and row
+        dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/2013/';
+                                        % data path
+    % main settings
+        BRDF = 0;                       % BRDF correction switch
+        BIAS = 1;                       % bias correction switch
+        discardRatio = 0;               % portion of Landsat pixel to be excluded on the edge
+        diffMethod = 0;                 % method used in difference calculation, max(0) or mean(1)
+        mapType = 3;                    % type of map to be generated
+    % model parameters
+        minNoB = 10;                    % minimun number of valid observation
+        initNoB = 8;                    % number of observation or initialization
+        nStandDev = 2.5;                % number of standard deviation to flag a suspect
+        nConsecutive = 6;               % number of consecutive observation to detect change
+        nSuspect = 4;                   % number of suspect to confirm a change
+        outlierRemove = 2;              % switch for outlier removing in initialization
+        thresNonFstMean = 350;          % threshold of mean for non-forest detection
+        thresNonFstStd = 150;           % threshold of std for non-forest detection
+        thresChgEdge = 0.35;            % threshold of detecting change edging pixel
+        thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel
+        thresSpecEdge = 150;            % spectral threshold for edge detecting
+        thresProbChange = 8;            % threshold for n observation after change to confirm change
+        bandIncluded = [4,5,6];         % bands to be included in change detection (band 7/8 are 250m)
+        bandWeight = [1,1,1];           % weight on each band
 
 #### Some Key Settings
 
 
 #### Model Parameters
-The model parameters can influence the change detection part of the fusion process. Changing the model parameters will give you slightly different results. The default values are optimized for our test scene located in Para, Brazil (Landsat scene 227/65). It is recommended that you try different model parameters and see what works best for you study site. Here's a list of model parameters, the default values, and also brief explanation of what they control.
+The model parameters can influence the change detection part of the fusion process. Changing the model parameters will give you slightly different results. The default values are optimized for our test scene located in Para, Brazil (Landsat scene 227/65). It is recommended that you try different model parameters and see what works best for you study site. Here's a list of model parameters, the default values, and also brief explanation of what they control:
 
     minNoB = 10;            % minimun number of valid observations for a single pixel through out the time series
                               if a pixel have less than minNoB valid observation, then it will not be classified.
