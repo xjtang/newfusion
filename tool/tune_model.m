@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.0
+% Version 1.0.1
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 7/30/2015
+% Last Update: 8/6/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -23,6 +23,9 @@
 %
 % Version 1.0 - 7/30/2015
 %   This script is used to test different model parameters on single pixel.
+%
+% Updates of Version 1.0.1 - 8/6/2015
+%   1.Adjusted according to changes in the model.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -304,7 +307,7 @@ function [R,Model] = tune_model(var1,var2,var3)
                     CHGFlag = 0;
                 else
                     % pre and post different, check if post is non-forest
-                    pMean = bandWeight*abs(mean(postBreak,2));
+                    pMean = bandWeight*abs(mean(postBreak,2)-mean(preBreakClean,2));
                     pSTD = bandWeight*abs(std(postBreak,0,2));
                     R.postMean2 = pMean;
                     R.postSTD2 = pSTD;

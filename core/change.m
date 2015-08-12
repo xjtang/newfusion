@@ -1,11 +1,11 @@
 % change.m
-% Version 2.3.1
+% Version 2.3.2
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 7/30/2015
+% Last Update: 8/6/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -55,6 +55,9 @@
 %   1.Make sure the pixel is checked as whole after removal of false break.
 %   2.Added outlier removing for post-break vector.
 %   3.Bug fix.
+%
+% Updates of Version 2.3.2 - 8/6/2015
+%   1.Use relative mean to prebreak when checking the post-break vector.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -226,7 +229,8 @@ function CHG = change(TS,sets)
                 CHGFlag = 0;
             else
                 % pre and post different, check if post is non-forest
-                pMean = sets.weight*abs(mean(postBreak,2));
+                % use relative mean to pre-break
+                pMean = sets.weight*abs(mean(postBreak,2)-mean(preBreakClean,2));
                 pSTD = sets.weight*abs(std(postBreak,0,2));
                 if pMean < sets.nonfstmean && pSTD < sets.nonfstdev 
                     % post-break is not non-forest, false break

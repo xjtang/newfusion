@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.2.4
+% Version 2.2.5
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 8/3/2015
+% Last Update: 8/6/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -96,6 +96,10 @@
 % Updates of Version 2.2.4 - 8/3/2015
 %   1.Adjusted default values.
 %
+% Updates of Version 2.2.6 - 8/5/2015
+%   1.Check if the parent output folder exist.
+%   2.Fixed a wrong default value.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -178,7 +182,7 @@ function main = fusion_Inputs(file,job)
         end
         % number of suspect to confirm a change
         if ~exist('nSuspect', 'var')
-            nSuspect = 6;
+            nSuspect = 4;
         end
         % switch for outlier removing in initialization
         if ~exist('outlierRemove', 'var')
@@ -220,6 +224,9 @@ function main = fusion_Inputs(file,job)
     % set project main path
     main.path = dataPath;
     main.outpath = [main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
+    if exist(main.outpath,'dir') == 0 
+        mkdir([main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d')]);
+    end
     
     % set input data location
         % main inputs:

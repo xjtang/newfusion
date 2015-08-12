@@ -1,11 +1,11 @@
 % check_pixel.m
-% Version 1.1.2
+% Version 1.1.3
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/22/2015
-% Last Update: 7/30/2015
+% Last Update: 8/6/2015
 %
 % Input Arguments: 
 %   file - path to config file
@@ -36,6 +36,9 @@
 %   1.Removed two return points that will cause the plotting to fail.
 %   2.Code adjusted saccording to change in the model.
 %   3.Plot axis now are the same.
+%
+% Updates of Version 1.1.3 - 8/6/2015
+%   1.Code adjusted according to change in the model.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -257,7 +260,7 @@ function R = check_pixel(file,row,col)
                     CHGFlag = 0;
                 else
                     % pre and post different, check if post is non-forest
-                    pMean = bandWeight*abs(mean(postBreak,2));
+                    pMean = bandWeight*abs(mean(postBreak,2)-mean(preBreakClean,2));
                     pSTD = bandWeight*abs(std(postBreak,0,2));
                     R.postMean2 = pMean;
                     R.postSTD2 = pSTD;

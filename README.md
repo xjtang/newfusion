@@ -1,7 +1,7 @@
 New Fusion 
 ======
 
-ver. 1.2 release
+v1.2.1-beta
 
 Near Real-Time Monitoring of Land Cover Disturbance by Fusion of MODIS and Landsat Data
 
@@ -75,7 +75,9 @@ Instruction
 - Open a Bash terminal  
 - Use fusion_Batch.sh to submit jobs to run specific fusion process  
 
-See the comments in each script for detailed instructions including description of input and output arguments. A complete fusion process follows these steps: Inputs -> BRDF -> SwathSub -> Fusion/FusionBRDF -> Dif -> WriteHDF -> WriteETM -> Cache -> Change
+A complete fusion process follows these steps: Inputs -> BRDF -> SwathSub -> Fusion/BRDFusion -> Dif -> WriteHDF -> WriteETM -> Cache -> Change -> GenMap
+
+Detailed documentation on how to run the New Fusion model is also available [here](/doc).
 
 Dependencies
 ------
@@ -90,7 +92,7 @@ bash (4.1.2 or higher)
 R (2.15.2 or higher)  
 RCurl Package (1.95-4.3 or higher)  
 R.matlab Package (3.1.1 or higher)  
-png (0.1-7 or higher)  
+png Package (0.1-7 or higher)  
 
 Publications
 ------
@@ -99,5 +101,5 @@ Xin, Q., Olofsson, P., Zhu, Z., Tan, B., & Woodcock, C. E. (2013). Toward near r
 
 Zhu, Z., & Woodcock, C. E. (2014). Continuous change detection and classification of land cover using all available Landsat data. Remote Sensing of Environment, 144, 152-171.  
 
-Zhu, Z., Woodcock, C. E., Holden, C., & Yang, Z. (2015). Generating synthetic Landsat images based on all available Landsat data : Predicting Landsat surface re fl ectance at any given time. Remote Sensing of Environment, 162, 67–83.  
+Zhu, Z., Woodcock, C. E., Holden, C., & Yang, Z. (2015). Generating synthetic Landsat images based on all available Landsat data : Predicting Landsat surface reflectance at any given time. Remote Sensing of Environment, 162, 67–83.  
 
