@@ -19,7 +19,7 @@ You can certainly open individual fusion time series images in ENVI. Here we rec
 
 The first way to visualize the Fusion time series is to use the [TSTools](https://github.com/ceholden/TSTools) developed by [Christ Holden](http://ceholden.github.io/). TSTools is a nice open source [QGIS](http://www.qgis.org/en/site/) plugin that is designed to visualize Landsat time series. Please check out the [QGIS website](http://www.qgis.org/en/site/) for installation of QGIS and the [Github page of TSTools](https://github.com/ceholden/TSTools) for documentation of TSTools. Here's an example of using TSTools to visualize the Fusion time series:
 
-![TSTools](/media/TSTools.png)
+![TSTools](media/TSTools.png)
 
 You are able to examine individual images, overlay with real Landsat images, and also plot the Fusion time series of individual pixel that you selected.
 
@@ -31,7 +31,7 @@ The second way to visualize the Fusion time series is to use the built-in tools 
     
 The tool will generate a stucture, stored in variable R that contains all statistics and records generated during the change detection process for pixel located in row 3000 and col 4000. The tool will also generate a plot of the Fusion time series that looks like the following:
 
-![FTSPlot](/media/FTSPlot.png)
+![FTSPlot](media/FTSPlot.png)
 
 Advanced users can also try the [tune_model.m](../tool/tune_model.m) tool to change the model parameters on the fly and see how it effects change detection of individual pixel. Here's an exmaple of changing the initNoB to 10 and see how the model response:
 
@@ -43,7 +43,7 @@ Advanced users can also try the [tune_model.m](../tool/tune_model.m) tool to cha
 
 The main product of the New Fusion model is a map that indicates areas of deforestation that occured within your study area and study time period. The map is saved as an image in ENVI format. You can view the image in ENVI or QGIS. You can also port the result to any other climate or ecosystem models that you are interested in. Depending on the type of output map that you specified in the config file you will get slightly different results. The most useful output map is usually the class map. The class map is a thermatic map that includes different catogories of land cover dynamics including stable forest, stable non-forest, confirmed change, unsure change. Here is an example of a change map overlayed on top of a Landsat 9 iamge:
 
-![CHGMAP](/media/CHGMAP.png)
+![CHGMAP](media/CHGMAP.png)
 
 #### Output from tools
 
@@ -51,12 +51,12 @@ Depending on what you are studying, you may find some of the tools can create us
 
 1.A cloud plot that shows you how cloudy the MODIS data is in your study area ([cloud_plot.R](../tool/cloud_plot.R)).  
 
-![CLOUD](/media/CLOUD.png)
+![CLOUD](media/CLOUD.png)
 
 2.A preview of the MODIS swath over your study area ([gen_preview.R](../tool/gen_preview.R)).  
 
-![PREV](/media/PREV.png)
+![PREV](media/PREV.png)
 
 3.A scatter plot with the predicted surface reflectance against the observed surface reflectance ([fusion_plot](../tool/fusion_plot.R)).
 
-![PLOT](/media/PLOT.png)
+![PLOT](media/PLOT.png)
