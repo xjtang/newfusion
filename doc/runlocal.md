@@ -12,7 +12,7 @@ Here we assume that you already have prepared all the input data and you have cu
 The initialization process returns a MATLAB structure that contains all the information that the New Fusion model need for all the following steps, and it will be used as the only input for all following steps. 
 
 #### Run Each Step
-The whole fusion process is divided into several steps. You are free to stop and continue later between each step. Just keep in mind that everytime you restart a MATLAB session you will need to initialize the model again. To run all the fusion steps, enter the following commands in your MATLAB session, make sure you wither have added the codes to your path or changed your current folder to where you store the codes.
+The whole fusion process is divided into several steps. You are free to stop in between two steps and continue later. Just keep in mind that everytime you restart a MATLAB session you will need to initialize the model again. To run all the fusion steps, enter the following commands in your MATLAB session, make sure you wither have added the codes to your path or changed your current folder to where you store the codes.
 
     matlab >> fusion_BRDF(model);       % this step is optional and is not recommended
                                           when running fusion on your local computer
