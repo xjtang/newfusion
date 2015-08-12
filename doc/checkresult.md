@@ -3,6 +3,7 @@
 The New Fusion model stores all intermediate data and outputs of each step in the main work folder that you specified. Some outputs will be in MATLAB format (.m) while some are in remote sensing image formats (e.g. hdf, envi). If you actually understand how the model works you are free to check out those files. For normal uers and applications, there are two outputs that need to pay attention with, which is the Fusion time series and the change maps. The output from some tools may also be quite useful for some studies. Here is some examples of how to examine the output of the New Fusion model using our test site.
 
 #### Fusion Time Series
+
 One of the byproduct that the New Fusion model creates is a Fusion time series. It is basically a time series of the residual of our predicted data and observer data. It is stores in the same format as a Landsat time series. The fusion time series are stored in two different formats:
 In standard ENVI format:
 
@@ -39,8 +40,23 @@ Advanced users can also try the [tune_model.m](../tool/tune_model.m) tool to cha
     matlab >> [R,~] = tune_model(ModelA,3000,4000);
 
 #### Change Map
+
 The main product of the New Fusion model is a map that indicates areas of deforestation that occured within your study area and study time period. The map is saved as an image in ENVI format. You can view the image in ENVI or QGIS. You can also port the result to any other climate or ecosystem models that you are interested in. Depending on the type of output map that you specified in the config file you will get slightly different results. The most useful output map is usually the class map. The class map is a thermatic map that includes different catogories of land cover dynamics including stable forest, stable non-forest, confirmed change, unsure change. Here is an example of a change map overlayed on top of a Landsat 9 iamge:
 
 ![CHGMAP](/media/asd.jpg)
 
 #### Output from tools
+
+Depending on what you are studying, you may find some of the tools can create useful visualizations of the results. Here're a few examples created by the [built-in tools](../tool) of the New Fusion Model.  
+
+1.A cloud plot that shows you how cloudy the MODIS data is in your study area ([cloud_plot.R](../tool/cloud_plot.R)).  
+
+![CLOUD](/media/asd.jpg)
+
+2.A preview of the MODIS swath over your study area ([gen_preview.R](../tool/gen_preview.R)).  
+
+![CLOUD](/media/asd.jpg)
+
+3.A scatter plot with the predicted surface reflectance against the observed surface reflectance ([fusion_plot](../tool/fusion_plot.R)).
+
+![CLOUD](/media/asd.jpg)
