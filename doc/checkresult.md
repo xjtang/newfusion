@@ -39,6 +39,8 @@ Advanced users can also try the [tune_model.m](../tool/tune_model.m) tool to cha
     matlab >> [R,~] = tune_model(ModelA,3000,4000);
 
 #### Change Map
-The main product of the New Fusion model is a map that indicates areas of deforestation that occured within your study area and study time period. The map is saved as an image in ENVI format. 
+The main product of the New Fusion model is a map that indicates areas of deforestation that occured within your study area and study time period. The map is saved as an image in ENVI format. You can view the image in ENVI or QGIS. You can also port the result to any other climate or ecosystem models that you are interested in. Depending on the type of output map that you specified in the config file you will get slightly different results. The most useful output map is usually the class map. The class map is a thermatic map that includes different catogories of land cover dynamics including stable forest, stable non-forest, confirmed change, unsure change. Here is an example of a change map overlayed on top of a Landsat 9 iamge:
+
+![CHGMAP](/media/asd.jpg)
 
 #### Output from tools
