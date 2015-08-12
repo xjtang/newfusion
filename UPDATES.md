@@ -3,11 +3,12 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.2.1 - 8/4/2015
+Version 1.2.1 - 8/12/2015
 --------------
 - Added gitignore.  
-- Trying to update the documentation.  
+- Added documentation on how to run the model.  
 - Improved the change detection model.  
+- Updated readme.  
 
 Version 1.2 - 8/3/2015  
 --------------
