@@ -1,11 +1,11 @@
 % change.m
-% Version 2.3.2
+% Version 2.3.3
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 8/6/2015
+% Last Update: 8/17/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -58,6 +58,9 @@
 %
 % Updates of Version 2.3.2 - 8/6/2015
 %   1.Use relative mean to prebreak when checking the post-break vector.
+%
+% Updates of Version 2.3.3 - 8/17/2015
+%   1.Fixed a minor bug that leaves out the last observation.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -143,7 +146,7 @@ function CHG = change(TS,sets)
                 CHG(ETS(i)) = 4;
             else
                 % see if this is a break
-                if i < length(ETS)+1-sets.nCosc
+                if i <= length(ETS)+1-sets.nCosc
                     nSusp = 1;
                     for k = (i+1):(i+sets.nCosc-1)
                         xk = TS(:,ETS(k));

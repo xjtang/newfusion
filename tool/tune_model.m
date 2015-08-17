@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.0.1
+% Version 1.0.2
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 8/6/2015
+% Last Update: 8/17/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -25,6 +25,9 @@
 %   This script is used to test different model parameters on single pixel.
 %
 % Updates of Version 1.0.1 - 8/6/2015
+%   1.Adjusted according to changes in the model.
+%
+% Updates of Version 1.0.1 - 8/17/2015
 %   1.Adjusted according to changes in the model.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
@@ -207,7 +210,7 @@ function [R,Model] = tune_model(var1,var2,var3)
                     CHG(i) = 4;
                 else
                     % see if this is a break
-                    if i < nob+1-nConsecutive
+                    if i <= nob+1-nConsecutive
                         nSusp = 1;
                         for k = (i+1):(i+nConsecutive-1)
                             xk = TS(:,k);

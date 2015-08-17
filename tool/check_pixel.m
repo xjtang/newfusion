@@ -1,11 +1,11 @@
 % check_pixel.m
-% Version 1.1.3
+% Version 1.1.4
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/22/2015
-% Last Update: 8/6/2015
+% Last Update: 8/17/2015
 %
 % Input Arguments: 
 %   file - path to config file
@@ -38,6 +38,9 @@
 %   3.Plot axis now are the same.
 %
 % Updates of Version 1.1.3 - 8/6/2015
+%   1.Code adjusted according to change in the model.
+%
+% Updates of Version 1.1.4 - 8/17/2015
 %   1.Code adjusted according to change in the model.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
@@ -160,7 +163,7 @@ function R = check_pixel(file,row,col)
                     CHG(i) = 4;
                 else
                     % see if this is a break
-                    if i < nob+1-nConsecutive
+                    if i <= nob+1-nConsecutive
                         nSusp = 1;
                         for k = (i+1):(i+nConsecutive-1)
                             xk = TS(:,k);
