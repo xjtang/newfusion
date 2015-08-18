@@ -102,7 +102,7 @@ function CHG = change(TS,sets)
 
     % complie eligible observations
     for i = nob:-1:1
-        if max(TS(sets.band,i)==-9999)
+        if max(TS(:,i)==-9999)
             CHG(i) = -1;
             ETS(i) = [];
         end
