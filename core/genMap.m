@@ -1,11 +1,11 @@
 % genMap.m
-% Version 1.2.1
+% Version 1.2.2
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 7/7/2015
-% Last Update: 7/19/2015
+% Last Update: 8/18/2015
 %
 % Input Arguments:
 %   X (Vector) - change time series
@@ -41,6 +41,9 @@
 %   1.Threshold for edge finding percentized.
 %   2.Adjusted layout of day of change map.
 %   3.Make sure classes don't overlap.
+%
+% Updates of Version 1.2.2 - 8/18/2015
+%   1.Make probabaly change on top of other change.
 %
 % Released on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -89,14 +92,14 @@ function CLS = genMap(X,D,mapType,edgeThres,probThres)
             % confirmed changed
             if max(X==3) == 1
                 CLS = 10;
-                % probable change
-                if (sum(X==4)+sum(X==5)+1) < probThres
-                    CLS = 12;
-                end 
                 % could be change edge
                 if sum(X==5)/sum(X>=3) >= edgeThres(1)
                     CLS = 11;
                 end
+                % probable change
+                if (sum(X==4)+sum(X==5)+1) < probThres
+                    CLS = 12;
+                end 
             end
 
     elseif mapType == 4
@@ -130,14 +133,14 @@ function CLS = genMap(X,D,mapType,edgeThres,probThres)
         if (max(X==3) == 1)
             [~,breakPoint] = max(X==3);
             CLS = D(breakPoint,1);
-           % probable change
-            if (sum(X==4)+sum(X==5)+1) < probThres
-                CLS = 0;
-            end 
             % could be change edge
             if sum(X==5)/sum(X>=3) >= edgeThres(1)
                 CLS = 0;
             end
+            % probable change
+            if (sum(X==4)+sum(X==5)+1) < probThres
+                CLS = 0;
+            end 
         end
     end
     
