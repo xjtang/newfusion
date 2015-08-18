@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 8/17/2015
+% Last Update: 8/18/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -59,8 +59,9 @@
 % Updates of Version 2.3.2 - 8/6/2015
 %   1.Use relative mean to prebreak when checking the post-break vector.
 %
-% Updates of Version 2.3.3 - 8/17/2015
+% Updates of Version 2.3.3 - 8/18/2015
 %   1.Fixed a minor bug that leaves out the last observation.
+%   2.Fixeda bug that miss counts number of eligible observation.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -101,7 +102,7 @@ function CHG = change(TS,sets)
 
     % complie eligible observations
     for i = nob:-1:1
-        if max(TS(:,i)==-9999)
+        if max(TS(sets.band,i)==-9999)
             CHG(i) = -1;
             ETS(i) = [];
         end
