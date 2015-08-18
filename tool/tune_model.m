@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 8/17/2015
+% Last Update: 8/18/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -27,7 +27,7 @@
 % Updates of Version 1.0.1 - 8/6/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.0.1 - 8/17/2015
+% Updates of Version 1.0.1 - 8/18/2015
 %   1.Adjusted according to changes in the model.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
@@ -364,14 +364,14 @@ function [R,Model] = tune_model(var1,var2,var3)
         % confirmed changed
         if max(CHG==3) == 1
             CLS = 10;
-            % probable change
-            if (sum(CHG==4)+sum(CHG==5)+1) < thresProbChange
-                CLS = 12;
-            end 
             % could be change edge
             if sum(CHG==5)/sum(CHG>=3) >= thresChgEdge
                 CLS = 11;
             end
+            % probable change
+            if (sum(CHG==4)+sum(CHG==5)+1) < thresProbChange
+                CLS = 12;
+            end 
         end
         % date of change
         if max(CHG==3) == 1
