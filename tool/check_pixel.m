@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/22/2015
-% Last Update: 8/17/2015
+% Last Update: 8/18/2015
 %
 % Input Arguments: 
 %   file - path to config file
@@ -40,7 +40,7 @@
 % Updates of Version 1.1.3 - 8/6/2015
 %   1.Code adjusted according to change in the model.
 %
-% Updates of Version 1.1.4 - 8/17/2015
+% Updates of Version 1.1.4 - 8/18/2015
 %   1.Code adjusted according to change in the model.
 %
 % Created on Github on 7/22/2015, check Github Commits for updates afterwards.
@@ -317,14 +317,14 @@ function R = check_pixel(file,row,col)
         % confirmed changed
         if max(CHG==3) == 1
             CLS = 10;
-            % probable change
-            if (sum(CHG==4)+sum(CHG==5)+1) < thresProbChange
-                CLS = 12;
-            end 
             % could be change edge
             if sum(CHG==5)/sum(CHG>=3) >= thresChgEdge
                 CLS = 11;
             end
+            % probable change
+            if (sum(CHG==4)+sum(CHG==5)+1) < thresProbChange
+                CLS = 12;
+            end 
         end
         % date of change
         if max(CHG==3) == 1
