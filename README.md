@@ -22,6 +22,7 @@ Content
 fusion_Inputs - Intilize the main input structure for other processes  
 fusion_BRDF - Generate BRDF correction coefficients  
 fusion_SwathSub - Create subset of the MODIS swath based on geolocation of Landsat images  
+fusion_Cloud - filter out extremely cloudy data  
 fusion_Fusion - The main fusion process  
 fusion_BRDFusion - The main fusion process with BRDF correction  
 fusion_Dif - Calculate difference image and change image  
@@ -75,7 +76,7 @@ Instruction
 - Open a Bash terminal  
 - Use fusion_Batch.sh to submit jobs to run specific fusion process  
 
-A complete fusion process follows these steps: Inputs -> BRDF -> SwathSub -> Fusion/BRDFusion -> Dif -> WriteHDF -> WriteETM -> Cache -> Change -> GenMap
+A complete fusion process follows these steps: Inputs -> BRDF -> SwathSub -> Cloud -> Fusion/BRDFusion -> Dif -> WriteHDF -> WriteETM -> Cache -> Change -> GenMap
 
 Detailed documentation on how to run the New Fusion model is also available [here](/doc).
 
