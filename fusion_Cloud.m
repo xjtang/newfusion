@@ -78,7 +78,7 @@ function fusion_Cloud(main)
         dateDOY(i) = str2double(fileList(i).name((p+4):(p+6)));
 
         % discard current swath if cloud percent larger than certain threshold
-        dumpDir = [main.output.dump 'P' num2str(main.set.scene(1)) 'R' num2str(main.set.scene(2)) '/SUBCLD/'];
+        dumpDir = [main.output.dump 'P' num2str(main.set.scene(1),'%03d') 'R' num2str(main.set.scene(2),'%03d') '/SUBCLD/'];
         if exist(dumpDir,'dir') == 0 
             mkdir(dumpDir);
         end
