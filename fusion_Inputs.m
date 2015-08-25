@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.2.5
+% Version 2.2.6
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 8/6/2015
+% Last Update: 8/25/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -96,9 +96,13 @@
 % Updates of Version 2.2.4 - 8/3/2015
 %   1.Adjusted default values.
 %
-% Updates of Version 2.2.6 - 8/5/2015
+% Updates of Version 2.2.5 - 8/5/2015
 %   1.Check if the parent output folder exist.
 %   2.Fixed a wrong default value.
+%
+% Updates of Version 2.2.6 - 8/25/2015
+%   1.Added a new cloud threshold.
+%   2.Adjusted the default values.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -129,7 +133,7 @@ function main = fusion_Inputs(file,job)
         % project information
         % data path
         if ~exist('dataPath', 'var')
-            dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/2013/';
+            dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/fusion/';
         end
         % landsat path and row
         if ~exist('landsatScene', 'var')
@@ -161,16 +165,19 @@ function main = fusion_Inputs(file,job)
         if ~exist('mapType', 'var')
             mapType = 3;
         end
-
+        % cloud threshold
+        if ~exist('cloudThres', 'var')
+            cloudThres = 80;
+        end
         
         % model parameters
         % minimun number of valid observation
         if ~exist('minNoB', 'var')
-            minNoB = 10;
+            minNoB = 13;
         end
         % number of observation or initialization
         if ~exist('initNoB', 'var')
-            initNoB = 8;
+            initNoB = 12;
         end
         % number of standard deviation to flag a suspect
         if ~exist('nStandDev', 'var')
@@ -190,7 +197,7 @@ function main = fusion_Inputs(file,job)
         end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 350;
+            thresNonFstMean = 275;
         end
         % threshold of std for non-forest detection
         if ~exist('thresNonFstStd', 'var')
@@ -198,11 +205,11 @@ function main = fusion_Inputs(file,job)
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
-            thresChgEdge = 0.35;
+            thresChgEdge = 0.3;
         end
         % threshold of detecting non-forest edging pixel
         if ~exist('thresNonFstEdge', 'var')
-            thresNonFstEdge = 0.35;
+            thresNonFstEdge = 0.3;
         end
         % spectral threshold for edge detecting
         if ~exist('thresSpecEdge', 'var')
@@ -214,11 +221,11 @@ function main = fusion_Inputs(file,job)
         end
         % bands to be included in change detection
         if ~exist('bandIncluded', 'var')
-            bandIncluded = [4,5,6];
+            bandIncluded = [7,8];
         end
         % weight on each band
         if ~exist('bandWeight', 'var')
-            bandWeight = [1,1,1];
+            bandWeight = [1,1];
         end
         
     % set project main path
@@ -342,6 +349,8 @@ function main = fusion_Inputs(file,job)
         main.set.dif = diffMethod;
         % type of map to be generated, date(1)/month(2) of change, change only map (3)
         main.set.map = mapType;
+        % a threshold on percent cloud cover for data filtering
+        main.set.cloud = cloudThres;
         
     % settings and parameters for the change detection model
         % minimun number of valid observation

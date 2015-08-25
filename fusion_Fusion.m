@@ -1,6 +1,6 @@
 % fusion_Fusion.m
 % Version 6.3.1
-% Step 3
+% Step 4
 % Main Fusion Process
 %
 % Project: New Fusion
