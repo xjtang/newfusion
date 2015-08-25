@@ -16,6 +16,7 @@ The config file is actually a MATLAB sript file (xxx.m). You can find an example
         discardRatio = 0;               % portion of Landsat pixel to be excluded on the edge
         diffMethod = 0;                 % method used in difference calculation, max(0) or mean(1)
         mapType = 3;                    % type of map to be generated
+        cloudThres = 80;                % A threshold on percent cloud cover for data filtering
     % model parameters
         minNoB = 10;                    % minimun number of valid observation
         initNoB = 8;                    % number of observation or initialization
@@ -36,7 +37,7 @@ The config file is actually a MATLAB sript file (xxx.m). You can find an example
 The first two section of the config file tells the model some important information of your project such as the location of the data, some main settings and the type of output that you want. So it is very important that you make sure that the information is correct for your project. Here's a list of key settings and brief explanations:
 
     modisPlatform = 'MOD';          % the MODIS satellite that you are using, MOD (Terra) or MYD (Aqua)
-    landsatScene = [227,65];        % Landsat path and row (e.g. path 227 row 65).
+    landsatScene = [227,65];        % Landsat path and row (e.g. path 227 row 65)
     dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/2013/';
                                     % the path of your work folder, absolute path.
     BRDF = 0;                       % do you want to apply BRDF correction (1 for yes, 0 for no)
@@ -46,6 +47,7 @@ The first two section of the config file tells the model some important informat
                                       max (0) or mean (1)
     mapType = 3;                    % type of output map that you want to generate, corrently support:
                                       day of change (1), month of change (2), class map (3), and change only (4)
+    cloudThres = 80;                % threshold for filtering extremely cloudy data
 
 #### Model Parameters
 The model parameters can influence the change detection part of the fusion process. Changing the model parameters will give you slightly different results. The default values are optimized for our test scene located in Para, Brazil (Landsat scene 227/65). It is recommended that you try different model parameters and see what works best for you study site. Here's a list of model parameters, the default values, and also brief explanation of what they control:
