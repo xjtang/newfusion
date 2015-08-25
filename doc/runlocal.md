@@ -17,6 +17,8 @@ The whole fusion process is divided into several steps. You are free to stop in 
     matlab >> fusion_BRDF(model);       % this step is optional and is not recommended
                                           when running fusion on your local computer
            >> fusion_SwathSub(model);
+           >> fusion_Cloud(model);      % you can skip this step if you want to force
+                                          the model to use all data.
            >> fusion_Fusion(model);     % if you are applying BRDF corrention
                                           use fusion_BRDFusion instead.
            >> fusion_Dif(model);
