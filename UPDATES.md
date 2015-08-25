@@ -3,6 +3,12 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.2.2 - 8/25/2015
+--------------
+- Updated readme.  
+- Adjusted default values of parameters.  
+- Filtering cloudy data is a main function now.  
+
 Version 1.2.1 - 8/18/2015
 --------------
 - Added gitignore.  
