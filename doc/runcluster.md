@@ -19,6 +19,7 @@ Since the model is automatically initialized, you don't need to run fusion_Input
 
     [bash]$ ./fusion_Batch.sh fusion_BRDF YourConfigFile 50     # optional
     [bash]$ ./fusion_Batch.sh fusion_SwathSub YourConfigFile 50
+    [bash]$ ./fusion_Batch.sh fusion_Cloud YourConfigFile 1     # ONE job only
     [bash]$ ./fusion_Batch.sh fusion_Fusion YourConfigFile 50   # use fusion_BRDFusion if need BRDF correction
     [bash]$ ./fusion_Batch.sh fusion_Dif YourConfigFile 50
     [bash]$ ./fusion_Batch.sh fusion_WriteHDF YourConfigFile 50 # optional
@@ -27,6 +28,6 @@ Since the model is automatically initialized, you don't need to run fusion_Input
     [bash]$ ./fusion_Batch.sh fusion_Change YourConfigFile 50
     [bash]$ ./fusion_Batch.sh fusion_GenMap YourConfigFile 1    # ONE job only
     
-Note that BRDF correction is optional and does not have significant impact of the result in our test studies. You must wait until the previous step is completely finished before you run the next step. Check the status of the jobs to make sure that they are finished. The last step, fusion_GenMap, can only be processed by one single job.
+Note that BRDF correction is optional and does not have significant impact of the result in our test studies. You must wait until the previous step is completely finished before you run the next step. Check the status of the jobs to make sure that they are finished. Two steps, fusion_GenMap and fusion_Cloud, can only be processed by one single job.
 
 
