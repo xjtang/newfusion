@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.0.2
+% Version 1.0.3
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 8/18/2015
+% Last Update: 8/26/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -27,8 +27,11 @@
 % Updates of Version 1.0.1 - 8/6/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.0.1 - 8/18/2015
+% Updates of Version 1.0.2 - 8/18/2015
 %   1.Adjusted according to changes in the model.
+%
+% Updates of Version 1.0.3 - 8/26/2015
+%   1.Adjusted x axis label for multi-year data.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -411,10 +414,9 @@ function [R,Model] = tune_model(var1,var2,var3)
                 plot(Y(CHG==7),TS(i,CHG==7),'c.','MarkerSize',15);
             end
             title(['Band ' num2str(bandIncluded(i))]);
-            xlim([floor(Y(1)),floor(Y(1))+1]);
+            xlim([floor(Y(1)),floor(Y(end))+1]);
             ylim([-2000,2000]);
-            set(gca,'XTick',floor(Y(1)):(1/12):(floor(Y(1))+1));
-            set(gca,'XTickLabel',{'1','2','3','4','5','6','7','8','9','10','11','12'});
+            set(gca,'XTick',floor(Y(1)):(floor(Y(end))+1));
             xlabel('Date');
             ylabel('Fusion');
         end
