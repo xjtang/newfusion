@@ -1,11 +1,11 @@
 % change.m
-% Version 2.3.3
+% Version 2.4
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 8/18/2015
+% Last Update: 8/30/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -63,6 +63,9 @@
 %   1.Fixed a minor bug that leaves out the last observation.
 %   2.Fixeda bug that miss counts number of eligible observation.
 %
+% Updates of Version 2.4 - 8/30/2015
+%   1.Changed the function of minNoB to control the earliest detectable break.
+%
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -110,7 +113,7 @@ function CHG = change(TS,sets)
     
     % check total number of eligible observation
     [~,neb] = size(ETS);
-    if neb < sets.minNoB
+    if neb < sets.initNoB
         CHG = -1;
         return 
     end
@@ -147,7 +150,7 @@ function CHG = change(TS,sets)
                 CHG(ETS(i)) = 4;
             else
                 % see if this is a break
-                if i <= length(ETS)+1-sets.nCosc
+                if i <= length(ETS)+1-sets.nCosc && i > sets.minNoB
                     nSusp = 1;
                     for k = (i+1):(i+sets.nCosc-1)
                         xk = TS(:,ETS(k));

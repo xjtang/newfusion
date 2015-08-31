@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.0.3
+% Version 1.0.4
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 8/26/2015
+% Last Update: 8/30/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -32,6 +32,9 @@
 %
 % Updates of Version 1.0.3 - 8/26/2015
 %   1.Adjusted x axis label for multi-year data.
+%
+% Updates of Version 1.0.4 - 8/30/2015
+%   1.Adjusted according to changes in the model.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -147,7 +150,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         return;
     end
     
-    % load thetime series of the pixel
+    % load the time series of the pixel
     raw = load(cacheFile);
     raw.Data = squeeze(raw.Data(col,:,bandIncluded))';
     raw.Date = raw.Date(:,1)'; 
@@ -213,7 +216,7 @@ function [R,Model] = tune_model(var1,var2,var3)
                     CHG(i) = 4;
                 else
                     % see if this is a break
-                    if i <= nob+1-nConsecutive
+                    if i <= nob+1-nConsecutive && i < minNoB
                         nSusp = 1;
                         for k = (i+1):(i+nConsecutive-1)
                             xk = TS(:,k);
