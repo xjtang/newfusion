@@ -61,7 +61,7 @@
     cloudThres = 80;                % A threshold on percent cloud cover for data filtering.
     
 % model parameters
-    minNoB = 13;                    % minimun number of valid observation
+    minNoB = 13;                    % number of observation before a break can be detected
     initNoB = 12;                   % number of observation or initialization
     nStandDev = 2.5;                % number of standard deviation to flag a suspect
     nConsecutive = 6;               % number of consecutive observation to detect change
