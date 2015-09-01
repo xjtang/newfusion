@@ -171,7 +171,7 @@ function main = fusion_Inputs(file,job)
         end
         
         % model parameters
-        % minimun number of valid observation
+        % number of observation before a break can be detected
         if ~exist('minNoB', 'var')
             minNoB = 13;
         end
@@ -353,7 +353,7 @@ function main = fusion_Inputs(file,job)
         main.set.cloud = cloudThres;
         
     % settings and parameters for the change detection model
-        % minimun number of valid observation
+        % number of observation before a break can be detected
         main.model.minNoB = minNoB;
         % number of observations to initialize the model
         main.model.initNoB = initNoB;
