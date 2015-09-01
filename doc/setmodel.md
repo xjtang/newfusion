@@ -18,7 +18,7 @@ The config file is actually a MATLAB sript file (xxx.m). You can find an example
         mapType = 3;                    % type of map to be generated
         cloudThres = 80;                % A threshold on percent cloud cover for data filtering
     % model parameters
-        minNoB = 13;                    % minimun number of valid observation
+        minNoB = 13;                    % number of observation before a break can be detected
         initNoB = 12;                   % number of observation or initialization
         nStandDev = 2.5;                % number of standard deviation to flag a suspect
         nConsecutive = 6;               % number of consecutive observation to detect change
@@ -52,8 +52,8 @@ The first two section of the config file tells the model some important informat
 #### Model Parameters
 The model parameters can influence the change detection part of the fusion process. Changing the model parameters will give you slightly different results. The default values are optimized for our test scene located in Para, Brazil (Landsat scene 227/65). It is recommended that you try different model parameters and see what works best for you study site. Here's a list of model parameters, the default values, and also brief explanation of what they control:
 
-    minNoB = 13;            % minimun number of valid observations for a single pixel through out the time series
-                              if a pixel have less than minNoB valid observation, then it will not be classified.
+    minNoB = 13;            % number of observation before a break can be detected. The model will not insert a 
+                              break in the first minNoB numbers of observations.
     initNoB = 12;           % number of observations used for initialization, controls how many observations are
                               used to determine the initial state of the pixel.
     nStandDev = 2.5;        % n times standard deviation to flag a suspect, determines how sensitive the model is
