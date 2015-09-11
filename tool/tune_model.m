@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 9/3/2015
+% Last Update: 9/9/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -33,9 +33,10 @@
 % Updates of Version 1.0.3 - 8/26/2015
 %   1.Adjusted x axis label for multi-year data.
 %
-% Updates of Version 1.0.4 - 9/3/2015
+% Updates of Version 1.0.4 - 9/9/2015
 %   1.Adjusted according to changes in the model.
 %   2.Fixed a bug.
+%   3.Fixed a bug.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -383,7 +384,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         % date of change
         if max(CHG==3) == 1
             [~,breakPoint] = max(CHG==3);
-            R.chgDate = raw.Date(breakPoint);
+            R.chgDate = R.date(breakPoint);
         end
         % record result
         R.class = CLS;
