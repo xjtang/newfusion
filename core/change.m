@@ -1,11 +1,11 @@
 % change.m
-% Version 2.4
+% Version 2.4.1
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 8/30/2015
+% Last Update: 9/13/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -66,6 +66,9 @@
 % Updates of Version 2.4 - 8/30/2015
 %   1.Changed the function of minNoB to control the earliest detectable break.
 %
+% Updates of Version 2.4.1 - 9/13/2015
+%   2.Added a mechanism for detecting water body.
+%
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -79,22 +82,10 @@
 %   5 - Edge of change
 %   6 - Stable Non-forest
 %   7 - Edge of Non-forest
+%   8 - Water or ribarian area
 
 function CHG = change(TS,sets)
     
-    % costomized settings
-    % sets.minNoB = 10;
-    % sets.initNoB = 5;
-    % sets.nSD = 1.5;
-    % sets.nCosc = 5;
-    % sets.nSusp = 3;
-    % sets.outlr = 1;
-    % sets.nonfstmean = 10;
-    % sets.nonfstdev = 0.3;
-    % sets.nonfstedge = 5;
-    % sets.weight = [1,1,1];
-    % sets.band = [3,4,5];
-
     % analyse input TS 
     [~,nob] = size(TS);
     
@@ -267,6 +258,19 @@ function CHG = change(TS,sets)
         end
     end
     
+    % see if this is a water pixel
+    pMean = sets.weight*mean([preBreakClean,postBreak],2);
+    if pMean < sets.water
+        % deal with water pixel
+        for i = 1:length(ETS)
+            x = TS(:,ETS(i));
+            if sets.weight*abs(x) >= sets.specedge
+                CHG(ETS(i)) = 8;
+            else
+                CHG(ETS(i)) = 7;
+            end
+        end
+    end
     % done
     
 end

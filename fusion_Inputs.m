@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.2.6
+% Version 2.2.7
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 8/25/2015
+% Last Update: 9/13/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -104,6 +104,10 @@
 %   1.Added a new cloud threshold.
 %   2.Adjusted the default values.
 %
+% Updates of Version 2.2.7 - 9/13/2015
+%   1.Added a threhold for detecting water body.
+%   2.Adjusted default value.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -173,11 +177,11 @@ function main = fusion_Inputs(file,job)
         % model parameters
         % number of observation before a break can be detected
         if ~exist('minNoB', 'var')
-            minNoB = 13;
+            minNoB = 40;
         end
         % number of observation or initialization
         if ~exist('initNoB', 'var')
-            initNoB = 12;
+            initNoB = 40;
         end
         % number of standard deviation to flag a suspect
         if ~exist('nStandDev', 'var')
@@ -193,27 +197,31 @@ function main = fusion_Inputs(file,job)
         end
         % switch for outlier removing in initialization
         if ~exist('outlierRemove', 'var')
-            outlierRemove = 2;
+            outlierRemove = 5;
         end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 275;
+            thresNonFstMean = 225;
         end
         % threshold of std for non-forest detection
         if ~exist('thresNonFstStd', 'var')
-            thresNonFstStd = 150;
+            thresNonFstStd = 100;
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
-            thresChgEdge = 0.3;
+            thresChgEdge = 0.65;
         end
         % threshold of detecting non-forest edging pixel
         if ~exist('thresNonFstEdge', 'var')
-            thresNonFstEdge = 0.3;
+            thresNonFstEdge = 0.35;
         end
         % spectral threshold for edge detecting
         if ~exist('thresSpecEdge', 'var')
-            thresSpecEdge = 150;
+            thresSpecEdge = 100;
+        end
+        % spectral threshold for detecting water
+        if ~exist('thresWater', 'var')
+            thresWater = -250;
         end
         % threshold for n observation after change to confirm change
         if ~exist('thresProbChange', 'var')
@@ -375,6 +383,8 @@ function main = fusion_Inputs(file,job)
         main.model.nonfstedge = thresNonFstEdge;
         % spectral threshold for edge detecting
         main.model.specedge = thresSpecEdge;
+        % spectral threshold for detecting water
+        main.model.water = thresWater;
         % threshold for n observation after change to confirm change
         main.model.probThres = thresProbChange;
         % bands used for change detection

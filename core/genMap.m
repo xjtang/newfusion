@@ -1,11 +1,11 @@
 % genMap.m
-% Version 1.2.2
+% Version 1.2.3
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 7/7/2015
-% Last Update: 8/18/2015
+% Last Update: 9/13/2015
 %
 % Input Arguments:
 %   X (Vector) - change time series
@@ -45,6 +45,9 @@
 % Updates of Version 1.2.2 - 8/18/2015
 %   1.Make probabaly change on top of other change.
 %
+% Updates of Version 1.2.3 - 9/13/2015
+%   1.Added a water detecting mechanism.
+%
 % Released on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -58,6 +61,8 @@
 %   -9999 - no data
 %   -1 - initial value
 %   0 - stable
+%   2 - water
+%   3 - riparian area
 %   5 - stable non-forest
 %   6 - stable non-forest edge
 %   10 - change
@@ -82,11 +87,19 @@ function CLS = genMap(X,D,mapType,edgeThres,probThres)
                 CLS = 0;
             end
             % stable non-forest
-            if max(X) >= 6
+            if (max(X)>=6)&&(max(X)<=7)
                 CLS = 5;
                 % could be non-forest edge
                 if sum(X==7)/sum(X>=6) >= edgeThres(2)
                     CLS = 6;
+                end
+            end
+            % water pixel
+            if max(X) >= 8
+                CLS = 2;
+                % could be non-forest edge
+                if sum(X==7)/sum(X>=8) >= edgeThres(2)
+                    CLS = 3;
                 end
             end
             % confirmed changed
