@@ -3,6 +3,14 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.2.3 - 9/14/2015
+--------------
+- Updated readme and comments.  
+- Adjusted default values.  
+- improved cloudy data filtering code.  
+- Added water body detecting.  
+- Bugs fixed.  
+
 Version 1.2.2 - 8/30/2015
 --------------
 - Updated readme.  
