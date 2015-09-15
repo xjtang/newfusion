@@ -3,12 +3,13 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.2.3 - 9/14/2015
+Version 1.2.3 - 9/15/2015
 --------------
 - Updated readme and comments.  
 - Adjusted default values.  
-- improved cloudy data filtering code.  
+- Improved cloudy data filtering code.  
 - Added water body detecting.  
+- Improved the way the model checks whether result already exist.  
 - Bugs fixed.  
 
 Version 1.2.2 - 8/30/2015
