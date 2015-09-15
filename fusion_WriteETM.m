@@ -1,5 +1,5 @@
 % fusion_WriteETM.m
-% Version 1.5.1
+% Version 1.5.2
 % Step 6
 % Output Result
 %
@@ -57,6 +57,9 @@
 % Updates of Version 1.5.1 - 9/14/2015
 %   1.Added a line to release memory.
 %
+% Updates of Version 1.5.2 - 9/15/2015
+%   1.Improved the way the code checks whether result already exist.
+%
 % Released on Github on 1/30/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -83,23 +86,22 @@ function fusion_WriteETM(main)
         Day = main.date.swath(I_Day);
         DayStr = num2str(Day);
 
-        % check if result already exist
-        File.Check = dir([main.output.dif plat '*' DayStr '*']);
-        if numel(File.Check) >= 1
-            disp([DayStr ' already exist, skip this date.']);
-            continue;
-        end
-
         % find MOD09SUB files
         File.MOD09SUB = dir([main.output.modsubd,plat,'09DIF.','ALL','*',DayStr,'*']);
-
         if numel(File.MOD09SUB)<1
             disp(['Cannot find MOD09DIF for Julian Day: ', DayStr]);
             continue;
         end
 
+        % check if result already exist
+        File.Check = dir([main.output.dif plat '*' DayStr '*']);
+        if numel(File.Check) >= numel(File.MOD09SUB)
+            disp([DayStr ' already exist, skip this date.']);
+            continue;
+        end
+
         % loop through MOD09SUB file of current date
-        for I_TIME = 1:numel(File.MOD09SUB)
+        for I_TIME = (numel(File.Check)+1):numel(File.MOD09SUB)
             TimeStr = regexp(File.MOD09SUB(I_TIME).name,'\.','split');
             TimeStr = char(TimeStr(4));
 
