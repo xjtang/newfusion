@@ -3,13 +3,17 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.2.3 - 9/15/2015
+Version 1.2.3 - 9/17/2015
 --------------
 - Updated readme and comments.  
 - Adjusted default values.  
 - Improved cloudy data filtering code.  
 - Added water body detecting.  
 - Improved the way the model checks whether result already exist.  
+- Improved the map generating process.  
+- Updated the tune_model tool.  
+- Improved memory handeling.  
+- Date list for generating synthetic image is automatically generated.  
 - Bugs fixed.  
 
 Version 1.2.2 - 8/30/2015
