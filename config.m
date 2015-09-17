@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 9/13/2015
+% Last Update: 9/17/2015
 %
 % Input Arguments: NA
 % 
@@ -43,7 +43,7 @@
 %   1.Added a paramter for cloud filtering.
 %   2.Adjusted default values.
 %
-% Updates of Version 1.1.6 - 9/13/2015
+% Updates of Version 1.1.6 - 9/17/2015
 %   1.Added a threhold for detecting water body.
 %   2.Adjusted default values.
 %
@@ -76,6 +76,7 @@
     thresChgEdge = 0.65;            % threshold of detecting change edging pixel
     thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel
     thresSpecEdge = 100;            % spectral threshold for edge detecting
+    thresWater = -250;              % spectral threshold for detecting water
     thresProbChange = 8;            % threshold for n observation after change to confirm change
     bandIncluded = [7,8];           % bands to be included in change detection (band 7/8 are 250m)
     bandWeight = [1,1];             % weight on each band
