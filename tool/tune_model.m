@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.0.4
+% Version 1.0.5
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 9/9/2015
+% Last Update: 9/17/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -37,6 +37,9 @@
 %   1.Adjusted according to changes in the model.
 %   2.Fixed a bug.
 %   3.Fixed a bug.
+%
+% Updates of Version 1.0.5 - 9/17/2015
+%   1.Adjusted according to changes in the model.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -80,6 +83,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         Model.BIAS = BIAS;
         Model.discardRatio = discardRatio;
         Model.diffMethod = diffMethod;
+        Model.thresWater = thresWater;
         Model.config = file;
         return;
     elseif nargin == 3
@@ -98,6 +102,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         thresChgEdge = Model.chgedge;
         thresNonFstEdge = Model.nonfstedge;
         thresSpecEdge = Model.specedge;
+        thresWater = Model.thresWater;
         thresProbChange = Model.probThres;
         bandIncluded = Model.band;
         bandWeight = Model.weight;
@@ -127,6 +132,7 @@ function [R,Model] = tune_model(var1,var2,var3)
     R.model.nonfstedge = thresNonFstEdge;
     R.model.specedge = thresSpecEdge;
     R.model.probThres = thresProbChange;
+    R.model.thresWater = thresWater;
     R.model.band = bandIncluded;
     R.model.weight = bandWeight;
     R.sets.path = dataPath;
@@ -351,6 +357,27 @@ function [R,Model] = tune_model(var1,var2,var3)
                 end
             end
         end
+        
+        % see if this is a water pixel
+        if CHGFlag == 0
+            pMean = sets.weight*mean(preBreakClean,2);
+        else
+            pMean = sets.weight*mean([preBreakClean,postBreak],2);
+        end
+        R.waterMean = pMean;
+        if pMean < thresWater
+            % deal with water pixel
+            for i = 1:length(ETS)
+                x = TS(:,ETS(i));
+                if sets.weight*abs(x) >= thresSpecEdge
+                    CHG(ETS(i)) = 8;
+                else
+                    CHG(ETS(i)) = 7;
+                end
+            end
+        end
+        % done
+        
         % record second change array
         R.chg2 = CHG;
      
@@ -367,6 +394,14 @@ function [R,Model] = tune_model(var1,var2,var3)
             % could be non-forest edge
             if sum(CHG==7)/sum(CHG>=6) >= thresNonFstEdge
                 CLS = 6;
+            end
+        end
+        % water pixel
+        if max(CHG) >= 8
+            CLS = 2;
+            % could be water edge
+            if sum(CHG==7)/sum(CHG>=7) >= thresNonFstEdge
+                CLS = 3;
             end
         end
         % confirmed changed
@@ -417,6 +452,9 @@ function [R,Model] = tune_model(var1,var2,var3)
             end
             if max(CHG==7) == 1
                 plot(Y(CHG==7),TS(i,CHG==7),'c.','MarkerSize',15);
+            end
+            if max(CHG==8) == 1
+                plot(Y(CHG==7),TS(i,CHG==7),'y.','MarkerSize',15);
             end
             title(['Band ' num2str(bandIncluded(i))]);
             xlim([floor(Y(1)),floor(Y(end))+1]);
