@@ -46,6 +46,7 @@
 % Updates of Version 1.1.6 - 9/17/2015
 %   1.Added a threhold for detecting water body.
 %   2.Adjusted default values.
+%   3.Removed mapType setting, generates all maps now.
 %
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -61,7 +62,6 @@
     BIAS = 1;                       % bias correction switch
     discardRatio = 0;               % portion of Landsat pixel to be excluded on the edge
     diffMethod = 0;                 % method used in difference calculation, max(0) or mean(1)
-    mapType = 3;                    % type of map to be generated, date(1)/month(2) of change, change only map (3)
     cloudThres = 80;                % A threshold on percent cloud cover for data filtering.
     
 % model parameters
