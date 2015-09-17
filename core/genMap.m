@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 7/7/2015
-% Last Update: 9/13/2015
+% Last Update: 9/17/2015
 %
 % Input Arguments:
 %   X (Vector) - change time series
@@ -45,7 +45,7 @@
 % Updates of Version 1.2.2 - 8/18/2015
 %   1.Make probabaly change on top of other change.
 %
-% Updates of Version 1.2.3 - 9/13/2015
+% Updates of Version 1.2.3 - 9/17/2015
 %   1.Added a water detecting mechanism.
 %
 % Released on Github on 7/7/2015, check Github Commits for updates afterwards.
@@ -97,8 +97,8 @@ function CLS = genMap(X,D,mapType,edgeThres,probThres)
             % water pixel
             if max(X) >= 8
                 CLS = 2;
-                % could be non-forest edge
-                if sum(X==7)/sum(X>=8) >= edgeThres(2)
+                % could be water edge
+                if sum(X==7)/sum(X>=7) >= edgeThres(2)
                     CLS = 3;
                 end
             end

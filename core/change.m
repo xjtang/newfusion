@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 9/16/2015
+% Last Update: 9/17/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -66,7 +66,7 @@
 % Updates of Version 2.4 - 8/30/2015
 %   1.Changed the function of minNoB to control the earliest detectable break.
 %
-% Updates of Version 2.4.1 - 9/13/2015
+% Updates of Version 2.4.1 - 9/17/2015
 %   1.Added a mechanism for detecting water body.
 %   2.Fixed a bug.
 %
@@ -261,7 +261,7 @@ function CHG = change(TS,sets)
     
     % see if this is a water pixel
     if CHGFlag == 0
-        pMean = sets.weight*mean([preBreakClean],2);
+        pMean = sets.weight*mean(preBreakClean,2);
     else
         pMean = sets.weight*mean([preBreakClean,postBreak],2);
     end
