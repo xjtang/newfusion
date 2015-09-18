@@ -360,19 +360,19 @@ function [R,Model] = tune_model(var1,var2,var3)
         
         % see if this is a water pixel
         if CHGFlag == 0
-            pMean = sets.weight*mean(preBreakClean,2);
+            pMean = bandWeight*mean(preBreakClean,2);
         else
-            pMean = sets.weight*mean([preBreakClean,postBreak],2);
+            pMean = bandWeight*mean([preBreakClean,postBreak],2);
         end
         R.waterMean = pMean;
         if pMean < thresWater
             % deal with water pixel
-            for i = 1:length(ETS)
-                x = TS(:,ETS(i));
-                if sets.weight*abs(x) >= thresSpecEdge
-                    CHG(ETS(i)) = 8;
+            for i = 1:nob
+                x = TS(:,i);
+                if bandWeight*abs(x) >= thresSpecEdge
+                    CHG(i) = 8;
                 else
-                    CHG(ETS(i)) = 7;
+                    CHG(i) = 7;
                 end
             end
         end
