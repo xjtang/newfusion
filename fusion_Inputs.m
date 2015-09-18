@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 9/13/2015
+% Last Update: 9/18/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -104,9 +104,10 @@
 %   1.Added a new cloud threshold.
 %   2.Adjusted the default values.
 %
-% Updates of Version 2.2.7 - 9/13/2015
+% Updates of Version 2.2.7 - 9/18/2015
 %   1.Added a threhold for detecting water body.
 %   2.Adjusted default value.
+%   3.Added a output folder for coefficient maps.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -320,10 +321,15 @@ function main = fusion_Inputs(file,job)
         if exist(main.output.chgmat,'dir') == 0 
             mkdir([main.outpath 'CHGMAT']);
         end
-        % change detection model results in matlab format
+        % change maps
         main.output.chgmap = [main.outpath 'CHGMAP/'];
         if exist(main.output.chgmap,'dir') == 0 
             mkdir([main.outpath 'CHGMAP']);
+        end
+        % coefficients maps
+        main.output.coefmap = [main.output 'COEFMAP/'];
+        if exist(main.output.coefmap,'dir') == 0 
+            mkdir([main.outpath 'COEFMAP']);
         end
         
         % other output folder

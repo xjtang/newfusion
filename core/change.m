@@ -1,5 +1,5 @@
 % change.m
-% Version 2.4.1
+% Version 2.5
 % Core
 %
 % Project: New fusion
@@ -66,9 +66,10 @@
 % Updates of Version 2.4 - 8/30/2015
 %   1.Changed the function of minNoB to control the earliest detectable break.
 %
-% Updates of Version 2.4.1 - 9/17/2015
+% Updates of Version 2.5 - 9/18/2015
 %   1.Added a mechanism for detecting water body.
 %   2.Fixed a bug.
+%   3.Returns model coefficients.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -85,13 +86,14 @@
 %   7 - Edge of Non-forest
 %   8 - Water or ribarian area
 
-function CHG = change(TS,sets)
+function [CHG,COEF] = change(TS,sets)
     
     % analyse input TS 
     [~,nob] = size(TS);
     
     % initilize result
     CHG = zeros(1,nob);
+    COEF = zeros(6,length(sets.band));
     ETS = 1:nob;
     sets.weight = sets.weight/sum(sets.weight);
 
@@ -188,7 +190,6 @@ function CHG = change(TS,sets)
     if max(CHG==3) == 1
         % break exist
         preBreakClean = TS(:,CHG==1);
-        preBreak = TS(:,(CHG>0)&(CHG<3));
         postBreak = TS(:,CHG>=3);
         % remove outliers in post break
         if sets.outlr > 0
@@ -200,10 +201,23 @@ function CHG = change(TS,sets)
             end
         end
         CHGFlag = 1;
+        % record coefficients
+        COEF(1,:) = mean(preBreakClean,2)';
+        COEF(2,:) = std(preBreakClean,0,2)';
+        COEF(3,:) = mean(postBreak,2)';
+        COEF(4,:) = std(postBreak,0,2)';
+        COEF(5,:) = mean([preBreakClean,postBreak],2)';
+        COEF(6,:) = std([preBreakClean,postBreak],0,2)';
     else
         % no break
         preBreakClean = TS(:,CHG==1);
         CHGFlag = 0;
+        COEF(1,:) = mean(preBreakClean,2)';
+        COEF(2,:) = std(preBreakClean,0,2)';
+        COEF(3,:) = COEF(1,:);
+        COEF(4,:) = COEF(2,:);
+        COEF(5,:) = COEF(1,:);
+        COEF(6,:) = COEF(2,:);
     end
     
     % see if pre-brake is non-forest
@@ -276,6 +290,7 @@ function CHG = change(TS,sets)
             end
         end
     end
+    
     % done
     
 end
