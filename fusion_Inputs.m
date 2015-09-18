@@ -327,7 +327,7 @@ function main = fusion_Inputs(file,job)
             mkdir([main.outpath 'CHGMAP']);
         end
         % coefficients maps
-        main.output.coefmap = [main.output 'COEFMAP/'];
+        main.output.coefmap = [main.outpath 'COEFMAP/'];
         if exist(main.output.coefmap,'dir') == 0 
             mkdir([main.outpath 'COEFMAP']);
         end
