@@ -45,6 +45,10 @@ The main product of the New Fusion model is a map that indicates areas of defore
 
 ![CHGMAP](media/CHGMAP.png)
 
+#### Mean & Std Map
+
+Starting in version 1.2.3 the maps of mean and standard deviation of the time series of each pixel before and after the change are also generated automatically by the model. There will be mean and std maps for pre-change, post-change, and the entire time series. The maps are saved as images in ENVI format. You can view those images in ENVI or QGIS. The purpose of generating such maps are for the users to optimize the model parameters especially the non-forest thresholds.   
+
 #### Output from tools
 
 Depending on what you are studying, you may find some of the tools can create useful visualizations of the results. Here're a few examples created by the [built-in tools](../tool) of the New Fusion Model.  

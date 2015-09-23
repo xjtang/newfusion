@@ -14,21 +14,21 @@ The config file is actually a MATLAB sript file (xxx.m). You can find an example
         BRDF = 0;                       % BRDF correction switch
         BIAS = 1;                       % bias correction switch
         discardRatio = 0;               % portion of Landsat pixel to be excluded on the edge
-        diffMethod = 0;                 % method used in difference calculation, max(0) or mean(1)
-        mapType = 3;                    % type of map to be generated
+        diffMethod = 1;                 % method used in difference calculation, max(0) or mean(1)
         cloudThres = 80;                % A threshold on percent cloud cover for data filtering
     % model parameters
-        minNoB = 13;                    % number of observation before a break can be detected
-        initNoB = 12;                   % number of observation or initialization
+        minNoB = 40;                    % number of observation before a break can be detected
+        initNoB = 40;                   % number of observation or initialization
         nStandDev = 2.5;                % number of standard deviation to flag a suspect
         nConsecutive = 6;               % number of consecutive observation to detect change
         nSuspect = 4;                   % number of suspect to confirm a change
-        outlierRemove = 2;              % switch for outlier removing in initialization
-        thresNonFstMean = 275;          % threshold of mean for non-forest detection
-        thresNonFstStd = 150;           % threshold of std for non-forest detection
-        thresChgEdge = 0.3;             % threshold of detecting change edging pixel
-        thresNonFstEdge = 0.3;          % threshold of detecting non-forest edging pixel
-        thresSpecEdge = 150;            % spectral threshold for edge detecting
+        outlierRemove = 5;              % switch for outlier removing in initialization
+        thresNonFstMean = 225;          % threshold of mean for non-forest detection
+        thresNonFstStd = 100;           % threshold of std for non-forest detection
+        thresChgEdge = 0.65;            % threshold of detecting change edging pixel
+        thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel
+        thresSpecEdge = 100;            % spectral threshold for edge detecting
+        thresWater = -250;              % spectral threshold for detecting water
         thresProbChange = 8;            % threshold for n observation after change to confirm change
         bandIncluded = [7,8];           % bands to be included in change detection (band 7/8 are 250m)
         bandWeight = [1,1];             % weight on each band
@@ -43,33 +43,32 @@ The first two section of the config file tells the model some important informat
     BRDF = 0;                       % do you want to apply BRDF correction (1 for yes, 0 for no)
     BIAS = 1;                       % do you want to apply BIAD correction (1 for yes, 0 for no)
     discardRatio = 0;               % portion of Landsat pixel to be excluded on the edge
-    diffMethod = 0;                 % how to deal with overlap of adjacent MODIS swath observation, either use
+    diffMethod = 1;                 % how to deal with overlap of adjacent MODIS swath observation, either use
                                       max (0) or mean (1)
-    mapType = 3;                    % type of output map that you want to generate, corrently support:
-                                      day of change (1), month of change (2), class map (3), and change only (4)
     cloudThres = 80;                % threshold for filtering extremely cloudy data
 
 #### Model Parameters
 The model parameters can influence the change detection part of the fusion process. Changing the model parameters will give you slightly different results. The default values are optimized for our test scene located in Para, Brazil (Landsat scene 227/65). It is recommended that you try different model parameters and see what works best for you study site. Here's a list of model parameters, the default values, and also brief explanation of what they control:
 
-    minNoB = 13;            % number of observation before a break can be detected. The model will not insert a 
+    minNoB = 40;            % number of observation before a break can be detected. The model will not insert a 
                               break in the first minNoB numbers of observations.
-    initNoB = 12;           % number of observations used for initialization, controls how many observations are
+    initNoB = 40;           % number of observations used for initialization, controls how many observations are
                               used to determine the initial state of the pixel.
     nStandDev = 2.5;        % n times standard deviation to flag a suspect, determines how sensitive the model is
                               when detecting changed observations.
     nConsecutive = 6;       % number of consecutive observations to check in change detection.
     nSuspect = 4;           % number of suspective obsercations to confirm a change, the model will need nSuspect
                               out of nConsecutive number of observations to confirm a change.
-    outlierRemove = 2;      % how many outlier will be removed from the time series during each process.
-    thresNonFstMean = 275;  % threshold of mean for detecting non-forest, controls how sensitive the model is 
+    outlierRemove = 5;      % how many outlier will be removed from the time series during each process.
+    thresNonFstMean = 225;  % threshold of mean for detecting non-forest, controls how sensitive the model is 
                               when deciding whether a time series is non-forest (SR*10000)
-    thresNonFstStd = 150;   % threshold of std for detecting non-forest, controls how sensitive the model is 
+    thresNonFstStd = 100;   % threshold of std for detecting non-forest, controls how sensitive the model is 
                               when deciding whether a time series is non-forest (SR*10000)
-    thresChgEdge = 0.3;     % threshold of defining edge of change pixel (%)
-    thresNonFstEdge = 0.3;  % threshold of defining edge of non-forest pixel (%)
-    thresSpecEdge = 150;    % threshold of mean for detecting pixel on the edge of two classes, controls how
+    thresChgEdge = 0.65;    % threshold of defining edge of change pixel (%)
+    thresNonFstEdge = 0.35; % threshold of defining edge of non-forest pixel (%)
+    thresSpecEdge = 100;    % threshold of mean for detecting pixel on the edge of two classes, controls how
                               sensitive the model is when detecting observations that might be on the edge.
+    thresWater = -250       % threshold of mean for detecting water pixel.
     thresProbChange = 8;    % number of observations after the change event to confirm change.
     bandIncluded = [7,8];   % bands to be included in change detection (band 1-6 are 500m, band 7/8 are 250m)
     bandWeight = [1,1];     % weight on each band (must have the same number of elements as bandIncluded), the
