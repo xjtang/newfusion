@@ -14,6 +14,7 @@ Version 1.2.3 - 9/17/2015
 - Updated the tune_model tool.  
 - Improved memory handeling.  
 - Date list for generating synthetic image is automatically generated.  
+- Added a component to generate coefficients maps as part of the result.  
 - Bugs fixed.  
 
 Version 1.2.2 - 8/30/2015
