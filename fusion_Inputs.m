@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.2.7
+% Version 2.2.8
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 9/18/2015
+% Last Update: 9/24/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -109,6 +109,10 @@
 %   2.Adjusted default value.
 %   3.Added a output folder for coefficient maps.
 %
+% Updates of Version 2.2.8 - 9/24/2015
+%   1.Added version control of the config file.
+%   2.Adjusted default value.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -132,6 +136,23 @@ function main = fusion_Inputs(file,job)
     % load config file
     if exist(file,'file')
         run(file);
+    end
+    
+    % check version config file
+    curVersion = 116;
+    if ~exist('configVer','var')
+        disp('WARNING!!!!');
+        disp('WARNING!!!!');
+        disp('Unknown config file version, unexpected error may occur.');
+        disp('WARNING!!!!');
+        disp('WARNING!!!!');
+        configVer = 0;
+    elseif configVer < curVersion
+        disp('WARNING!!!!');
+        disp('WARNING!!!!');
+        disp('You are using older version of config file, unexpected error may occur.');
+        disp('WARNING!!!!');
+        disp('WARNING!!!!');
     end
     
     % check if all parameters exist in config file
@@ -164,7 +185,7 @@ function main = fusion_Inputs(file,job)
         end
         % difference map method
         if ~exist('diffMethod', 'var')
-            diffMethod = 0;
+            diffMethod = 1;
         end
         % change map method
         if ~exist('mapType', 'var')
@@ -202,11 +223,11 @@ function main = fusion_Inputs(file,job)
         end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 225;
+            thresNonFstMean = 175;
         end
         % threshold of std for non-forest detection
         if ~exist('thresNonFstStd', 'var')
-            thresNonFstStd = 100;
+            thresNonFstStd = 125;
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
@@ -222,7 +243,7 @@ function main = fusion_Inputs(file,job)
         end
         % spectral threshold for detecting water
         if ~exist('thresWater', 'var')
-            thresWater = -250;
+            thresWater = -350;
         end
         % threshold for n observation after change to confirm change
         if ~exist('thresProbChange', 'var')
@@ -345,6 +366,8 @@ function main = fusion_Inputs(file,job)
         end
           
     % project information
+        % config file version
+        main.set.cver = configVer;
         % platform of MODIS
         main.set.plat = modisPlatform;
         % Landsat scene

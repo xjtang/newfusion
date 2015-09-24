@@ -1,11 +1,11 @@
 % config.m
-% Version 1.1.6
+% Version 1.1.7
 % Configuration File
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 9/17/2015
+% Last Update: 9/24/2015
 %
 % Input Arguments: NA
 % 
@@ -48,10 +48,15 @@
 %   2.Adjusted default values.
 %   3.Removed mapType setting, generates all maps now.
 %
+% Updates of Version 1.1.7 - 9/24/2015
+%   1.Added version control for the config file.
+%   2.Adjusted default value.
+%
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 % project information
+    configVer = 116;                % config file version
     modisPlatform = 'MOD';          % MOD for Terra, MYD for Aqua
     landsatScene = [227,65];        % Landsat path and row
     dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/fusion/';
@@ -61,7 +66,7 @@
     BRDF = 0;                       % BRDF correction switch
     BIAS = 1;                       % bias correction switch
     discardRatio = 0;               % portion of Landsat pixel to be excluded on the edge
-    diffMethod = 0;                 % method used in difference calculation, max(0) or mean(1)
+    diffMethod = 1;                 % method used in difference calculation, max(0) or mean(1)
     cloudThres = 80;                % A threshold on percent cloud cover for data filtering.
     
 % model parameters
@@ -71,12 +76,12 @@
     nConsecutive = 6;               % number of consecutive observation to detect change
     nSuspect = 4;                   % number of suspect to confirm a change
     outlierRemove = 5;              % switch for outlier removing in initialization
-    thresNonFstMean = 225;          % threshold of mean for non-forest detection
-    thresNonFstStd = 100;           % threshold of std for non-forest detection
+    thresNonFstMean = 175;          % threshold of mean for non-forest detection
+    thresNonFstStd = 125;           % threshold of std for non-forest detection
     thresChgEdge = 0.65;            % threshold of detecting change edging pixel
     thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel
     thresSpecEdge = 100;            % spectral threshold for edge detecting
-    thresWater = -250;              % spectral threshold for detecting water
+    thresWater = -350;              % spectral threshold for detecting water
     thresProbChange = 8;            % threshold for n observation after change to confirm change
     bandIncluded = [7,8];           % bands to be included in change detection (band 7/8 are 250m)
     bandWeight = [1,1];             % weight on each band
