@@ -56,7 +56,7 @@
 %----------------------------------------------------------------
 %
 % project information
-    configVer = 116;                % config file version
+    configVer = 116;                % config file version DO NOT CHANGE THIS!!!
     modisPlatform = 'MOD';          % MOD for Terra, MYD for Aqua
     landsatScene = [227,65];        % Landsat path and row
     dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/fusion/';
