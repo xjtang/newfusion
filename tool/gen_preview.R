@@ -199,7 +199,7 @@ batch_gen_preview <- function(path,output,subType='SUB',plat='MOD',res=500,
                               comp=c(5,4,3),stretch=c(0,5000)){
   
   # find all files
-  pattern <- paste('.*',plat,'.*','ALL','m.*.mat',sep='')
+  pattern <- paste('.*',plat,'.*','ALL','*.mat',sep='')
   fileList <- list.files(path=path,pattern=pattern,full.names=T,recursive=T)
 
   # check if we have files found
