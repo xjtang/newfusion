@@ -136,6 +136,11 @@ gen_preview <- function(file,outFile,subType='SUB',res=500,
       sr2[,,3] <- (sr2[,,2]-sr2[,,1])/(sr2[,,2]+sr2[,,1])
     }
   
+    # if DIF then dual DIF
+    if(subType=='DIF'){
+      sr[,,-3] <- sr2
+    }
+  
   # forge preview image
     #initiate preview image
     if(res==500){imax<-3}else{imax<-1}
@@ -199,7 +204,7 @@ batch_gen_preview <- function(path,output,subType='SUB',plat='MOD',res=500,
                               comp=c(5,4,3),stretch=c(0,5000)){
   
   # find all files
-  pattern <- paste('.*',plat,'.*','ALL','*.mat',sep='')
+  pattern <- paste('.*',plat,'.*','ALL','.*.mat',sep='')
   fileList <- list.files(path=path,pattern=pattern,full.names=T,recursive=T)
 
   # check if we have files found
