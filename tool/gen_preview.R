@@ -1,11 +1,11 @@
 # gen_preview.R
-# Version 1.4
+# Version 1.5
 # Tools
 #
 # Project: New Fusion
 # By xjtang
 # Created On: 11/30/2014
-# Last Update: 4/7/2015
+# Last Update: 9/25/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -38,6 +38,9 @@
 #   3.Updated comments.
 #
 # Updates of Version 1.4 - 4/7/2015
+#   1.Adjusted for a major update in the main program.
+#
+# Updates of Version 1.5 - 9/25/2015
 #   1.Adjusted for a major update in the main program.
 #
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
@@ -73,6 +76,8 @@ gen_preview <- function(file,outFile,subType='SUB',res=500,
     MOD <- 'MOD09'
   }else if(subType=='FUS'){
     MOD <- 'FUS09' 
+  }else if(subType=='DIF'){
+    MOD <- 'DIF09'
   }else{
     cat('Invalid subType.\n')
     return(-1)
