@@ -3,6 +3,11 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.2.5 - 10/6/2015
+--------------
+- Redesigned the change detection model.  
+- Bugs fixed.  
+
 Version 1.2.4 - 9/25/2015
 --------------
 - Added version control for the config file.  
