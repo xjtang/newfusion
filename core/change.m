@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 9/17/2015
+% Last Update: 9/25/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -66,7 +66,7 @@
 % Updates of Version 2.4 - 8/30/2015
 %   1.Changed the function of minNoB to control the earliest detectable break.
 %
-% Updates of Version 2.5 - 9/18/2015
+% Updates of Version 2.5 - 9/25/2015
 %   1.Added a mechanism for detecting water body.
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
@@ -93,7 +93,7 @@ function [CHG,COEF] = change(TS,sets)
     
     % initilize result
     CHG = zeros(1,nob);
-    COEF = zeros(6,length(sets.band));
+    COEF = zeros(6,length(sets.band)+1);
     ETS = 1:nob;
     sets.weight = sets.weight/sum(sets.weight);
 
@@ -202,18 +202,18 @@ function [CHG,COEF] = change(TS,sets)
         end
         CHGFlag = 1;
         % record coefficients
-        COEF(1,:) = mean(preBreakClean,2)';
-        COEF(2,:) = std(preBreakClean,0,2)';
-        COEF(3,:) = mean(postBreak,2)';
-        COEF(4,:) = std(postBreak,0,2)';
-        COEF(5,:) = mean([preBreakClean,postBreak],2)';
-        COEF(6,:) = std([preBreakClean,postBreak],0,2)';
+        COEF(1,:) = [mean(preBreakClean,2)',sets.weight*abs(mean(preBreakClean,2))];
+        COEF(2,:) = [std(preBreakClean,0,2)',sets.weight*abs(std(preBreakClean,0,2))];
+        COEF(3,:) = [mean(postBreak,2)',sets.weight*abs(mean(postBreak,2))];
+        COEF(4,:) = [std(postBreak,0,2)',sets.weight*abs(std(postBreak,0,2))];
+        COEF(5,:) = [mean([preBreakClean,postBreak],2)',sets.weight*abs(mean([preBreakClean,postBreak],2))];
+        COEF(6,:) = [std([preBreakClean,postBreak],0,2)',sets.weight*abs(std([preBreakClean,postBreak],0,2))];
     else
         % no break
         preBreakClean = TS(:,CHG==1);
         CHGFlag = 0;
-        COEF(1,:) = mean(preBreakClean,2)';
-        COEF(2,:) = std(preBreakClean,0,2)';
+        COEF(1,:) = [mean(preBreakClean,2)',sets.weight*abs(mean(preBreakClean,2))]';
+        COEF(2,:) = [std(preBreakClean,0,2)',sets.weight*abs(std(preBreakClean,0,2))]';
         COEF(3,:) = COEF(1,:);
         COEF(4,:) = COEF(2,:);
         COEF(5,:) = COEF(1,:);

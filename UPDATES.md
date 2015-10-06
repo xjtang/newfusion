@@ -3,6 +3,17 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.2.4 - 9/25/2015
+--------------
+- Added version control for the config file.  
+- Adjusted default values.  
+- Removed useless tools.  
+- Updates some old tools.  
+- Removed usedless bash script.  
+- Added overall mean and std to coef maps.  
+- Tools are tested.  
+- Bugs fixed.  
+
 Version 1.2.3 - 9/17/2015
 --------------
 - Updated readme and comments.  

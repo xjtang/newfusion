@@ -6,6 +6,7 @@ The New Fusion model uses a single config file to specify all model settings and
 The config file is actually a MATLAB sript file (xxx.m). You can find an example config file ([config.m](../config.m)) that comes with the New Fusion program. The easiest way to customize your own config file for your project is just to copy the example config file and edit your copy. You can either edit it in MATLAB or simply in any text editor. Here is what a config file would look like:
 
     % project information
+        configVer = 116;                % config file version, DO NOT CHANGE THIS!!
         modisPlatform = 'MOD';          % MOD for Terra, MYD for Aqua
         landsatScene = [227,65];        % Landsat path and row
         dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/2013/';
@@ -36,6 +37,7 @@ The config file is actually a MATLAB sript file (xxx.m). You can find an example
 #### Some Key Settings
 The first two section of the config file tells the model some important information of your project such as the location of the data, some main settings and the type of output that you want. So it is very important that you make sure that the information is correct for your project. Here's a list of key settings and brief explanations:
 
+    configVer = 116;                % config file version, DO NOT CHANGE THIS!!
     modisPlatform = 'MOD';          % the MODIS satellite that you are using, MOD (Terra) or MYD (Aqua)
     landsatScene = [227,65];        % Landsat path and row (e.g. path 227 row 65)
     dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/2013/';

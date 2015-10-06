@@ -1,11 +1,11 @@
 # gen_preview.R
-# Version 1.4
+# Version 1.5
 # Tools
 #
 # Project: New Fusion
 # By xjtang
 # Created On: 11/30/2014
-# Last Update: 4/7/2015
+# Last Update: 9/25/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -38,6 +38,9 @@
 #   3.Updated comments.
 #
 # Updates of Version 1.4 - 4/7/2015
+#   1.Adjusted for a major update in the main program.
+#
+# Updates of Version 1.5 - 9/25/2015
 #   1.Adjusted for a major update in the main program.
 #
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
@@ -73,6 +76,8 @@ gen_preview <- function(file,outFile,subType='SUB',res=500,
     MOD <- 'MOD09'
   }else if(subType=='FUS'){
     MOD <- 'FUS09' 
+  }else if(subType=='DIF'){
+    MOD <- 'DIF09'
   }else{
     cat('Invalid subType.\n')
     return(-1)
@@ -129,6 +134,11 @@ gen_preview <- function(file,outFile,subType='SUB',res=500,
       sr2[,,6] <- matrix(unlist(MOD09SUB[paste(MOD,'SWIR2',res,sep='')],use.names=F),line,samp)
     }else{
       sr2[,,3] <- (sr2[,,2]-sr2[,,1])/(sr2[,,2]+sr2[,,1])
+    }
+  
+    # if DIF then dual DIF
+    if(subType=='DIF'){
+      sr[,,-3] <- sr2
     }
   
   # forge preview image
@@ -194,7 +204,7 @@ batch_gen_preview <- function(path,output,subType='SUB',plat='MOD',res=500,
                               comp=c(5,4,3),stretch=c(0,5000)){
   
   # find all files
-  pattern <- paste('.*',plat,'.*','ALL','m.*.mat',sep='')
+  pattern <- paste('.*',plat,'.*','ALL','.*.mat',sep='')
   fileList <- list.files(path=path,pattern=pattern,full.names=T,recursive=T)
 
   # check if we have files found

@@ -1,11 +1,11 @@
 # fusion_plot.R
-# Version 1.4
+# Version 1.4.1
 # Tools
 #
 # Project: New Fusion
 # By xjtang
 # Created On: 12/02/2014
-# Last Update: 4/7/2015
+# Last Update: 9/24/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -37,6 +37,9 @@
 #
 # Updates of Version 1.4 - 4/7/2015
 #   1.Adjusted for major updated in the main program.
+#
+# Updates of Version 1.4.1 - 9/24/2015
+#   1.Fixed a bug.
 #
 # Released on Github on 12/05/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -113,8 +116,8 @@ fusion_plot <- function(file,outFile,plat='MOD',res=500,cmask=T,rs=T){
   # grab each band
   sr[,1] <- unlist(MOD09SUB[paste('MOD09','RED',res,sep='')],use.names=F)
   sr[,3] <- unlist(MOD09SUB[paste('MOD09','NIR',res,sep='')],use.names=F)
-  sr[,2] <- unlist(MOD09SUB[paste(MOD,'RED',res,sep='')],use.names=F)
-  sr[,4] <- unlist(MOD09SUB[paste(MOD,'NIR',res,sep='')],use.names=F)
+  sr[,2] <- unlist(MOD09SUB[paste('FUS09','RED',res,sep='')],use.names=F)
+  sr[,4] <- unlist(MOD09SUB[paste('FUS09','NIR',res,sep='')],use.names=F)
   sr[,7] <- unlist(MOD09SUB[paste('QACloud',res,sep='')],use.names=F)
   # calculate ndvi
   sr[,5] <- (sr[,3]-sr[,1])/(sr[,3]+sr[,1])
@@ -122,7 +125,7 @@ fusion_plot <- function(file,outFile,plat='MOD',res=500,cmask=T,rs=T){
   # calculate SWIR if 500m resolution
   if(res==500){
     sr[,8] <- unlist(MOD09SUB[paste('MOD09','SWIR',res,sep='')],use.names=F)
-    sr[,9] <- unlist(MOD09SUB[paste(MOD,'SWIR',res,sep='')],use.names=F)
+    sr[,9] <- unlist(MOD09SUB[paste('FUS09','SWIR',res,sep='')],use.names=F)
   }
   
   # cloud masking
