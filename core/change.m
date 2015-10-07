@@ -1,11 +1,11 @@
 % change.m
-% Version 2.5
+% Version 2.6
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 9/25/2015
+% Last Update: 10/4/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -70,6 +70,9 @@
 %   1.Added a mechanism for detecting water body.
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
+%
+% Updates of Version 2.6 - 10/4/2015
+%   1.Redesigned the change detection process.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
