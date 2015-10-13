@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 10/4/2015
+% Last Update: 10/12/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,7 +71,7 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
-% Updates of Version 2.6 - 10/4/2015
+% Updates of Version 2.6 - 10/12/2015
 %   1.Redesigned the change detection process.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
@@ -91,19 +91,30 @@
 
 function [CHG,COEF] = change(TS,sets)
     
+    % assign class values
+    C.NA = -1;
+    C.Default = 0;
+    C.Stable = 1;
+    C.Outlier = 2;
+    C.Break = 3;
+    C.Changed = 4;
+    C.ChgEdge = 5;
+    C.NonForest = 6;
+    C.NFEdge = 7;
+    C.Water = 8;
+
     % analyse input TS 
-    [~,nob] = size(TS);
+    [nband,nob] = size(TS);
     
     % initilize result
-    CHG = zeros(1,nob);
-    COEF = zeros(6,length(sets.band)+1);
+    CHG = ones(1,nob)*C.Default;
+    COEF = zeros(12,length(sets.band)+1);
     ETS = 1:nob;
-    sets.weight = sets.weight/sum(sets.weight);
 
     % complie eligible observations
     for i = nob:-1:1
         if max(TS(:,i)==-9999)
-            CHG(i) = -1;
+            CHG(i) = C.NA;
             ETS(i) = [];
         end
     end
@@ -111,9 +122,13 @@ function [CHG,COEF] = change(TS,sets)
     % check total number of eligible observation
     [~,neb] = size(ETS);
     if neb < sets.initNoB
-        CHG = -1;
+        CHG = C.NA;
         return 
     end
+    
+    % calculate weight
+    TSStd = (std(TS(:,ETS),0,2))';
+    weight = TSStd./(sum(TSStd));
         
     % initilization
     mainVec = TS(:,ETS(1:sets.initNoB));
@@ -121,7 +136,9 @@ function [CHG,COEF] = change(TS,sets)
         for i = 1:sets.outlr
             % remove outliers in the initial observations
             initMean = mean(mainVec,2);
-            mainVecDev = sets.weight*abs(mainVec-repmat(initMean,1,sets.initNoB+1-i));
+            initStd = std(mainVec,0,2);
+            mainVecRes = mainVec-repmat(initMean,1,sets.initNoB+1-i);
+            mainVecDev = ((1./(initStd)')*abs(mainVecRes))./nband;
             [~,TSmaxI] = max(mainVecDev);
             mainVec(:,TSmaxI) = [];
         end
@@ -137,14 +154,14 @@ function [CHG,COEF] = change(TS,sets)
         x = TS(:,ETS(i));
         xRes = abs(x-initMean);
         xNorm = xRes./initStd;
-        xDev = sets.weight*xNorm;
+        xDev = (ones(1,nband)./nband)*xNorm;
         
         % check if possible change occured
         if xDev >= sets.nSD 
             % check if change already detected
             if CHGFlag == 1
                 % set result to changed
-                CHG(ETS(i)) = 4;
+                CHG(ETS(i)) = C.Changed;
             else
                 % see if this is a break
                 if i <= length(ETS)+1-sets.nCosc && i > sets.minNoB
@@ -153,20 +170,20 @@ function [CHG,COEF] = change(TS,sets)
                         xk = TS(:,ETS(k));
                         xkRes = abs(xk-initMean);
                         xkNorm = xkRes./initStd;
-                        xkDev = sets.weight*xkNorm;
+                        xkDev = (ones(1,nband)./nband)*xkNorm;
                         if xkDev >= sets.nSD
                             nSusp = nSusp + 1;
                         end
                     end
                     if nSusp >= sets.nSusp
-                        CHG(ETS(i)) = 3;
+                        CHG(ETS(i)) = C.Break;
                         CHGFlag = 1;
                     else
-                        CHG(ETS(i)) = 2;
+                        CHG(ETS(i)) = C.Outlier;
                     end
                 else
                     % this is an outlier
-                    CHG(ETS(i)) = 2;
+                    CHG(ETS(i)) = C.Outlier;
                 end
             end
         else
@@ -188,40 +205,37 @@ function [CHG,COEF] = change(TS,sets)
 
     end
     
-    % post change detection refining
-    % split data into pre-break and post-break
-    if max(CHG==3) == 1
-        % break exist
-        preBreakClean = TS(:,CHG==1);
-        postBreak = TS(:,CHG>=3);
-        % remove outliers in post break
-        if sets.outlr > 0
-            for i = 1:sets.outlr
-                pMean = mean(postBreak,2);
-                pMeanDev = sets.weight*abs(postBreak-repmat(pMean,1,size(postBreak,2)));
-                [~,TSmaxI] = max(pMeanDev);
-                postBreak(:,TSmaxI) = [];
-            end
-        end
+    % grab coefficients
+    if max(CHG==C.Break) == 1
+        % split data into pre-break and post-break
+        preBreak = TS(:,CHG==C.Stable);
+        postBreak = TS(:,CHG>=C.Break);
         CHGFlag = 1;
-        % record coefficients
-        COEF(1,:) = [mean(preBreakClean,2)',sets.weight*abs(mean(preBreakClean,2))];
-        COEF(2,:) = [std(preBreakClean,0,2)',sets.weight*abs(std(preBreakClean,0,2))];
-        COEF(3,:) = [mean(postBreak,2)',sets.weight*abs(mean(postBreak,2))];
-        COEF(4,:) = [std(postBreak,0,2)',sets.weight*abs(std(postBreak,0,2))];
-        COEF(5,:) = [mean([preBreakClean,postBreak],2)',sets.weight*abs(mean([preBreakClean,postBreak],2))];
-        COEF(6,:) = [std([preBreakClean,postBreak],0,2)',sets.weight*abs(std([preBreakClean,postBreak],0,2))];
     else
         % no break
-        preBreakClean = TS(:,CHG==1);
+        preBreak = TS(:,CHG==1);
+        postBreak = preBreak;
         CHGFlag = 0;
-        COEF(1,:) = [mean(preBreakClean,2)',sets.weight*abs(mean(preBreakClean,2))]';
-        COEF(2,:) = [std(preBreakClean,0,2)',sets.weight*abs(std(preBreakClean,0,2))]';
-        COEF(3,:) = COEF(1,:);
-        COEF(4,:) = COEF(2,:);
-        COEF(5,:) = COEF(1,:);
-        COEF(6,:) = COEF(2,:);
     end
+    
+    % record coefficients
+    for i = 1:nband
+        % coefficients for each band
+        COEF(1,i) = [mean(preBreak,2)',sets.weight*abs(mean(preBreak,2))];
+        COEF(2,i) = [std(preBreakClean,0,2)',sets.weight*abs(std(preBreakClean,0,2))];
+        COEF(3,i) = [mean(postBreak,2)',sets.weight*abs(mean(postBreak,2))];
+        COEF(4,i) = [std(postBreak,0,2)',sets.weight*abs(std(postBreak,0,2))];
+        COEF(5,i) = [mean([preBreakClean,postBreak],2)',sets.weight*abs(mean([preBreakClean,postBreak],2))];
+        COEF(6,i) = [std([preBreakClean,postBreak],0,2)',sets.weight*abs(std([preBreakClean,postBreak],0,2))];
+    end
+    % overall coefficients
+    COEF(1,nband+1) = [mean(preBreakClean,2)',sets.weight*abs(mean(preBreakClean,2))];
+    COEF(2,nband+1) = [std(preBreakClean,0,2)',sets.weight*abs(std(preBreakClean,0,2))];
+    COEF(3,nband+1) = [mean(postBreak,2)',sets.weight*abs(mean(postBreak,2))];
+    COEF(4,nband+1) = [std(postBreak,0,2)',sets.weight*abs(std(postBreak,0,2))];
+    COEF(5,nband+1) = [mean([preBreakClean,postBreak],2)',sets.weight*abs(mean([preBreakClean,postBreak],2))];
+    COEF(6,nband+1) = [std([preBreakClean,postBreak],0,2)',sets.weight*abs(std([preBreakClean,postBreak],0,2))];
+    
     
     % see if pre-brake is non-forest
     pMean = sets.weight*abs(mean(preBreakClean,2));
