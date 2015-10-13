@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 10/12/2015
+% Last Update: 10/13/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,8 +71,9 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
-% Updates of Version 2.6 - 10/12/2015
+% Updates of Version 2.6 - 10/13/2015
 %   1.Redesigned the change detection process.
+%   2.Removed water pixel detecting
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -87,7 +88,6 @@
 %   5 - Edge of change
 %   6 - Stable Non-forest
 %   7 - Edge of Non-forest
-%   8 - Water or ribarian area
 
 function [CHG,COEF] = change(TS,sets)
     
@@ -101,7 +101,6 @@ function [CHG,COEF] = change(TS,sets)
     C.ChgEdge = 5;
     C.NonForest = 6;
     C.NFEdge = 7;
-    C.Water = 8;
 
     % analyse input TS 
     [nband,nob] = size(TS);
@@ -125,10 +124,6 @@ function [CHG,COEF] = change(TS,sets)
         CHG = C.NA;
         return 
     end
-    
-    % calculate weight
-    TSStd = (std(TS(:,ETS),0,2))';
-    weight = TSStd./(sum(TSStd));
         
     % initilization
     mainVec = TS(:,ETS(1:sets.initNoB));
@@ -190,10 +185,10 @@ function [CHG,COEF] = change(TS,sets)
             % check if change already detected
             if CHGFlag == 1
                 % set result to edge of change
-                CHG(ETS(i)) = 5;
+                CHG(ETS(i)) = C.ChgEdge;
             else
                 % set result to stable
-                CHG(ETS(i)) = 1;
+                CHG(ETS(i)) = C.Stable;
                 % update main vector
                 if i > sets.initNoB
                     mainVec = [mainVec,TS(:,ETS(i))];  %#ok<*AGROW>
@@ -213,66 +208,53 @@ function [CHG,COEF] = change(TS,sets)
         CHGFlag = 1;
     else
         % no break
-        preBreak = TS(:,CHG==1);
+        preBreak = TS(:,CHG==C.Stable);
         postBreak = preBreak;
         CHGFlag = 0;
     end
     
     % record coefficients
-    for i = 1:nband
-        % coefficients for each band
-        COEF(1,i) = [mean(preBreak,2)',sets.weight*abs(mean(preBreak,2))];
-        COEF(2,i) = [std(preBreakClean,0,2)',sets.weight*abs(std(preBreakClean,0,2))];
-        COEF(3,i) = [mean(postBreak,2)',sets.weight*abs(mean(postBreak,2))];
-        COEF(4,i) = [std(postBreak,0,2)',sets.weight*abs(std(postBreak,0,2))];
-        COEF(5,i) = [mean([preBreakClean,postBreak],2)',sets.weight*abs(mean([preBreakClean,postBreak],2))];
-        COEF(6,i) = [std([preBreakClean,postBreak],0,2)',sets.weight*abs(std([preBreakClean,postBreak],0,2))];
-    end
-    % overall coefficients
-    COEF(1,nband+1) = [mean(preBreakClean,2)',sets.weight*abs(mean(preBreakClean,2))];
-    COEF(2,nband+1) = [std(preBreakClean,0,2)',sets.weight*abs(std(preBreakClean,0,2))];
-    COEF(3,nband+1) = [mean(postBreak,2)',sets.weight*abs(mean(postBreak,2))];
-    COEF(4,nband+1) = [std(postBreak,0,2)',sets.weight*abs(std(postBreak,0,2))];
-    COEF(5,nband+1) = [mean([preBreakClean,postBreak],2)',sets.weight*abs(mean([preBreakClean,postBreak],2))];
-    COEF(6,nband+1) = [std([preBreakClean,postBreak],0,2)',sets.weight*abs(std([preBreakClean,postBreak],0,2))];
+    COEF(1,:) = [mean(preBreak,2)',(ones(1,nband)./nband)*abs(mean(preBreak,2))];
+    COEF(2,:) = [mean(postBreak,2)',(ones(1,nband)./nband)*abs(mean(postBreak,2))];
+    COEF(3,:) = [std(preBreak,0,2)',(ones(1,nband)./nband)*abs(std(preBreak,0,2))];
+    COEF(4,:) = [std(postBreak,0,2)',(ones(1,nband)./nband)*abs(std(postBreak,0,2))];
+    COEF(5,:) = [prctile(preBreak,95,2)',(ones(1,nband)./nband)*abs(prctile(preBreak,95,2))];
+    COEF(6,:) = [prctile(postBreak,95,2)',(ones(1,nband)./nband)*abs(prctile(postBreak,95,2))];
+    COEF(7,:) = [prctile(preBreak,5,2)',(ones(1,nband)./nband)*abs(prctile(preBreak,5,2))];
+    COEF(8,:) = [prctile(postBreak,5,2)',(ones(1,nband)./nband)*abs(prctile(postBreak,5,2))];
+    COEF(9,:) = size(preBreak,2);
+    COEF(10,:) = size(postBreak,2);
+    COEF(11,:) = [mean([preBreak,postBreak],2)',(ones(1,nband)./nband)*abs(mean([preBreak,postBreak],2))];
+    COEF(12,:) = [std([preBreak,postBreak],0,2)',(ones(1,nband)./nband)*abs(std([preBreak,postBreak],0,2))];
     
-    
-    % see if pre-brake is non-forest
-    pMean = sets.weight*abs(mean(preBreakClean,2));
-    pSTD = sets.weight*abs(std(preBreakClean,0,2));
+    % assign class
     if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
-        % deal with stable non-forest pixel
+        % pre-break is non-forest, this is non-forest pixel
         for i = 1:length(ETS)
             x = TS(:,ETS(i));
             if sets.weight*abs(x) >= sets.specedge
-                CHG(ETS(i)) = 6;
+                CHG(ETS(i)) = C.NonForest;
             else
-                CHG(ETS(i)) = 7;
+                CHG(ETS(i)) = C.NFEdge;
             end
         end
     else
         % pre-break is forest, check if post-break exist
         if CHGFlag == 1
-            % compare pre-break and post-break
-            if manova1([preBreakClean';postBreak'],[ones(size(preBreakClean,2),1);(ones(size(postBreak,2),1)*2)]) == 0
-                % pre and post are the same, false break
+            % check if post is non-forest
+            % use relative mean to pre-break
+            pMean = sets.weight*abs(mean(postBreak,2)-mean(preBreakClean,2));
+            pSTD = sets.weight*abs(std(postBreak,0,2));
+            if pMean < sets.nonfstmean && pSTD < sets.nonfstdev 
+                % post-break is not non-forest, false break
                 CHGFlag = 0;
-            else
-                % pre and post different, check if post is non-forest
-                % use relative mean to pre-break
-                pMean = sets.weight*abs(mean(postBreak,2)-mean(preBreakClean,2));
-                pSTD = sets.weight*abs(std(postBreak,0,2));
-                if pMean < sets.nonfstmean && pSTD < sets.nonfstdev 
-                    % post-break is not non-forest, false break
-                    CHGFlag = 0;
-                end
             end
             % deal with false break
             if CHGFlag == 0
                 % remove change flag
-                CHG(CHG==3) = 2;
-                CHG(CHG==4) = 2;
-                CHG(CHG==5) = 1;
+                CHG(CHG==3) = C.Outlier;
+                CHG(CHG==4) = C.Outlier;
+                CHG(CHG==5) = C.Stable;
                 % check this pixel as a whole again if this is non-forest
                 pMean = sets.weight*abs(mean([preBreakClean,postBreak],2));
                 pSTD = sets.weight*abs(std([preBreakClean,postBreak],0,2));
@@ -280,30 +262,12 @@ function [CHG,COEF] = change(TS,sets)
                     for i = 1:length(ETS)
                         x = TS(:,ETS(i));
                         if sets.weight*abs(x) >= sets.specedge
-                            CHG(ETS(i)) = 6;
+                            CHG(ETS(i)) = C.NonForest;
                         else
-                            CHG(ETS(i)) = 7;
+                            CHG(ETS(i)) = C.NFEdge;
                         end
                     end
                 end
-            end
-        end
-    end
-    
-    % see if this is a water pixel
-    if CHGFlag == 0
-        pMean = sets.weight*mean(preBreakClean,2);
-    else
-        pMean = sets.weight*mean([preBreakClean,postBreak],2);
-    end
-    if pMean < sets.water
-        % deal with water pixel
-        for i = 1:length(ETS)
-            x = TS(:,ETS(i));
-            if sets.weight*abs(x) >= sets.specedge
-                CHG(ETS(i)) = 8;
-            else
-                CHG(ETS(i)) = 7;
             end
         end
     end
