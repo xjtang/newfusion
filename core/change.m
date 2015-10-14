@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 10/13/2015
+% Last Update: 10/14/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,7 +71,7 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
-% Updates of Version 2.6 - 10/13/2015
+% Updates of Version 2.6 - 10/14/2015
 %   1.Redesigned the change detection process.
 %   2.Removed water pixel detecting
 %
@@ -226,6 +226,9 @@ function [CHG,COEF] = change(TS,sets)
     COEF(10,:) = size(postBreak,2);
     COEF(11,:) = [mean([preBreak,postBreak],2)',(ones(1,nband)./nband)*abs(mean([preBreak,postBreak],2))];
     COEF(12,:) = [std([preBreak,postBreak],0,2)',(ones(1,nband)./nband)*abs(std([preBreak,postBreak],0,2))];
+    
+    % testing
+    
     
     % assign class
     if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
