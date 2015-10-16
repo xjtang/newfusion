@@ -75,6 +75,7 @@
 %   1.Redesigned the change detection process.
 %   2.Removed water pixel detecting.
 %   3.Added Chi-Square test.
+%   4.Read class codes from main input.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -90,18 +91,7 @@
 %   6 - Stable Non-forest
 %   7 - Edge of Non-forest
 
-function [CHG,COEF] = change(TS,sets)
-    
-    % assign class values
-    C.NA = -1;
-    C.Default = 0;
-    C.Stable = 1;
-    C.Outlier = 2;
-    C.Break = 3;
-    C.Changed = 4;
-    C.ChgEdge = 5;
-    C.NonForest = 6;
-    C.NFEdge = 7;
+function [CHG,COEF] = change(TS,sets,C)
 
     % analyse input TS 
     [nband,nob] = size(TS);
@@ -201,9 +191,9 @@ function [CHG,COEF] = change(TS,sets)
 
     end
     
-    % grab coefficients
+    % split data into pre and post break
     if max(CHG==C.Break) == 1
-        % split data into pre-break and post-break
+        % break exist
         preBreak = TS(:,CHG==C.Stable);
         postBreak = TS(:,CHG>=C.Break);
         CHGFlag = 1;
@@ -232,7 +222,7 @@ function [CHG,COEF] = change(TS,sets)
     ChiTest = zeros(3,nband);
     for i =1:nband
         ChiTest(1,i) = chi2gof(preBreak(i,:),'Alpha',sets.alpha);
-        ChiTest(2,i) = chi2gof(postBreak(i,:),'Alpha',0.01);
+        ChiTest(2,i) = chi2gof(postBreak(i,:),'Alpha',sets.alpha);
         ChiTest(3,i) = chi2gof([preBreak(i,:),postBreak(i,:)],'Alpha',sets.alpha);
     end
     

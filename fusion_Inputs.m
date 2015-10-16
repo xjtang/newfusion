@@ -117,6 +117,7 @@
 %   1.Added new parameters.
 %   2.Remvoed un-used parameters.
 %   3.Adjusted default values.
+%   4.Added landcover class codes.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -419,6 +420,17 @@ function main = fusion_Inputs(file,job)
         main.model.band = bandIncluded;
         % weight of each band in change detection
         main.model.weight = bandWeight;
+        
+    % class codes
+        main.class.NA = -1;         % not available
+        main.class.Default = 0;     % default
+        main.class.Stable = 1;      % stable forest
+        main.class.Outlier = 2;     % outlier (e.g. cloud)
+        main.class.Break = 3;       % change break
+        main.class.Changed = 4;     % changed to non-forest
+        main.class.ChgEdge = 5;     % edge of change
+        main.class.NonForest = 6;   % stable non-forest
+        main.class.NFEdge = 7;      % edge of stable non-forest
         
     % image properties
         % grab the first ETM file
