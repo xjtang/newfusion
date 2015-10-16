@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 10/15/2015
+% Last Update: 10/16/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,7 +71,7 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
-% Updates of Version 2.6 - 10/15/2015
+% Updates of Version 2.6 - 10/16/2015
 %   1.Redesigned the change detection process.
 %   2.Removed water pixel detecting.
 %   3.Added Chi-Square test.
@@ -231,17 +231,17 @@ function [CHG,COEF] = change(TS,sets)
     % chi square testing
     ChiTest = zeros(3,nband);
     for i =1:nband
-        ChiTest(1,i) = chi2gof(preBreak(i,:));
-        ChiTest(2,i) = chi2gof(postBreak(i,:));
-        ChiTest(3,i) = chi2gof([preBreak(i,:),postBreak(i,:)]);
+        ChiTest(1,i) = chi2gof(preBreak(i,:),'Alpha',sets.alpha);
+        ChiTest(2,i) = chi2gof(postBreak(i,:),'Alpha',0.01);
+        ChiTest(3,i) = chi2gof([preBreak(i,:),postBreak(i,:)],'Alpha',sets.alpha);
     end
     
     % assign class
-    if max(ChiTest(1,:)) < 1 && max(abs(COEF(1,1:nband))) <= sets.nonfstmean
+    if max(ChiTest(1,:)) < 1 && mean(abs(COEF(1,1:nband))) <= sets.nonfstmean
         % pre-break is forest, check if post-break exist
         if CHGFlag == 1
             % check if post is non-forest
-            if max(ChiTest(2,:)) < 1 && max(abs(COEF(2,1:nband))) <= sets.nonfstmean
+            if max(ChiTest(2,:)) < 1 && mean(abs(COEF(2,1:nband))) <= sets.nonfstmean
                 % post-break is forest, false break
                 CHGFlag = 0;
             end
@@ -252,7 +252,7 @@ function [CHG,COEF] = change(TS,sets)
                 CHG(CHG==4) = C.Outlier;
                 CHG(CHG==5) = C.Stable;
                 % check this pixel as a whole again if this is non-forest
-                if max(ChiTest(3,:)) < 1 && max(abs(COEF(11,1:nband))) <= sets.nonfstmean
+                if max(ChiTest(3,:)) < 1 && mean(abs(COEF(11,1:nband))) <= sets.nonfstmean
                     for i = 1:length(ETS)
                         x = TS(:,ETS(i));
                         if mean(abs(x)) >= sets.specedge

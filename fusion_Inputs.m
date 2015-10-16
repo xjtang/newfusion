@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 9/24/2015
+% Last Update: 10/16/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -113,6 +113,11 @@
 %   1.Added version control of the config file.
 %   2.Adjusted default value.
 %
+% Updates of Version 2.2.9 - 10/16/2015
+%   1.Added new parameters.
+%   2.Remvoed un-used parameters.
+%   3.Adjusted default values.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -139,7 +144,7 @@ function main = fusion_Inputs(file,job)
     end
     
     % check version config file
-    curVersion = 116;
+    curVersion = 118;
     if ~exist('configVer','var')
         disp('WARNING!!!!');
         disp('WARNING!!!!');
@@ -199,11 +204,11 @@ function main = fusion_Inputs(file,job)
         % model parameters
         % number of observation before a break can be detected
         if ~exist('minNoB', 'var')
-            minNoB = 40;
+            minNoB = 80;
         end
         % number of observation or initialization
         if ~exist('initNoB', 'var')
-            initNoB = 40;
+            initNoB = 80;
         end
         % number of standard deviation to flag a suspect
         if ~exist('nStandDev', 'var')
@@ -221,13 +226,13 @@ function main = fusion_Inputs(file,job)
         if ~exist('outlierRemove', 'var')
             outlierRemove = 5;
         end
+        % significance level in chi square test
+        if ~exist('alpha', 'var')
+            alpha = 0.1;
+        end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 175;
-        end
-        % threshold of std for non-forest detection
-        if ~exist('thresNonFstStd', 'var')
-            thresNonFstStd = 125;
+            thresNonFstMean = 200;
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
@@ -240,10 +245,6 @@ function main = fusion_Inputs(file,job)
         % spectral threshold for edge detecting
         if ~exist('thresSpecEdge', 'var')
             thresSpecEdge = 100;
-        end
-        % spectral threshold for detecting water
-        if ~exist('thresWater', 'var')
-            thresWater = -350;
         end
         % threshold for n observation after change to confirm change
         if ~exist('thresProbChange', 'var')
@@ -402,18 +403,16 @@ function main = fusion_Inputs(file,job)
         main.model.nSusp = nSuspect;
         % number of outlier to remove in initialization
         main.model.outlr = outlierRemove;
+        % significance level in chi square test
+        main.model.alpha = alpha;
         % threshold of mean to detect non-forest pixel
         main.model.nonfstmean = thresNonFstMean;
         % threshold of std to detect non-forest pixel
-        main.model.nonfstdev = thresNonFstStd;
-        % threshold of detecting change edging pixel
         main.model.chgedge = thresChgEdge;
         % threshold of detecting edging pixel in stable non-forest pixel
         main.model.nonfstedge = thresNonFstEdge;
         % spectral threshold for edge detecting
         main.model.specedge = thresSpecEdge;
-        % spectral threshold for detecting water
-        main.model.water = thresWater;
         % threshold for n observation after change to confirm change
         main.model.probThres = thresProbChange;
         % bands used for change detection
