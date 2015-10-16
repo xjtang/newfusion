@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.0.5
+% Version 1.1
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 9/17/2015
+% Last Update: 10/16/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -41,6 +41,9 @@
 % Updates of Version 1.0.5 - 9/17/2015
 %   1.Adjusted according to changes in the model.
 %
+% Updates of Version 1.1 - 10/16/2015
+%   1.Adjusted according to a major change in the model.
+%
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -68,8 +71,8 @@ function [R,Model] = tune_model(var1,var2,var3)
         Model.nCosc = nConsecutive;
         Model.nSusp = nSuspect;
         Model.outlr = outlierRemove;
+        Model.alpha = alpha;
         Model.nonfstmean = thresNonFstMean;
-        Model.nonfstdev = thresNonFstStd;
         Model.chgedge = thresChgEdge;
         Model.nonfstedge = thresNonFstEdge;
         Model.specedge = thresSpecEdge;
@@ -83,7 +86,6 @@ function [R,Model] = tune_model(var1,var2,var3)
         Model.BIAS = BIAS;
         Model.discardRatio = discardRatio;
         Model.diffMethod = diffMethod;
-        Model.thresWater = thresWater;
         Model.config = file;
         return;
     elseif nargin == 3
@@ -97,12 +99,11 @@ function [R,Model] = tune_model(var1,var2,var3)
         nConsecutive = Model.nCosc;
         nSuspect = Model.nSusp;
         outlierRemove = Model.outlr;
+        alpha = Model.alpha;
         thresNonFstMean = Model.nonfstmean;
-        thresNonFstStd = Model.nonfstdev;
         thresChgEdge = Model.chgedge;
         thresNonFstEdge = Model.nonfstedge;
         thresSpecEdge = Model.specedge;
-        thresWater = Model.thresWater;
         thresProbChange = Model.probThres;
         bandIncluded = Model.band;
         bandWeight = Model.weight;
@@ -126,13 +127,12 @@ function [R,Model] = tune_model(var1,var2,var3)
     R.model.nCosc = nConsecutive;
     R.model.nSusp = nSuspect;
     R.model.outlr = outlierRemove;
+    R.model.alpha = alpha;
     R.model.nonfstmean = thresNonFstMean;
-    R.model.nonfstdev = thresNonFstStd;
     R.model.chgedge = thresChgEdge;
     R.model.nonfstedge = thresNonFstEdge;
     R.model.specedge = thresSpecEdge;
     R.model.probThres = thresProbChange;
-    R.model.thresWater = thresWater;
     R.model.band = bandIncluded;
     R.model.weight = bandWeight;
     R.sets.path = dataPath;
@@ -143,6 +143,28 @@ function [R,Model] = tune_model(var1,var2,var3)
     R.sets.discardRatio = discardRatio;
     R.sets.diffMethod = diffMethod;
     R.sets.config = file;
+    
+    % fusion TS segment class code
+    C.NA = -1;              % not available
+    C.Default = 0;          % default
+    C.Stable = 1;           % stable forest
+    C.Outlier = 2;          % outlier (e.g. cloud)
+    C.Break = 3;            % change break
+    C.Changed = 4;          % changed to non-forest
+    C.ChgEdge = 5;          % edge of change
+    C.NonForest = 6;        % stable non-forest
+    C.NFEdge = 7;           % edge of stable non-forest
+    R.class = C;            % record class codes
+    
+    % land cover clas codes
+    LC.NA = -9999;          % no data
+    LC.Default = -1;        % default
+    LC.Forest = 0;          % stable forest
+    LC.NonForest = 5;       % stable non-forest
+    LC.NFEdge = 6;          % non-forest edge
+    LC.Change = 10;         % change
+    LC.CEdge = 11;          % edge of change
+    LC.Prob = 12;           % unconfirmed change
     
     % check cache files location
     cachePath = [dataPath 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/CACHE/'];
@@ -167,16 +189,15 @@ function [R,Model] = tune_model(var1,var2,var3)
     TS = raw.Data(:,max(raw.Data>(-9999)));
     [nband,nob] = size(TS);
     % record raw reflectance data
-    R.model.nob = nob;
+    R.nob = nob;
+    R.nbanb = nband;
     R.ts = TS;
     R.date = raw.Date(max(raw.Data>(-9999)));
     
-    % break detecting
-    
+    % break detecting   
         % initialization
         CHG = zeros(1,nob);
         mainVec = TS(:,1:initNoB);
-        bandWeight = bandWeight/sum(bandWeight);
         
         % record initial vector
         R.initVec = mainVec;
@@ -184,7 +205,9 @@ function [R,Model] = tune_model(var1,var2,var3)
             for i = 1:outlierRemove
                 % remove outliers in the initial observations
                 initMean = mean(mainVec,2);
-                mainVecDev = bandWeight*abs(mainVec-repmat(initMean,1,initNoB+1-i));
+                initStd = std(mainVec,0,2);
+                mainVecRes = mainVec-repmat(initMean,1,sets.initNoB+1-i);
+                mainVecDev = ((1./(initStd)')*abs(mainVecRes))./nband;
                 [~,TSmaxI] = max(mainVecDev);
                 mainVec(:,TSmaxI) = [];
             end
@@ -193,9 +216,9 @@ function [R,Model] = tune_model(var1,var2,var3)
         initStd = std(mainVec,0,2);
         CHGFlag = 0;
         % record initialization results
-        R.initVec2 = mainVec;
-        R.mean = initMean;
-        R.std = initStd;
+        R.initVecClean = mainVec;
+        R.initMean = initMean;
+        R.initStd = initStd;
         
         % detect break
         for i = 1:nob   
@@ -204,7 +227,8 @@ function [R,Model] = tune_model(var1,var2,var3)
             x = TS(:,i);
             xRes = abs(x-initMean);
             xNorm = xRes./initStd;
-            xDev = bandWeight*xNorm;
+            xDev = (ones(1,nband)./nband)*xNorm;
+            
             % record result of this pixel
             if i == 1 
                 R.xRes = xRes;
@@ -221,7 +245,7 @@ function [R,Model] = tune_model(var1,var2,var3)
                 % check if change already detected
                 if CHGFlag == 1
                     % set result to changed
-                    CHG(i) = 4;
+                    CHG(i) = C.Changed;
                 else
                     % see if this is a break
                     if i <= nob+1-nConsecutive && i > minNoB
@@ -230,30 +254,30 @@ function [R,Model] = tune_model(var1,var2,var3)
                             xk = TS(:,k);
                             xkRes = abs(xk-initMean);
                             xkNorm = xkRes./initStd;
-                            xkDev = bandWeight*xkNorm;
+                            xkDev = (ones(1,nband)./nband)*xkNorm;
                             if xkDev >= nStandDev
                                 nSusp = nSusp + 1;
                             end
                         end
                         if nSusp >= nSuspect
-                            CHG(i) = 3;
+                            CHG(i) = C.Break;
                             CHGFlag = 1;
                         else
-                            CHG(i) = 2;
+                            CHG(i) = C.Outlier;
                         end
                     else
                         % this is an outlier
-                        CHG(i) = 2;
+                        CHG(i) = C.Outlier;
                     end
                 end
             else
                 % check if change already detected
                 if CHGFlag == 1
                     % set result to edge of change
-                    CHG(i) = 5;
+                    CHG(i) = C.ChgEdge;
                 else
                     % set result to stable
-                    CHG(i) = 1;
+                    CHG(i) = C.Stable;
                     % update main vector
                     if i > initNoB
                         mainVec = [mainVec,TS(:,i)];  %#ok<*AGROW>
@@ -261,8 +285,13 @@ function [R,Model] = tune_model(var1,var2,var3)
                         initStd = std(mainVec,0,2);
                         % record updated main vector
                         R.mainVec = mainVec;
-                        R.mean = [R.mean,initMean];
-                        R.std = [R.std,initStd];
+                        if i == 1 
+                            R.mean = initMean;
+                            R.std = initStd;
+                        else
+                            R.mean = [R.mean,initMean];
+                            R.std = [R.std,initStd];
+                        end
                     end
                 end
             end
@@ -272,111 +301,89 @@ function [R,Model] = tune_model(var1,var2,var3)
         R.chg1 = CHG;
         
     % post change detection refining
-        % split data into pre-break and post-break
-        if max(CHG==3) == 1
+        % split data into pre and post break
+        if max(CHG==C.Break) == 1
             % break exist
-            preBreakClean = TS(:,CHG==1);
-            preBreak = TS(:,(CHG>0)&(CHG<3));
-            postBreak = TS(:,CHG>=3);
+            preBreak = TS(:,CHG==C.Stable);
+            postBreak = TS(:,CHG>=C.Break);
             CHGFlag = 1;
             R.preBreak = preBreak;
             R.postBreak = postBreak;
-            % remove outliers in post-break
-            if outlierRemove > 0
-                for i = 1:outlierRemove
-                    pMean = mean(postBreak,2);
-                    R.postMean1 = pMean;
-                    pMeanDev = bandWeight*abs(postBreak-repmat(pMean,1,size(postBreak,2)));
-                    [~,TSmaxI] = max(pMeanDev);
-                    postBreak(:,TSmaxI) = [];
-                end
-            end
-            R.postBreakClean = postBreak;
         else
             % no break
-            preBreakClean = TS(:,CHG==1);
+            preBreak = TS(:,CHG==C.Stable);
             CHGFlag = 0;
+            R.preBreak = preBreak;
         end
-        R.preBreakClean = preBreakClean;
-    
-        % see if pre-brake is non-forest
-        pMean = bandWeight*abs(mean(preBreakClean,2));
-        pSTD = bandWeight*abs(std(preBreakClean,0,2));
-        R.preMean = pMean;
-        R.preSTD = pSTD;
-        if pMean >= thresNonFstMean || pSTD >= thresNonFstStd 
-            % deal with stable non-forest pixel
-            for i = 1:nob
-                x = TS(:,i);
-                if bandWeight*abs(x) >= thresSpecEdge
-                    CHG(i) = 6;
-                else
-                    CHG(i) = 7;
-                end
-            end
-        else
+        
+        % record coefficients
+        COEF(1,:) = [mean(preBreak,2)',(ones(1,nband)./nband)*abs(mean(preBreak,2))];
+        COEF(2,:) = [mean(postBreak,2)',(ones(1,nband)./nband)*abs(mean(postBreak,2))];
+        COEF(3,:) = [std(preBreak,0,2)',(ones(1,nband)./nband)*abs(std(preBreak,0,2))];
+        COEF(4,:) = [std(postBreak,0,2)',(ones(1,nband)./nband)*abs(std(postBreak,0,2))];
+        COEF(5,:) = [prctile(preBreak,95,2)',(ones(1,nband)./nband)*abs(prctile(preBreak,95,2))];
+        COEF(6,:) = [prctile(postBreak,95,2)',(ones(1,nband)./nband)*abs(prctile(postBreak,95,2))];
+        COEF(7,:) = [prctile(preBreak,5,2)',(ones(1,nband)./nband)*abs(prctile(preBreak,5,2))];
+        COEF(8,:) = [prctile(postBreak,5,2)',(ones(1,nband)./nband)*abs(prctile(postBreak,5,2))];
+        COEF(9,:) = size(preBreak,2);
+        COEF(10,:) = size(postBreak,2);
+        COEF(11,:) = [mean([preBreak,postBreak],2)',(ones(1,nband)./nband)*abs(mean([preBreak,postBreak],2))];
+        COEF(12,:) = [std([preBreak,postBreak],0,2)',(ones(1,nband)./nband)*abs(std([preBreak,postBreak],0,2))];
+        R.coef.mean = [COEF(1,:),COEF(2,:),COEF(11,:)];
+        R.coef.std = [COEF(3,:),COEF(4,:),COEF(12,:)];
+        R.coef.pct = [COEF(5,:),COEF(6,:),COEF(7,:),COEF(8,:)];
+        R.coef.nob = [COEF(9,1),COEF(10,1)];
+        
+        % chi square testing
+        ChiTest = zeros(3,nband);
+        ChiTestP = zeros(3,nband);
+        for i =1:nband
+            [ChiTest(1,i),ChiTestP(1,i)] = chi2gof(preBreak(i,:),'Alpha',alpha);
+            [ChiTest(2,i),ChiTestP(2,i)] = chi2gof(postBreak(i,:),'Alpha',alpha);
+            [ChiTest(3,i),ChiTestP(3,i)] = chi2gof([preBreak(i,:),postBreak(i,:)],'Alpha',alpha);
+        end
+        R.ChiTest = ChiTest;
+        R.ChiTestP = ChiTestP;
+        
+        % assign class to each segment in fusion TS
+        if max(ChiTest(1,:)) < 1 && mean(abs(COEF(1,1:nband))) <= thresNonFstMean
             % pre-break is forest, check if post-break exist
             if CHGFlag == 1
-                % compare pre-break and post-break
-                R.manova = manova1([preBreakClean';postBreak'],[ones(size(preBreakClean,2),1);(ones(size(postBreak,2),1)*2)]);
-                if R.manova == 0
-                    % pre and post are the same, false break
+                % check if post is non-forest
+                if max(ChiTest(2,:)) < 1 && mean(abs(COEF(2,1:nband))) <= thresNonFstMean
+                    % ppost-break is forest, false break
                     CHGFlag = 0;
-                else
-                    % pre and post different, check if post is non-forest
-                    pMean = bandWeight*abs(mean(postBreak,2)-mean(preBreakClean,2));
-                    pSTD = bandWeight*abs(std(postBreak,0,2));
-                    R.postMean2 = pMean;
-                    R.postSTD2 = pSTD;
-                    if pMean < thresNonFstMean && pSTD < thresNonFstStd 
-                        % post-break is not non-forest, false break
-                        CHGFlag = 0;
-                    end
                 end
                 % deal with false break
                 if CHGFlag == 0
                     % remove change flag
-                    CHG(CHG==3) = 2;
-                    CHG(CHG==4) = 2;
-                    CHG(CHG==5) = 1;
+                    CHG(CHG==C.Break) = C.Outlier;
+                    CHG(CHG==C.Changed) = C.Outlier;
+                    CHG(CHG==C.ChgEdge) = C.Stable;
                     % check this pixel as a whole again if this is non-forest
-                    pMean = bandWeight*abs(mean([preBreakClean,postBreak],2));
-                    pSTD = bandWeight*abs(std([preBreakClean,postBreak],0,2));
-                    R.allMean = pMean;
-                    R.allSTD = pSTD;
-                    if pMean >= thresNonFstMean || pSTD >= thresNonFstStd
+                    if max(ChiTest(3,:)) < 1 && mean(abs(COEF(11,1:nband))) <= thresNonFstMean
                         for i = 1:nob
                             x = TS(:,i);
-                            if bandWeight*abs(x) >= thresSpecEdge
-                                CHG(i) = 6;
+                            if mean(abs(x)) >= thresSpecEdge
+                                CHG(i) = C.NonForest;
                             else
-                                CHG(i) = 7;
+                                CHG(i) = C.NFEdge;
                             end
                         end
                     end
                 end
             end
-        end
-        
-        % see if this is a water pixel
-        if CHGFlag == 0
-            pMean = bandWeight*mean(preBreakClean,2);
         else
-            pMean = bandWeight*mean([preBreakClean,postBreak],2);
-        end
-        R.waterMean = pMean;
-        if pMean < thresWater
-            % deal with water pixel
+            % pre-break is non-forest, this is non-forest pixel        
             for i = 1:nob
                 x = TS(:,i);
-                if bandWeight*abs(x) >= thresSpecEdge
-                    CHG(i) = 8;
+                if mean(abs(x)) >= thresSpecEdge
+                    CHG(i) = C.NonForest;
                 else
-                    CHG(i) = 7;
+                    CHG(i) = C.NFEdge;
                 end
             end
         end
-        % done
         
         % record second change array
         R.chg2 = CHG;

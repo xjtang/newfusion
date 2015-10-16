@@ -80,17 +80,6 @@
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-% Classification Scheme
-%  -1 - Ineligible Observation
-%   0 - Default Value
-%   1 - Stable Forest
-%   2 - Outlier (Cloud, Shadow ...)
-%   3 - Break
-%   4 - Changed
-%   5 - Edge of change
-%   6 - Stable Non-forest
-%   7 - Edge of Non-forest
-
 function [CHG,COEF] = change(TS,sets,C)
 
     % analyse input TS 
@@ -238,9 +227,9 @@ function [CHG,COEF] = change(TS,sets,C)
             % deal with false break
             if CHGFlag == 0
                 % remove change flag
-                CHG(CHG==3) = C.Outlier;
-                CHG(CHG==4) = C.Outlier;
-                CHG(CHG==5) = C.Stable;
+                CHG(CHG==C.Break) = C.Outlier;
+                CHG(CHG==C.Changed) = C.Outlier;
+                CHG(CHG==C.ChgEdge) = C.Stable;
                 % check this pixel as a whole again if this is non-forest
                 if max(ChiTest(3,:)) < 1 && mean(abs(COEF(11,1:nband))) <= sets.nonfstmean
                     for i = 1:length(ETS)

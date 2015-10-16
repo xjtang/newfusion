@@ -43,7 +43,7 @@
 % Updates of Version 1.4.1 - 10/16/2015
 %   1.Disabled a sentence that may cause error.
 %   2.Adjusted for a major update in the core function.
-%   3.Pass class codes to core function
+%   3.Pass fusion TS segment class codes to core function
 %
 % Released on Github on 7/1/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -107,7 +107,7 @@ function fusion_Change(main)
             end
             
             % detect change
-            [CHG.Data(j,:),CHG.Coef(:,j,:)] = change(PTS,main.model,main.class);
+            [CHG.Data(j,:),CHG.Coef(:,j,:)] = change(PTS,main.model,main.TSclass);
             
         end
         

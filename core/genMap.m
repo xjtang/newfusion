@@ -1,5 +1,5 @@
 % genMap.m
-% Version 1.2.3
+% Version 1.2.4
 % Core
 %
 % Project: New fusion
@@ -48,31 +48,18 @@
 % Updates of Version 1.2.3 - 9/17/2015
 %   1.Added a water detecting mechanism.
 %
+% Updates of Version 1.2.4 - 10/16/2015
+%   1.Removed the water class.
+%   2.Get class codes as input parameters.
+%   3.Adjusted the structure of input parameters.
+%
 % Released on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
-%
-% Change Map Types
-%   1 - day of change
-%   2 - month of change
-%   3 - class map
-%   4 - change only
-%
-% Classes
-%   -9999 - no data
-%   -1 - initial value
-%   0 - stable
-%   2 - water
-%   3 - riparian area
-%   5 - stable non-forest
-%   6 - stable non-forest edge
-%   10 - change
-%   11 - change edge
-%   12 - probable change
 
-function CLS = genMap(X,D,mapType,edgeThres,probThres)
+function CLS = genMap(X,D,mapType,sets,C,LC)
     
     % initilize result
-    CLS = -1;
+    CLS = LC.Default;
 
     % different types of map
     if mapType == 2 

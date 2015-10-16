@@ -117,7 +117,8 @@
 %   1.Added new parameters.
 %   2.Remvoed un-used parameters.
 %   3.Adjusted default values.
-%   4.Added landcover class codes.
+%   4.Added fusion TS segment class codes.
+%   5.Added landcover class codes.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -421,16 +422,26 @@ function main = fusion_Inputs(file,job)
         % weight of each band in change detection
         main.model.weight = bandWeight;
         
-    % class codes
-        main.class.NA = -1;         % not available
-        main.class.Default = 0;     % default
-        main.class.Stable = 1;      % stable forest
-        main.class.Outlier = 2;     % outlier (e.g. cloud)
-        main.class.Break = 3;       % change break
-        main.class.Changed = 4;     % changed to non-forest
-        main.class.ChgEdge = 5;     % edge of change
-        main.class.NonForest = 6;   % stable non-forest
-        main.class.NFEdge = 7;      % edge of stable non-forest
+    % fusion TS segment class codes
+        main.TSclass.NA = -1;           % not available
+        main.TSclass.Default = 0;       % default
+        main.TSclass.Stable = 1;        % stable forest
+        main.TSclass.Outlier = 2;       % outlier (e.g. cloud)
+        main.TSclass.Break = 3;         % change break
+        main.TSclass.Changed = 4;       % changed to non-forest
+        main.TSclass.ChgEdge = 5;       % edge of change
+        main.TSclass.NonForest = 6;     % stable non-forest
+        main.TSclass.NFEdge = 7;        % edge of stable non-forest
+        
+    % land cover clas codes
+        main.LCclass.NA = -9999;        % no data
+        main.LCclass.Default = -1;      % default
+        main.LCclass.Forest = 0;        % stable forest
+        main.LCclass.NonForest = 5;     % stable non-forest
+        main.LCclass.NFEdge = 6;        % non-forest edge
+        main.LCclass.Change = 10;       % change
+        main.LCclass.CEdge = 11;        % edge of change
+        main.LCclass.Prob = 12;         % unconfirmed change
         
     % image properties
         % grab the first ETM file
