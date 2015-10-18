@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 10/16/2015
+% Last Update: 10/18/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -41,8 +41,10 @@
 % Updates of Version 1.0.5 - 9/17/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.1 - 10/16/2015
+% Updates of Version 1.1 - 10/18/2015
 %   1.Adjusted according to a major change in the model.
+%   2.Parameterize class codes.
+%   3.Added the std lines in the plots.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -154,7 +156,7 @@ function [R,Model] = tune_model(var1,var2,var3)
     C.ChgEdge = 5;          % edge of change
     C.NonForest = 6;        % stable non-forest
     C.NFEdge = 7;           % edge of stable non-forest
-    R.class = C;            % record class codes
+    R.TSclass = C;          % record class codes
     
     % land cover clas codes
     LC.NA = -9999;          % no data
@@ -165,6 +167,7 @@ function [R,Model] = tune_model(var1,var2,var3)
     LC.Change = 10;         % change
     LC.CEdge = 11;          % edge of change
     LC.Prob = 12;           % unconfirmed change
+    R.LCclass = LC;         % record class codes
     
     % check cache files location
     cachePath = [dataPath 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/CACHE/'];
@@ -390,42 +393,34 @@ function [R,Model] = tune_model(var1,var2,var3)
      
     % assign class
         % initilize result
-        CLS = -1;
+        CLS = LC.Default;
         % stable forest
-        if (max(CHG)<=2)&&(max(CHG)>=1)
-            CLS = 0;
+        if (max(CHG)<=C.Outlier)&&(max(CHG)>=C.Stable)
+            CLS = LC.Forest;
         end
         % stable non-forest
-        if max(CHG) >= 6
-            CLS = 5;
+        if max(CHG) >= C.NonForest
+            CLS = LC.NonForest;
             % could be non-forest edge
-            if sum(CHG==7)/sum(CHG>=6) >= thresNonFstEdge
-                CLS = 6;
-            end
-        end
-        % water pixel
-        if max(CHG) >= 8
-            CLS = 2;
-            % could be water edge
-            if sum(CHG==7)/sum(CHG>=7) >= thresNonFstEdge
-                CLS = 3;
+            if sum(CHG==C.NFEdge)/sum(CHG>=C.NonForest) >= thresNonFstEdge
+                CLS = LC.NFEdge;
             end
         end
         % confirmed changed
-        if max(CHG==3) == 1
-            CLS = 10;
+        if max(CHG==C.Break) == 1
+            CLS = LC.Change;
             % could be change edge
-            if sum(CHG==5)/sum(CHG>=3) >= thresChgEdge
-                CLS = 11;
+            if sum(CHG==C.ChgEdge)/sum(CHG>=C.Break) >= thresChgEdge
+                CLS = LC.CEdge;
             end
             % probable change
-            if (sum(CHG==4)+sum(CHG==5)+1) < thresProbChange
-                CLS = 12;
+            if (sum(CHG==C.Changed)+sum(CHG==C.ChgEdge)+1) < thresProbChange
+                CLS = LC.Prob;
             end 
         end
         % date of change
-        if max(CHG==3) == 1
-            [~,breakPoint] = max(CHG==3);
+        if max(CHG==C.Break) == 1
+            [~,breakPoint] = max(CHG==C.Break);
             R.chgDate = R.date(breakPoint);
         end
         % record result
@@ -463,6 +458,10 @@ function [R,Model] = tune_model(var1,var2,var3)
             if max(CHG==8) == 1
                 plot(Y(CHG==7),TS(i,CHG==7),'y.','MarkerSize',15);
             end
+            stdline1 = refline(0,COEF(1,i)+nStandDev*COEF(3,i));
+            set(stdline1,'Color','r');
+            stdline2 = refline(0,COEF(1,i)-nStandDev*COEF(3,i));
+            set(stdline2,'Color','r');
             title(['Band ' num2str(bandIncluded(i))]);
             xlim([floor(Y(1)),floor(Y(end))+1]);
             ylim([-2000,2000]);
