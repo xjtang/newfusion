@@ -1,11 +1,11 @@
 % swath2etm.m
-% Version 6.3.1
+% Version 6.4.1
 % Core
 %
 % Project: New Fusion
 % By xjtang
 % Created On: Unknown
-% Last Update: 4/4/2015
+% Last Update: 10/18/2015
 %
 % Input Arguments:
 %   Swath (Matrix, Var) - MODIS swath data (change map usually).
@@ -45,10 +45,13 @@
 %   1.Combined 250 and 500 fusion.
 %   2.Bug fixed.
 %
+% Updates of Version 6.4.1 - 10/18/2015
+%   1.Implement model constants
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-function [ETMnob,ETMmax,ETMavg] = swath2etm(Swath, MOD09SUB, ETMGeo,res)
+function [ETMnob,ETMmax,ETMavg] = swath2etm(Swath, MOD09SUB, ETMGeo,res,NAValue)
 
     % grab inputs
     if res == 250
@@ -152,9 +155,9 @@ function [ETMnob,ETMmax,ETMavg] = swath2etm(Swath, MOD09SUB, ETMGeo,res)
     ETMavg = ETMavg./Temp;
     
     % set 0 to -9999
-    ETMmax(ETMnob==0) = -9999;
-    ETMavg(ETMnob==0) = -9999;
-    ETMnob(ETMnob==0) = -9999;
+    ETMmax(ETMnob==0) = NAValue;
+    ETMavg(ETMnob==0) = NAValue;
+    ETMnob(ETMnob==0) = NAValue;
 
     % done
     
