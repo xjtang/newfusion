@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 10/16/2015
+% Last Update: 10/26/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -41,8 +41,9 @@
 % Updates of Version 1.0.5 - 9/17/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.1 - 10/16/2015
+% Updates of Version 1.1 - 10/26/2015
 %   1.Adjusted according to a major change in the model.
+%   2.Displays the break defining line.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -463,6 +464,10 @@ function [R,Model] = tune_model(var1,var2,var3)
             if max(CHG==8) == 1
                 plot(Y(CHG==7),TS(i,CHG==7),'y.','MarkerSize',15);
             end
+            rline1 = refline([0 (COEF(3,i)*nStandDev)]);
+            rline1.Color = 'r';
+            rline2 = refline([0 (COEF(3,i)*nStandDev)]);
+            rline2.Color = 'r';
             title(['Band ' num2str(bandIncluded(i))]);
             xlim([floor(Y(1)),floor(Y(end))+1]);
             ylim([-2000,2000]);
