@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.2.8
+% Version 2.3
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 10/16/2015
+% Last Update: 10/18/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -113,12 +113,13 @@
 %   1.Added version control of the config file.
 %   2.Adjusted default value.
 %
-% Updates of Version 2.2.9 - 10/16/2015
+% Updates of Version 2.3 - 10/18/2015
 %   1.Added new parameters.
 %   2.Remvoed un-used parameters.
 %   3.Adjusted default values.
 %   4.Added fusion TS segment class codes.
 %   5.Added landcover class codes.
+%   6.Added model constants.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -367,7 +368,23 @@ function main = fusion_Inputs(file,job)
         if exist(main.output.vault,'dir') == 0 
             mkdir([main.path 'VAULT']);
         end
-          
+
+    % model constants
+        % NA value for Landsat images
+        main.cons.etmna = -9999;
+        % scale factor of landsat images
+        main.cons.etmsf = 10000;
+        % NA value for synthetic images
+        main.cons.synna = 0;
+        % NA value for MCD43A1 products
+        main.cons.mcdna = 30000;
+        % scale factor for MCD43A1 products
+        main.cons.mcdsf = 1000;
+        % scale factor for modis angles
+        main.cons.angsf = 100;
+        % Na value for outputs
+        main.cons.outna = -9999;
+        
     % project information
         % config file version
         main.set.cver = configVer;

@@ -38,9 +38,10 @@
 % Updates of Version 1.1 - 9/25/2015
 %   1.Generates coefficients maps.
 %
-% Updates of Version 1.1.1 - 10/26/2015
+% Updates of Version 1.1.1 - 10/18/2015
 %   1.Pass class codes to core funcion.
 %   2.Adjusted according to change in change detection.
+%   3.Implement model constants.
 %
 % Created on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -48,8 +49,8 @@
 function fusion_GenMap(main)
     
     % initialize
-    MAP = ones(length(main.etm.line),length(main.etm.sample),4)*-9999;
-    CMAP = ones(length(main.etm.line),length(main.etm.sample),length(main.model.band)+1,6)*-9999;
+    MAP = ones(length(main.etm.line),length(main.etm.sample),4)*main.cons.outna;
+    CMAP = ones(length(main.etm.line),length(main.etm.sample),length(main.model.band)+1,6)*main.cons.outna;
     
     % start timer
     tic;
