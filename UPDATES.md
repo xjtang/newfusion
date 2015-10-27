@@ -3,9 +3,11 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.2.5 - 10/6/2015
+Version 1.2.5 - 10/27/2015
 --------------
 - Redesigned the change detection model.  
+- Implemented model constants.  
+- Added a study time period control system.  
 - Bugs fixed.  
 
 Version 1.2.4 - 9/25/2015
