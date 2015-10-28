@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 10/18/2015
+% Last Update: 10/28/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -41,10 +41,12 @@
 % Updates of Version 1.0.5 - 9/17/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.1 - 10/18/2015
+% Updates of Version 1.1 - 10/28/2015
 %   1.Adjusted according to a major change in the model.
 %   2.Parameterize class codes.
 %   3.Added the std lines in the plots.
+%   4.Fixed a variable that may cause error.
+%   5.Added study time period control.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -73,7 +75,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         Model.nCosc = nConsecutive;
         Model.nSusp = nSuspect;
         Model.outlr = outlierRemove;
-        Model.alpha = alpha;
+        Model.alpha = alpha1;
         Model.nonfstmean = thresNonFstMean;
         Model.chgedge = thresChgEdge;
         Model.nonfstedge = thresNonFstEdge;
@@ -88,6 +90,9 @@ function [R,Model] = tune_model(var1,var2,var3)
         Model.BIAS = BIAS;
         Model.discardRatio = discardRatio;
         Model.diffMethod = diffMethod;
+        Model.startDate = startDate;
+        Model.endDate = endDate;
+        Model.nrtDate = nrtDate;
         Model.config = file;
         return;
     elseif nargin == 3
@@ -101,7 +106,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         nConsecutive = Model.nCosc;
         nSuspect = Model.nSusp;
         outlierRemove = Model.outlr;
-        alpha = Model.alpha;
+        alpha1 = Model.alpha;
         thresNonFstMean = Model.nonfstmean;
         thresChgEdge = Model.chgedge;
         thresNonFstEdge = Model.nonfstedge;
@@ -116,6 +121,9 @@ function [R,Model] = tune_model(var1,var2,var3)
         BIAS = Model.BIAS;
         discardRatio = Model.discardRatio;
         diffMethod = Model.diffMethod;
+        startDate = Model.startDate;
+        endDate = Model.endDate;
+        nrtDate = Model.nrtDate;
         file = Model.config;
     else
         disp('invald number of input arguments,abort.');
@@ -123,28 +131,8 @@ function [R,Model] = tune_model(var1,var2,var3)
     end
     
     % record model parameters
-    R.model.minNoB = minNoB;
-    R.model.initNoB = initNoB;
-    R.model.nSD = nStandDev;
-    R.model.nCosc = nConsecutive;
-    R.model.nSusp = nSuspect;
-    R.model.outlr = outlierRemove;
-    R.model.alpha = alpha;
-    R.model.nonfstmean = thresNonFstMean;
-    R.model.chgedge = thresChgEdge;
-    R.model.nonfstedge = thresNonFstEdge;
-    R.model.specedge = thresSpecEdge;
-    R.model.probThres = thresProbChange;
-    R.model.band = bandIncluded;
-    R.model.weight = bandWeight;
-    R.sets.path = dataPath;
-    R.sets.scene = landsatScene;
-    R.sets.platform = modisPlatform;
-    R.sets.BRDF = BRDF;
-    R.sets.BIAS = BIAS;
-    R.sets.discardRatio = discardRatio;
-    R.sets.diffMethod = diffMethod;
-    R.sets.config = file;
+    R.Model = Model;
+    R.Pixel = [row,col];
     
     % fusion TS segment class code
     C.NA = -1;              % not available
@@ -179,7 +167,7 @@ function [R,Model] = tune_model(var1,var2,var3)
     % find the cache file for this row
     cacheFile = [cachePath 'ts.r' num2str(row) '.cache.mat'];
     if exist(cacheFile,'file') == 0
-        disp('cache file does not exist, sbort.');
+        disp('cache file does not exist, abort.');
         return;
     end
     
@@ -190,16 +178,37 @@ function [R,Model] = tune_model(var1,var2,var3)
     
     % remove unavailable observation
     TS = raw.Data(:,max(raw.Data>(-9999)));
+    TSD = raw.Date(max(raw.Data>(-9999)));
     [nband,nob] = size(TS);
     % record raw reflectance data
     R.nob = nob;
     R.nbanb = nband;
-    R.ts = TS;
-    R.date = raw.Date(max(raw.Data>(-9999)));
+    R.fullTS = TS;
+    R.fullDate = TSD;
+    
+    % study time period control
+    TS = TS(:,TSD>=startDate);
+    TSD = TSD(TSD>=startDate);
+    TS = TS(:,TSD<=endDate);
+    TSD = TSD(TSD<=endDate);
+    NRT = sum(TSD<nrtDate);
+    [~,neb] = size(TS);
+    % record study time period controled time series
+    R.TS = TS;
+    R.Date = TSD;
+    R.neb = neb;
+    R.Model.NRT = NRT;
     
     % break detecting   
+    
+        % check if we have enough observation
+        if neb < minNoB
+            R.CHG = C.NA;
+            return 
+        end
+        
         % initialization
-        CHG = zeros(1,nob);
+        CHG = zeros(1,neb);
         mainVec = TS(:,1:initNoB);
         
         % record initial vector
@@ -224,7 +233,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         R.initStd = initStd;
         
         % detect break
-        for i = 1:nob   
+        for i = 1:neb   
             
             % calculate metrics
             x = TS(:,i);
@@ -251,7 +260,7 @@ function [R,Model] = tune_model(var1,var2,var3)
                     CHG(i) = C.Changed;
                 else
                     % see if this is a break
-                    if i <= nob+1-nConsecutive && i > minNoB
+                    if i <= nob+1-nConsecutive && i > NRT
                         nSusp = 1;
                         for k = (i+1):(i+nConsecutive-1)
                             xk = TS(:,k);
@@ -289,11 +298,11 @@ function [R,Model] = tune_model(var1,var2,var3)
                         % record updated main vector
                         R.mainVec = mainVec;
                         if i == 1 
-                            R.mean = initMean;
-                            R.std = initStd;
+                            R.Mean = initMean;
+                            R.Std = initStd;
                         else
-                            R.mean = [R.mean,initMean];
-                            R.std = [R.std,initStd];
+                            R.Mean = [R.Mean,initMean];
+                            R.Std = [R.Std,initStd];
                         end
                     end
                 end
@@ -301,7 +310,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         end
         
         % record break detection result
-        R.chg1 = CHG;
+        R.CHG1 = CHG;
         
     % post change detection refining
         % split data into pre and post break
@@ -332,18 +341,18 @@ function [R,Model] = tune_model(var1,var2,var3)
         COEF(10,:) = size(postBreak,2);
         COEF(11,:) = [mean([preBreak,postBreak],2)',(ones(1,nband)./nband)*abs(mean([preBreak,postBreak],2))];
         COEF(12,:) = [std([preBreak,postBreak],0,2)',(ones(1,nband)./nband)*abs(std([preBreak,postBreak],0,2))];
-        R.coef.mean = [COEF(1,:),COEF(2,:),COEF(11,:)];
-        R.coef.std = [COEF(3,:),COEF(4,:),COEF(12,:)];
-        R.coef.pct = [COEF(5,:),COEF(6,:),COEF(7,:),COEF(8,:)];
-        R.coef.nob = [COEF(9,1),COEF(10,1)];
+        R.Coef.Mean = [COEF(1,:),COEF(2,:),COEF(11,:)];
+        R.Coef.Std = [COEF(3,:),COEF(4,:),COEF(12,:)];
+        R.Coef.Pct = [COEF(5,:),COEF(6,:),COEF(7,:),COEF(8,:)];
+        R.Coef.nob = [COEF(9,1),COEF(10,1)];
         
         % chi square testing
         ChiTest = zeros(3,nband);
         ChiTestP = zeros(3,nband);
         for i =1:nband
-            [ChiTest(1,i),ChiTestP(1,i)] = chi2gof(preBreak(i,:),'Alpha',alpha);
-            [ChiTest(2,i),ChiTestP(2,i)] = chi2gof(postBreak(i,:),'Alpha',alpha);
-            [ChiTest(3,i),ChiTestP(3,i)] = chi2gof([preBreak(i,:),postBreak(i,:)],'Alpha',alpha);
+            [ChiTest(1,i),ChiTestP(1,i)] = chi2gof(preBreak(i,:),'Alpha',alpha1);
+            [ChiTest(2,i),ChiTestP(2,i)] = chi2gof(postBreak(i,:),'Alpha',alpha1);
+            [ChiTest(3,i),ChiTestP(3,i)] = chi2gof([preBreak(i,:),postBreak(i,:)],'Alpha',alpha1);
         end
         R.ChiTest = ChiTest;
         R.ChiTestP = ChiTestP;
@@ -389,7 +398,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         end
         
         % record second change array
-        R.chg2 = CHG;
+        R.CHG2 = CHG;
      
     % assign class
         % initilize result
@@ -421,14 +430,14 @@ function [R,Model] = tune_model(var1,var2,var3)
         % date of change
         if max(CHG==C.Break) == 1
             [~,breakPoint] = max(CHG==C.Break);
-            R.chgDate = R.date(breakPoint);
+            R.chgDate = R.Date(breakPoint);
         end
         % record result
-        R.class = CLS;
+        R.Class = CLS;
         
     % visualize results
         % calculate y axis
-        Y = floor(double(R.date)/1000)+mod(double(R.date),1000)/365.25;
+        Y = floor(double(R.Date)/1000)+mod(double(R.Date),1000)/365.25;
         % make plot
         figure();
         for i = 1:nband
