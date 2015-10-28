@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 10/27/2015
+% Last Update: 10/28/2015
 %
 % Input Arguments: NA
 % 
@@ -57,9 +57,10 @@
 %   2.Removed un-used parameters.
 %   3.Adjust default values.
 %
-% Updates of Version 1.1.9 - 10/27/2015
+% Updates of Version 1.1.9 - 10/28/2015
 %   1.Added a date control system.
 %   2.Fixed a variable name that will cause error.
+%   3.Updated comments.
 %
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
