@@ -87,7 +87,6 @@ function fusion_Change(main)
         % load TS cache
         TS = load([main.output.cache 'ts.r' num2str(i) '.cache.mat']);
         samp = size(TS.Data,1);
-        nday = size(TS.Data,2);
         
         % study time period control
         TS.Data = TS.Data(:,TS.Date(:,1)>=main.set.sdate,:); 
@@ -97,6 +96,7 @@ function fusion_Change(main)
         NRT = sum(TS.Date(:,1)<main.set.cdate);
         
         % initialize
+        nday = size(TS.Data,2);
         CHG.Date = TS.Date;
         CHG.Data = ones(samp,nday)*(main.cons.outna);
         CHG.Coef = ones(12,samp,length(main.model.band)+1)*(main.cons.outna);
