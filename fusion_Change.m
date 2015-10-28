@@ -91,9 +91,9 @@ function fusion_Change(main)
         
         % study time period control
         TS.Data = TS.Data(:,TS.Date(:,1)>=main.set.sdate,:); 
-        TS.Date = TS.Date(:,TS.Date(:,1)>=main.set.sdate,:); 
+        TS.Date = TS.Date(TS.Date(:,1)>=main.set.sdate,:); 
         TS.Data = TS.Data(:,TS.Date(:,1)<=main.set.edate,:); 
-        TS.Date = TS.Date(:,TS.Date(:,1)<=main.set.edate,:); 
+        TS.Date = TS.Date(TS.Date(:,1)<=main.set.edate,:); 
         NRT = sum(TS.Date(:,1)<main.set.cdate);
         
         % initialize
