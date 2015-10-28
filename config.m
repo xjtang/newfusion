@@ -82,7 +82,7 @@
     nrtDate = 2014001;              % start date of the near real time change detection
     
 % model parameters
-    minNoB = 80;                    % number of observation before a break can be detected
+    minNoB = 80;                    % minimum number of valid observation
     initNoB = 80;                   % number of observation or initialization
     nStandDev = 2.5;                % number of standard deviation to flag a suspect
     nConsecutive = 6;               % number of consecutive observation to detect change
