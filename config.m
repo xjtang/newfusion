@@ -1,11 +1,11 @@
 % config.m
-% Version 1.1.7
+% Version 1.1.9
 % Configuration File
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 9/24/2015
+% Last Update: 10/27/2015
 %
 % Input Arguments: NA
 % 
@@ -57,11 +57,15 @@
 %   2.Removed un-used parameters.
 %   3.Adjust default values.
 %
+% Updates of Version 1.1.9 - 10/27/2015
+%   1.Added a date control system.
+%   2.Fixed a variable name that will cause error.
+%
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 % project information
-    configVer = 118;                % config file version DO NOT CHANGE THIS!!!
+    configVer = 119;                % config file version DO NOT CHANGE THIS!!!
     modisPlatform = 'MOD';          % MOD for Terra, MYD for Aqua
     landsatScene = [227,65];        % Landsat path and row
     dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/fusion/';
@@ -73,6 +77,9 @@
     discardRatio = 0;               % portion of Landsat pixel to be excluded on the edge
     diffMethod = 1;                 % method used in difference calculation, max(0) or mean(1)
     cloudThres = 80;                % A threshold on percent cloud cover for data filtering.
+    startDate = 2012001;            % start date of this analysis
+    endDate = 2015001;              % end date of this analysis
+    nrtDate = 2014001;              % start date of the near real time change detection
     
 % model parameters
     minNoB = 80;                    % number of observation before a break can be detected
@@ -81,7 +88,7 @@
     nConsecutive = 6;               % number of consecutive observation to detect change
     nSuspect = 4;                   % number of suspect to confirm a change
     outlierRemove = 5;              % switch for outlier removing in initialization
-    alpha = 0.1;                    % significance level in chi square test
+    alpha1 = 0.1;                   % significance level in chi square test
     thresNonFstMean = 200;          % threshold of mean for non-forest detection
     thresChgEdge = 0.65;            % threshold of detecting change edging pixel
     thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel

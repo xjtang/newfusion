@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.3
+% Version 2.3.1
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 10/18/2015
+% Last Update: 10/27/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -121,6 +121,11 @@
 %   5.Added landcover class codes.
 %   6.Added model constants.
 %
+% Updates of Version 2.3.1 - 10/27/2015
+%   1.Added new project parameters for study time period control.
+%   2.Fixed a variable that may cause error.
+%   3.Deleted unused parameters.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -147,7 +152,7 @@ function main = fusion_Inputs(file,job)
     end
     
     % check version config file
-    curVersion = 118;
+    curVersion = 119;
     if ~exist('configVer','var')
         disp('WARNING!!!!');
         disp('WARNING!!!!');
@@ -195,13 +200,21 @@ function main = fusion_Inputs(file,job)
         if ~exist('diffMethod', 'var')
             diffMethod = 1;
         end
-        % change map method
-        if ~exist('mapType', 'var')
-            mapType = 3;
-        end
         % cloud threshold
         if ~exist('cloudThres', 'var')
             cloudThres = 80;
+        end
+        % start date of the study time period
+        if ~exist('startDate', 'var')
+            startDate = 2012001;
+        end
+        % start date of the study time period
+        if ~exist('endDate', 'var')
+            endDate = 2015001;
+        end
+        % start date of the near real time change detection
+        if ~exist('nrtDate', 'var')
+            nrtDate = 2014001;
         end
         
         % model parameters
@@ -230,8 +243,8 @@ function main = fusion_Inputs(file,job)
             outlierRemove = 5;
         end
         % significance level in chi square test
-        if ~exist('alpha', 'var')
-            alpha = 0.1;
+        if ~exist('alpha1', 'var')
+            alpha1 = 0.1;
         end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
@@ -276,19 +289,15 @@ function main = fusion_Inputs(file,job)
         % MODIS Surface Reflectance data (swath data)
         main.input.swath = [main.path modisPlatform '09/'];
 
-        % for 250m resolution fusion process only:
-        % gridded 250m resolution band 1 and 2 surface reflectance data
-        main.input.g250m = [main.path modisPlatform '09GQ/'];
-
         % for BRDF correction process only:
         % daily gridded MODIS suface reflectance data
         main.input.grid = [main.path modisPlatform '09GA/'];
         % BRDF/Albedo model parameters product
         main.input.brdf = [main.path 'MCD43A1/'];
-
-        % for gridding process only:
-        % MODIS geolocation data
-        main.input.geo = [main.path modisPlatform '03/'];
+        
+        % for 250m BRDF correction process only:
+        % gridded 250m resolution band 1 and 2 surface reflectance data
+        main.input.g250m = [main.path modisPlatform '09GQ/'];
         
     % set output data location (create if not exist)
         % main outputs:
@@ -404,10 +413,14 @@ function main = fusion_Inputs(file,job)
         main.set.bias = BIAS;
         % max (0) or mean (1) in calculating difference map
         main.set.dif = diffMethod;
-        % type of map to be generated, date(1)/month(2) of change, change only map (3)
-        main.set.map = mapType;
         % a threshold on percent cloud cover for data filtering
         main.set.cloud = cloudThres;
+        % start date of the study time period
+        main.set.sdate = startDate;
+        % end date of the study time period
+        main.set.edate = endDate;
+        % start date of the near real time change detection
+        main.set.cdate = nrtDate;
         
     % settings and parameters for the change detection model
         % number of observation before a break can be detected
@@ -423,7 +436,7 @@ function main = fusion_Inputs(file,job)
         % number of outlier to remove in initialization
         main.model.outlr = outlierRemove;
         % significance level in chi square test
-        main.model.alpha = alpha;
+        main.model.alpha = alpha1;
         % threshold of mean to detect non-forest pixel
         main.model.nonfstmean = thresNonFstMean;
         % threshold of std to detect non-forest pixel

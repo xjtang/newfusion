@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 10/16/2015
+% Last Update: 10/27/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,16 +71,22 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
-% Updates of Version 2.6 - 10/16/2015
+% Updates of Version 2.6 - 10/27/2015
 %   1.Redesigned the change detection process.
 %   2.Removed water pixel detecting.
 %   3.Added Chi-Square test.
 %   4.Read class codes from main input.
+%   5.Added study time period control.
+%   6.Turn warning off.
+%   7.Changed the function of minNoB back to original.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-function [CHG,COEF] = change(TS,sets,C)
+function [CHG,COEF] = change(TS,sets,C,NRT)
+
+    % turn off warning for chi square test
+    warning('off','stats:chi2gof:LowCounts')
 
     % analyse input TS 
     [nband,nob] = size(TS);
@@ -95,12 +101,15 @@ function [CHG,COEF] = change(TS,sets,C)
         if max(TS(:,i)==-9999)
             CHG(i) = C.NA;
             ETS(i) = [];
+            if i <= NRT
+                NRT = NRT - 1;
+            end
         end
     end
     
     % check total number of eligible observation
     [~,neb] = size(ETS);
-    if neb < sets.initNoB
+    if neb < sets.minNoB
         CHG = C.NA;
         return 
     end
@@ -139,7 +148,7 @@ function [CHG,COEF] = change(TS,sets,C)
                 CHG(ETS(i)) = C.Changed;
             else
                 % see if this is a break
-                if i <= length(ETS)+1-sets.nCosc && i > sets.minNoB
+                if i <= length(ETS)+1-sets.nCosc && i > NRT
                     nSusp = 1;
                     for k = (i+1):(i+sets.nCosc-1)
                         xk = TS(:,ETS(k));
