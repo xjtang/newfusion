@@ -90,11 +90,11 @@ function fusion_Change(main)
         nday = size(TS.Data,2);
         
         % study time period control
-        TS.Data = TS.Data(:,TS.Date(:,1)>=main.model.sdate,:); 
-        TS.Date = TS.Date(:,TS.Date(:,1)>=main.model.sdate,:); 
-        TS.Data = TS.Data(:,TS.Date(:,1)<=main.model.edate,:); 
-        TS.Date = TS.Date(:,TS.Date(:,1)<=main.model.edate,:); 
-        NRT = sum(TS.Date(:,1)<main.model.cdate);
+        TS.Data = TS.Data(:,TS.Date(:,1)>=main.set.sdate,:); 
+        TS.Date = TS.Date(:,TS.Date(:,1)>=main.set.sdate,:); 
+        TS.Data = TS.Data(:,TS.Date(:,1)<=main.set.edate,:); 
+        TS.Date = TS.Date(:,TS.Date(:,1)<=main.set.edate,:); 
+        NRT = sum(TS.Date(:,1)<main.set.cdate);
         
         % initialize
         CHG.Date = TS.Date;
