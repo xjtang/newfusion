@@ -78,7 +78,7 @@ function CLS = genMap(X,D,mapType,sets,C,LC)
             if (max(X)==C.NonForest)||(max(X)==C.NFEdge)
                 CLS = LC.NonForest;
                 % could be non-forest edge
-                if sum(X==C.NFEdge)/(sum(X==C.NonForest)+sum(X==C.NFEdge))>=sets.thresNonFstEdge
+                if sum(X==C.NFEdge)/(sum(X==C.NonForest)+sum(X==C.NFEdge))>=sets.nonfstedge
                     CLS = LC.NFEdge;
                 end
             end
@@ -86,11 +86,11 @@ function CLS = genMap(X,D,mapType,sets,C,LC)
             if max(X==C.Break) == 1
                 CLS = LC.Change;
                 % could be change edge
-                if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.thresChgEdge
+                if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgedge
                     CLS = LC.CEdge;
                 end
                 % probable change
-                if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.thresProbChange
+                if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.probThres
                     CLS = LC.Prob;
                 end 
             end
@@ -101,11 +101,11 @@ function CLS = genMap(X,D,mapType,sets,C,LC)
         if max(X==C.Break) == 1
             CLS = LC.Change;
             % could be change edge
-            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.thresChgEdge
+            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgedge
                 CLS = LC.CEdge;
             end
             % probable change
-            if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.thresProbChange
+            if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.probThres
                 CLS = LC.Prob;
             end   
         else
@@ -127,11 +127,11 @@ function CLS = genMap(X,D,mapType,sets,C,LC)
             [~,breakPoint] = max(X==C.Break);
             CLS = D(breakPoint,1);
             % could be change edge
-            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.thresChgEdge
+            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgedge
                 CLS = LC.NA;
             end
             % probable change
-            if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.thresProbChange
+            if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.probThres
                 CLS = LC.NA;
             end 
         end
