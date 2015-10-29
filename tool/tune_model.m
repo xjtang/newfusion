@@ -229,6 +229,8 @@ function [R,Model] = tune_model(var1,var2,var3)
         R.initVecClean = mainVec;
         R.initMean = initMean;
         R.initStd = initStd;
+        R.Mean = initMean;
+        R.Std = initStd;
         
         % detect break
         for i = 1:neb   
@@ -295,13 +297,8 @@ function [R,Model] = tune_model(var1,var2,var3)
                         initStd = std(mainVec,0,2);
                         % record updated main vector
                         R.mainVec = mainVec;
-                        if i == 1 
-                            R.Mean = initMean;
-                            R.Std = initStd;
-                        else
-                            R.Mean = [R.Mean,initMean];
-                            R.Std = [R.Std,initStd];
-                        end
+                        R.Mean = [R.Mean,initMean];
+                        R.Std = [R.Std,initStd];
                     end
                 end
             end
