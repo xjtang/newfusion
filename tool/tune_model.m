@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 10/28/2015
+% Last Update: 10/29/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -41,21 +41,18 @@
 % Updates of Version 1.0.5 - 9/17/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.1 - 10/28/2015
+% Updates of Version 1.1 - 10/29/2015
 %   1.Adjusted according to a major change in the model.
 %   2.Parameterize class codes.
 %   3.Added the std lines in the plots.
 %   4.Fixed a variable that may cause error.
 %   5.Added study time period control.
+%   6.Bug fix.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
 function [R,Model] = tune_model(var1,var2,var3)
-
-    % initialize
-    R = -1;
-    Model = -1;
 
     % check input arguments
     if nargin == 1 
@@ -218,7 +215,7 @@ function [R,Model] = tune_model(var1,var2,var3)
                 % remove outliers in the initial observations
                 initMean = mean(mainVec,2);
                 initStd = std(mainVec,0,2);
-                mainVecRes = mainVec-repmat(initMean,1,sets.initNoB+1-i);
+                mainVecRes = mainVec-repmat(initMean,1,initNoB+1-i);
                 mainVecDev = ((1./(initStd)')*abs(mainVecRes))./nband;
                 [~,TSmaxI] = max(mainVecDev);
                 mainVec(:,TSmaxI) = [];
