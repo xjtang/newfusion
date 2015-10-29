@@ -91,6 +91,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         Model.endDate = endDate;
         Model.nrtDate = nrtDate;
         Model.config = file;
+        R = -1;
         return;
     elseif nargin == 3
         % assign model parameters and continue
