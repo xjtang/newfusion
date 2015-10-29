@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 7/7/2015
-% Last Update: 9/17/2015
+% Last Update: 10/29/2015
 %
 % Input Arguments:
 %   X (Vector) - change time series
@@ -48,10 +48,11 @@
 % Updates of Version 1.2.3 - 9/17/2015
 %   1.Added a water detecting mechanism.
 %
-% Updates of Version 1.2.4 - 10/16/2015
+% Updates of Version 1.2.4 - 10/29/2015
 %   1.Removed the water class.
 %   2.Get class codes as input parameters.
 %   3.Adjusted the structure of input parameters.
+%   4.Bug fix.
 %
 % Released on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -64,82 +65,74 @@ function CLS = genMap(X,D,mapType,sets,C,LC)
     % different types of map
     if mapType == 2 
         % month of change map
-        CLS = -9998;
+        CLS = LC.NA;
         
     elseif mapType == 3
         % class map
         % deal with different types
             % stable forest
-            if (max(X)<=2)&&(max(X)>=1)
-                CLS = 0;
+            if (max(X)==C.Outlier)||(max(X)==C.Stable)
+                CLS = LC.Forest;
             end
             % stable non-forest
-            if (max(X)>=6)&&(max(X)<=7)
-                CLS = 5;
+            if (max(X)==C.NonForest)||(max(X)==C.NFEdge)
+                CLS = LC.NonForest;
                 % could be non-forest edge
-                if sum(X==7)/sum(X>=6) >= edgeThres(2)
-                    CLS = 6;
-                end
-            end
-            % water pixel
-            if max(X) >= 8
-                CLS = 2;
-                % could be water edge
-                if sum(X==7)/sum(X>=7) >= edgeThres(2)
-                    CLS = 3;
+                if sum(X==C.NFEdge)/(sum(X==C.NonForest)+sum(X==C.NFEdge))>=sets.thresNonFstEdge
+                    CLS = LC.NFEdge;
                 end
             end
             % confirmed changed
-            if max(X==3) == 1
-                CLS = 10;
+            if max(X==C.Break) == 1
+                CLS = LC.Change;
                 % could be change edge
-                if sum(X==5)/sum(X>=3) >= edgeThres(1)
-                    CLS = 11;
+                if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.thresChgEdge
+                    CLS = LC.CEdge;
                 end
                 % probable change
-                if (sum(X==4)+sum(X==5)+1) < probThres
-                    CLS = 12;
+                if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.thresProbChange
+                    CLS = LC.Prob;
                 end 
             end
 
     elseif mapType == 4
         % change only map
         % confirmed changed
-        if max(X==3) == 1
-            CLS = 10;
+        if max(X==C.Break) == 1
+            CLS = LC.Change;
             % could be change edge
-            if sum(X==5)/sum(X>=3) >= edgeThres(1)
-                CLS = 11;
+            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.thresChgEdge
+                CLS = LC.CEdge;
             end
             % probable change
-            if (sum(X==4)+sum(X==5)+1) < probThres
-                CLS = 12;
+            if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.thresProbChange
+                CLS = LC.Prob;
             end   
         else
-            CLS = 0;
+            CLS = LC.NA;
         end
     else
         % date of change map (default)
         % deal with different types of change
         % stable forest
-        if (max(X)<=2)&&(max(X)>=1)
-            CLS = 0;
+        if (max(X)==C.Stable)||(max(X)==C.Outlier)
+            CLS = LC.NA;
         end
         % stable non-forest
-        if max(X) >= 6
-            CLS = 0;
+        if (max(X)==C.NonForest)||(max(X)==C.NFEdge)
+            CLS = LC.NA;
         end
         % confirmed changed
-        if (max(X==3) == 1)
-            [~,breakPoint] = max(X==3);
+        if max(X==C.Break) == 1
+            [~,breakPoint] = max(X==C.Break);
             CLS = D(breakPoint,1);
             % could be change edge
-            if sum(X==5)/sum(X>=3) >= edgeThres(1)
-                CLS = 0;
+            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.thresChgEdge
+                CLS = LC.NA;
             end
             % probable change
-            if (sum(X==4)+sum(X==5)+1) < probThres
-                CLS = 0;
+            if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.thresProbChange
+                CLS = LC.NA;
             end 
         end
     end
