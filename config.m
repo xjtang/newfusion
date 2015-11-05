@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 10/28/2015
+% Last Update: 11/2/2015
 %
 % Input Arguments: NA
 % 
@@ -57,7 +57,7 @@
 %   2.Removed un-used parameters.
 %   3.Adjust default values.
 %
-% Updates of Version 1.1.9 - 10/28/2015
+% Updates of Version 1.1.9 - 11/2/2015
 %   1.Added a date control system.
 %   2.Fixed a variable name that will cause error.
 %   3.Updated comments.
@@ -89,11 +89,11 @@
     nConsecutive = 6;               % number of consecutive observation to detect change
     nSuspect = 4;                   % number of suspect to confirm a change
     outlierRemove = 5;              % switch for outlier removing in initialization
-    alpha1 = 0.1;                   % significance level in chi square test
-    thresNonFstMean = 200;          % threshold of mean for non-forest detection
+    thresMean = 200;                % threshold of mean for non-forest detection
+    thresSlope = 10;                % slope of 
+    thresSpecEdge = 100;            % spectral threshold for edge detecting
     thresChgEdge = 0.65;            % threshold of detecting change edging pixel
     thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel
-    thresSpecEdge = 100;            % spectral threshold for edge detecting
     thresProbChange = 8;            % threshold for n observation after change to confirm change
     bandIncluded = [7,8];           % bands to be included in change detection (band 7/8 are 250m)
     bandWeight = [1,1];             % weight on each band

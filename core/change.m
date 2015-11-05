@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 10/27/2015
+% Last Update: 11/5/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,34 +71,35 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
-% Updates of Version 2.6 - 10/27/2015
+% Updates of Version 2.6 - 11/5/2015
 %   1.Redesigned the change detection process.
 %   2.Removed water pixel detecting.
-%   3.Added Chi-Square test.
-%   4.Read class codes from main input.
-%   5.Added study time period control.
-%   6.Turn warning off.
-%   7.Changed the function of minNoB back to original.
+%   3.Added linear regression on fusion time series segment.
+%   4.Use RMSE and slope to assign classes.
+%   5.Read class codes from main input.
+%   6.Added study time period control.
+%   7.Turn warning off.
+%   8.Changed the function of minNoB back to original.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-function [CHG,COEF] = change(TS,sets,C,NRT)
-
-    % turn off warning for chi square test
-    warning('off','stats:chi2gof:LowCounts')
+function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
 
     % analyse input TS 
     [nband,nob] = size(TS);
     
+    % normalize time series date
+    TSD = floor(TSD./1000)+rem(TSD,1000)./cons.diy;
+    
     % initilize result
     CHG = ones(1,nob)*C.Default;
-    COEF = zeros(12,length(sets.band)+1);
+    COEF = zeros(12,length(model.band)+1);
     ETS = 1:nob;
 
     % complie eligible observations
     for i = nob:-1:1
-        if max(TS(:,i)==-9999)
+        if max(TS(:,i)==cons.outna)
             CHG(i) = C.NA;
             ETS(i) = [];
             if i <= NRT
@@ -109,19 +110,19 @@ function [CHG,COEF] = change(TS,sets,C,NRT)
     
     % check total number of eligible observation
     [~,neb] = size(ETS);
-    if neb < sets.minNoB
+    if neb < model.minNoB
         CHG = C.NA;
         return 
     end
         
     % initilization
-    mainVec = TS(:,ETS(1:sets.initNoB));
-    if sets.outlr > 0
-        for i = 1:sets.outlr
+    mainVec = TS(:,ETS(1:model.initNoB));
+    if model.outlr > 0
+        for i = 1:model.outlr
             % remove outliers in the initial observations
             initMean = mean(mainVec,2);
             initStd = std(mainVec,0,2);
-            mainVecRes = mainVec-repmat(initMean,1,sets.initNoB+1-i);
+            mainVecRes = mainVec-repmat(initMean,1,model.initNoB+1-i);
             mainVecDev = ((1./(initStd)')*abs(mainVecRes))./nband;
             [~,TSmaxI] = max(mainVecDev);
             mainVec(:,TSmaxI) = [];
@@ -141,25 +142,25 @@ function [CHG,COEF] = change(TS,sets,C,NRT)
         xDev = (ones(1,nband)./nband)*xNorm;
         
         % check if possible change occured
-        if xDev >= sets.nSD 
+        if xDev >= model.nSD 
             % check if change already detected
             if CHGFlag == 1
                 % set result to changed
                 CHG(ETS(i)) = C.Changed;
             else
                 % see if this is a break
-                if i <= length(ETS)+1-sets.nCosc && i > NRT
+                if i <= length(ETS)+1-model.nCosc && i > NRT
                     nSusp = 1;
-                    for k = (i+1):(i+sets.nCosc-1)
+                    for k = (i+1):(i+model.nCosc-1)
                         xk = TS(:,ETS(k));
                         xkRes = abs(xk-initMean);
                         xkNorm = xkRes./initStd;
                         xkDev = (ones(1,nband)./nband)*xkNorm;
-                        if xkDev >= sets.nSD
+                        if xkDev >= model.nSD
                             nSusp = nSusp + 1;
                         end
                     end
-                    if nSusp >= sets.nSusp
+                    if nSusp >= model.nSusp
                         CHG(ETS(i)) = C.Break;
                         CHGFlag = 1;
                     else
@@ -179,7 +180,7 @@ function [CHG,COEF] = change(TS,sets,C,NRT)
                 % set result to stable
                 CHG(ETS(i)) = C.Stable;
                 % update main vector
-                if i > sets.initNoB
+                if i > model.initNoB
                     mainVec = [mainVec,TS(:,ETS(i))];  %#ok<*AGROW>
                     initMean = mean(mainVec,2);
                     initStd = std(mainVec,0,2);
@@ -193,43 +194,54 @@ function [CHG,COEF] = change(TS,sets,C,NRT)
     if max(CHG==C.Break) == 1
         % break exist
         preBreak = TS(:,CHG==C.Stable);
+        preBreakD = TSD(CHG==C.Stable);
         postBreak = TS(:,CHG>=C.Break);
+        postBreakD = TSD(CHG>=C.Break);
+        prePostComb = [preBreak,postBreak];
+        prePostCombD = [preBreakD,postBreakD];
         CHGFlag = 1;
     else
         % no break
         preBreak = TS(:,CHG==C.Stable);
-        postBreak = preBreak;
+        preBreakD = TSD(CHG==C.Stable);
         CHGFlag = 0;
     end
     
+    % linear model
+    LMCoef = zeros(4,3,nband);
+    for i = 1:nband
+        if CHGFlag == 1
+            LMFit = LinearModel.fit(preBreak(i,:)',preBreakD',1);
+            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared;LMFit.RMSE];
+            LMFit = LinearModel.fit(postBreak(i,:)',postBreakD',1);
+            LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared;LMFit.RMSE];
+            LMFit = LinearModel.fit(prePostComb(i,:)',prePostCombD',1);
+            LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared;LMFit.RMSE];
+        else
+            LMFit = LinearModel.fit(preBreak(i,:)',preBreakD',1);
+            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared;LMFit.RMSE];
+            LMCoef(:,2,i) = LMCoef(:,1,i);
+            LMCoef(:,3,i) = LMCoef(:,1,i);
+        end
+    end
+    
     % record coefficients
+    
     COEF(1,:) = [mean(preBreak,2)',(ones(1,nband)./nband)*abs(mean(preBreak,2))];
     COEF(2,:) = [mean(postBreak,2)',(ones(1,nband)./nband)*abs(mean(postBreak,2))];
     COEF(3,:) = [std(preBreak,0,2)',(ones(1,nband)./nband)*abs(std(preBreak,0,2))];
     COEF(4,:) = [std(postBreak,0,2)',(ones(1,nband)./nband)*abs(std(postBreak,0,2))];
-    COEF(5,:) = [prctile(preBreak,95,2)',(ones(1,nband)./nband)*abs(prctile(preBreak,95,2))];
-    COEF(6,:) = [prctile(postBreak,95,2)',(ones(1,nband)./nband)*abs(prctile(postBreak,95,2))];
-    COEF(7,:) = [prctile(preBreak,5,2)',(ones(1,nband)./nband)*abs(prctile(preBreak,5,2))];
-    COEF(8,:) = [prctile(postBreak,5,2)',(ones(1,nband)./nband)*abs(prctile(postBreak,5,2))];
-    COEF(9,:) = size(preBreak,2);
-    COEF(10,:) = size(postBreak,2);
     COEF(11,:) = [mean([preBreak,postBreak],2)',(ones(1,nband)./nband)*abs(mean([preBreak,postBreak],2))];
     COEF(12,:) = [std([preBreak,postBreak],0,2)',(ones(1,nband)./nband)*abs(std([preBreak,postBreak],0,2))];
-    
-    % chi square testing
-    ChiTest = zeros(3,nband);
-    for i =1:nband
-        ChiTest(1,i) = chi2gof(preBreak(i,:),'Alpha',sets.alpha);
-        ChiTest(2,i) = chi2gof(postBreak(i,:),'Alpha',sets.alpha);
-        ChiTest(3,i) = chi2gof([preBreak(i,:),postBreak(i,:)],'Alpha',sets.alpha);
-    end
+    COEF(9,:) = size(preBreak,2);
+    COEF(10,:) = size(postBreak,2);
     
     % assign class
-    if max(ChiTest(1,:)) < 1 && mean(abs(COEF(1,1:nband))) <= sets.nonfstmean
+    if max(ChiTest(1,:)) < 1 && mean(abs(COEF(1,1:nband))) <= model.nonfstmean
         % pre-break is forest, check if post-break exist
         if CHGFlag == 1
             % check if post is non-forest
-            if max(ChiTest(2,:)) < 1 && mean(abs(COEF(2,1:nband))) <= sets.nonfstmean
+            if max(ChiTest(2,:)) < 1 && mean(abs(COEF(2,1:nband))) <= model.nonfstmean
                 % post-break is forest, false break
                 CHGFlag = 0;
             end
@@ -240,10 +252,10 @@ function [CHG,COEF] = change(TS,sets,C,NRT)
                 CHG(CHG==C.Changed) = C.Outlier;
                 CHG(CHG==C.ChgEdge) = C.Stable;
                 % check this pixel as a whole again if this is non-forest
-                if max(ChiTest(3,:)) < 1 && mean(abs(COEF(11,1:nband))) <= sets.nonfstmean
+                if max(ChiTest(3,:)) < 1 && mean(abs(COEF(11,1:nband))) <= model.nonfstmean
                     for i = 1:length(ETS)
                         x = TS(:,ETS(i));
-                        if mean(abs(x)) >= sets.specedge
+                        if mean(abs(x)) >= model.specedge
                             CHG(ETS(i)) = C.NonForest;
                         else
                             CHG(ETS(i)) = C.NFEdge;
@@ -256,7 +268,7 @@ function [CHG,COEF] = change(TS,sets,C,NRT)
         % pre-break is non-forest, this is non-forest pixel
         for i = 1:length(ETS)
             x = TS(:,ETS(i));
-            if mean(abs(x)) >= sets.specedge
+            if mean(abs(x)) >= model.specedge
                 CHG(ETS(i)) = C.NonForest;
             else
                 CHG(ETS(i)) = C.NFEdge;

@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 10/27/2015
+% Last Update: 11/3/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -121,10 +121,12 @@
 %   5.Added landcover class codes.
 %   6.Added model constants.
 %
-% Updates of Version 2.3.1 - 10/27/2015
+% Updates of Version 2.3.1 - 11/3/2015
 %   1.Added new project parameters for study time period control.
-%   2.Fixed a variable that may cause error.
-%   3.Deleted unused parameters.
+%   2.Added new model constants.
+%   3.Fixed a variable that may cause error.
+%   4.Deleted unused parameters.
+%   5.Normalize weight.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -393,6 +395,8 @@ function main = fusion_Inputs(file,job)
         main.cons.angsf = 100;
         % Na value for outputs
         main.cons.outna = -9999;
+        % days in one year
+        main.cons.diy = 365.25;
         
     % project information
         % config file version
@@ -449,8 +453,8 @@ function main = fusion_Inputs(file,job)
         main.model.probThres = thresProbChange;
         % bands used for change detection
         main.model.band = bandIncluded;
-        % weight of each band in change detection
-        main.model.weight = bandWeight;
+        % weight of each band in change detection (normalized)
+        main.model.weight = bandWeight./(sum(bandWeight));
         
     % fusion TS segment class codes
         main.TSclass.NA = -1;           % not available
