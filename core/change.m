@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 11/5/2015
+% Last Update: 11/6/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,7 +71,7 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
-% Updates of Version 2.6 - 11/5/2015
+% Updates of Version 2.6 - 11/6/2015
 %   1.Redesigned the change detection process.
 %   2.Removed water pixel detecting.
 %   3.Added linear regression on fusion time series segment.
@@ -94,12 +94,12 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     
     % initilize result
     CHG = ones(1,nob)*C.Default;
-    COEF = zeros(12,length(model.band)+1);
+    COEF = zeros(7,3,nband+1);
     ETS = 1:nob;
 
     % complie eligible observations
     for i = nob:-1:1
-        if max(TS(:,i)==cons.outna)
+        if max(TS(:,i)==cons.outna) b   
             CHG(i) = C.NA;
             ETS(i) = [];
             if i <= NRT
@@ -123,7 +123,8 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
             initMean = mean(mainVec,2);
             initStd = std(mainVec,0,2);
             mainVecRes = mainVec-repmat(initMean,1,model.initNoB+1-i);
-            mainVecDev = ((1./(initStd)')*abs(mainVecRes))./nband;
+            mainVecNorm = abs(mainVecRes)./repmat(initStd,1,model.initNoB+1-i);
+            mainVecDev = model.weight*mainVecNorm;
             [~,TSmaxI] = max(mainVecDev);
             mainVec(:,TSmaxI) = [];
         end
@@ -139,7 +140,7 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
         x = TS(:,ETS(i));
         xRes = abs(x-initMean);
         xNorm = xRes./initStd;
-        xDev = (ones(1,nband)./nband)*xNorm;
+        xDev = model.weight*xNorm;
         
         % check if possible change occured
         if xDev >= model.nSD 
@@ -155,7 +156,7 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
                         xk = TS(:,ETS(k));
                         xkRes = abs(xk-initMean);
                         xkNorm = xkRes./initStd;
-                        xkDev = (ones(1,nband)./nband)*xkNorm;
+                        xkDev = model.weight*xkNorm;
                         if xkDev >= model.nSD
                             nSusp = nSusp + 1;
                         end
@@ -226,15 +227,32 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     end
     
     % record coefficients
-    
-    COEF(1,:) = [mean(preBreak,2)',(ones(1,nband)./nband)*abs(mean(preBreak,2))];
-    COEF(2,:) = [mean(postBreak,2)',(ones(1,nband)./nband)*abs(mean(postBreak,2))];
-    COEF(3,:) = [std(preBreak,0,2)',(ones(1,nband)./nband)*abs(std(preBreak,0,2))];
-    COEF(4,:) = [std(postBreak,0,2)',(ones(1,nband)./nband)*abs(std(postBreak,0,2))];
-    COEF(11,:) = [mean([preBreak,postBreak],2)',(ones(1,nband)./nband)*abs(mean([preBreak,postBreak],2))];
-    COEF(12,:) = [std([preBreak,postBreak],0,2)',(ones(1,nband)./nband)*abs(std([preBreak,postBreak],0,2))];
-    COEF(9,:) = size(preBreak,2);
-    COEF(10,:) = size(postBreak,2);
+    COEF(1,1,:) = [mean(preBreak,2)',model.weight*abs(mean(preBreak,2))];
+    COEF(2,1,:) = [std(preBreak,0,2)',model.weight*abs(std(preBreak,0,2))];
+    COEF(3,1,:) = size(preBreak,2);
+    if CHGFlag == 1
+        COEF(1,2,:) = [mean(postBreak,2)',model.weight*abs(mean(postBreak,2))];
+        COEF(1,3,:) = [mean([preBreak,postBreak],2)',model.weight*abs(mean([preBreak,postBreak],2))];
+        COEF(2,2,:) = [std(postBreak,0,2)',model.weight*abs(std(postBreak,0,2))];
+        COEF(2,3,:) = [std([preBreak,postBreak],0,2)',model.weight*abs(std([preBreak,postBreak],0,2))];
+        COEF(3,2,:) = size(postBreak,2);
+        COEF(3,3,:) = COEF(3,1,1) + COEF(3,2,1)  ;
+    else
+        COEF(1,2,:) = COEF(1,1,:);
+        COEF(1,3,:) = COEF(1,1,:);
+        COEF(2,2,:) = COEF(2,1,:);
+        COEF(2,3,:) = COEF(2,1,:);
+        COEF(3,2,:) = COEF(3,1,:);
+        COEF(3,3,:) = COEF(3,1,:);
+    end
+    COEF(4,:,1:nband) = LMCoef(1,:,:);
+    COEF(5,:,1:nband) = LMCoef(2,:,:);
+    COEF(6,:,1:nband) = LMCoef(3,:,:);
+    COEF(7,:,1:nband) = LMCoef(4,:,:);
+    COEF(4,:,nband+1) = model.weight*squeeze(LMCoef(1,:,:))';
+    COEF(5,:,nband+1) = model.weight*squeeze(LMCoef(2,:,:))';
+    COEF(6,:,nband+1) = model.weight*squeeze(LMCoef(3,:,:))';
+    COEF(7,:,nband+1) = model.weight*squeeze(LMCoef(4,:,:))';
     
     % assign class
     if max(ChiTest(1,:)) < 1 && mean(abs(COEF(1,1:nband))) <= model.nonfstmean
