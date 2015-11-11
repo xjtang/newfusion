@@ -80,6 +80,7 @@
 %   6.Added study time period control.
 %   7.Changed the function of minNoB back to original.
 %   8.Adjusted input parameter names.
+%   9.Bugs fixed.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -213,15 +214,15 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     LMCoef = zeros(4,3,nband);
     for i = 1:nband
         if CHGFlag == 1
-            LMFit = LinearModel.fit(preBreak(i,:)',preBreakD',1);
-            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared;LMFit.RMSE];
-            LMFit = LinearModel.fit(postBreak(i,:)',postBreakD',1);
-            LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared;LMFit.RMSE];
-            LMFit = LinearModel.fit(prePostComb(i,:)',prePostCombD',1);
-            LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared;LMFit.RMSE];
+            LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
+            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+            LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
+            LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+            LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
+            LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
         else
-            LMFit = LinearModel.fit(preBreak(i,:)',preBreakD',1);
-            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared;LMFit.RMSE];
+            LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
+            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
             LMCoef(:,2,i) = LMCoef(:,1,i);
             LMCoef(:,3,i) = LMCoef(:,1,i);
         end
