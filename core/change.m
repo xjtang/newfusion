@@ -90,6 +90,7 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     [nband,nob] = size(TS);
     
     % normalize time series date
+    TSD = double(TSD);
     TSD = floor(TSD./1000)+rem(TSD,1000)./cons.diy;
     
     % initilize result
