@@ -78,9 +78,8 @@
 %   4.Use RMSE and slope to assign classes.
 %   5.Read class codes from main input.
 %   6.Added study time period control.
-%   7.Turn warning off.
-%   8.Changed the function of minNoB back to original.
-%   9.Adjusted input parameter names.
+%   7.Changed the function of minNoB back to original.
+%   8.Adjusted input parameter names.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
