@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 7/7/2015
-% Last Update: 10/29/2015
+% Last Update: 11/11/2015
 %
 % Input Arguments:
 %   X (Vector) - change time series
@@ -48,11 +48,12 @@
 % Updates of Version 1.2.3 - 9/17/2015
 %   1.Added a water detecting mechanism.
 %
-% Updates of Version 1.2.4 - 10/29/2015
+% Updates of Version 1.2.4 - 11/11/2015
 %   1.Removed the water class.
 %   2.Get class codes as input parameters.
 %   3.Adjusted the structure of input parameters.
-%   4.Bug fix.
+%   4.Adjusted input parameter names
+%   5.Bug fix.
 %
 % Released on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -78,7 +79,7 @@ function CLS = genMap(X,D,mapType,sets,C,LC)
             if (max(X)==C.NonForest)||(max(X)==C.NFEdge)
                 CLS = LC.NonForest;
                 % could be non-forest edge
-                if sum(X==C.NFEdge)/(sum(X==C.NonForest)+sum(X==C.NFEdge))>=sets.nonfstedge
+                if sum(X==C.NFEdge)/(sum(X==C.NonForest)+sum(X==C.NFEdge))>=sets.nonFstEdge
                     CLS = LC.NFEdge;
                 end
             end
@@ -86,7 +87,7 @@ function CLS = genMap(X,D,mapType,sets,C,LC)
             if max(X==C.Break) == 1
                 CLS = LC.Change;
                 % could be change edge
-                if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgedge
+                if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgEdge
                     CLS = LC.CEdge;
                 end
                 % probable change
@@ -101,7 +102,7 @@ function CLS = genMap(X,D,mapType,sets,C,LC)
         if max(X==C.Break) == 1
             CLS = LC.Change;
             % could be change edge
-            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgedge
+            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgEdge
                 CLS = LC.CEdge;
             end
             % probable change
@@ -127,7 +128,7 @@ function CLS = genMap(X,D,mapType,sets,C,LC)
             [~,breakPoint] = max(X==C.Break);
             CLS = D(breakPoint,1);
             % could be change edge
-            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgedge
+            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgEdge
                 CLS = LC.NA;
             end
             % probable change

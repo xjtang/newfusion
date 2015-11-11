@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 11/6/2015
+% Last Update: 11/11/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,7 +71,7 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
-% Updates of Version 2.6 - 11/6/2015
+% Updates of Version 2.6 - 11/11/2015
 %   1.Redesigned the change detection process.
 %   2.Removed water pixel detecting.
 %   3.Added linear regression on fusion time series segment.
@@ -80,6 +80,7 @@
 %   6.Added study time period control.
 %   7.Turn warning off.
 %   8.Changed the function of minNoB back to original.
+%   9.Adjusted input parameter names.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -99,7 +100,7 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
 
     % complie eligible observations
     for i = nob:-1:1
-        if max(TS(:,i)==cons.outna) b   
+        if max(TS(:,i)==cons.outna)
             CHG(i) = C.NA;
             ETS(i) = [];
             if i <= NRT
@@ -249,17 +250,19 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     COEF(5,:,1:nband) = LMCoef(2,:,:);
     COEF(6,:,1:nband) = LMCoef(3,:,:);
     COEF(7,:,1:nband) = LMCoef(4,:,:);
-    COEF(4,:,nband+1) = model.weight*squeeze(LMCoef(1,:,:))';
-    COEF(5,:,nband+1) = model.weight*squeeze(LMCoef(2,:,:))';
-    COEF(6,:,nband+1) = model.weight*squeeze(LMCoef(3,:,:))';
-    COEF(7,:,nband+1) = model.weight*squeeze(LMCoef(4,:,:))';
+    COEF(4,:,nband+1) = model.weight*squeeze(abs(LMCoef(1,:,:)))';
+    COEF(5,:,nband+1) = model.weight*squeeze(abs(LMCoef(2,:,:)))';
+    COEF(6,:,nband+1) = model.weight*squeeze(abs(LMCoef(3,:,:)))';
+    COEF(7,:,nband+1) = model.weight*squeeze(abs(LMCoef(4,:,:)))';
     
     % assign class
-    if max(ChiTest(1,:)) < 1 && mean(abs(COEF(1,1:nband))) <= model.nonfstmean
+    if (COEF(1,1,nband+1)<=model.nonFstMean)&&(COEF(2,1,nband+1)<=model.nonFstStd)...
+            &&(COEF(5,1,nband+1)<=model.nonFstSlp)&&(COEF(6,1,nband+1)<=model.nonFstR2)
         % pre-break is forest, check if post-break exist
         if CHGFlag == 1
             % check if post is non-forest
-            if max(ChiTest(2,:)) < 1 && mean(abs(COEF(2,1:nband))) <= model.nonfstmean
+            if (COEF(1,2,nband+1)<=model.nonFstMean)&&(COEF(2,2,nband+1)<=model.nonFstStd)...
+                    &&(COEF(5,2,nband+1)<=model.nonFstSlp)&&(COEF(6,2,nband+1)<=model.nonFstR2)
                 % post-break is forest, false break
                 CHGFlag = 0;
             end
@@ -270,10 +273,11 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
                 CHG(CHG==C.Changed) = C.Outlier;
                 CHG(CHG==C.ChgEdge) = C.Stable;
                 % check this pixel as a whole again if this is non-forest
-                if max(ChiTest(3,:)) < 1 && mean(abs(COEF(11,1:nband))) <= model.nonfstmean
+                if (COEF(1,3,nband+1)<=model.nonFstMean)&&(COEF(2,3,nband+1)<=model.nonFstStd)...
+                        &&(COEF(5,3,nband+1)<=model.nonFstSlp)&&(COEF(6,3,nband+1)<=model.nonFstR2)
                     for i = 1:length(ETS)
                         x = TS(:,ETS(i));
-                        if mean(abs(x)) >= model.specedge
+                        if mean(abs(x)) >= model.specEdge
                             CHG(ETS(i)) = C.NonForest;
                         else
                             CHG(ETS(i)) = C.NFEdge;
@@ -286,7 +290,7 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
         % pre-break is non-forest, this is non-forest pixel
         for i = 1:length(ETS)
             x = TS(:,ETS(i));
-            if mean(abs(x)) >= model.specedge
+            if mean(abs(x)) >= model.specEdge
                 CHG(ETS(i)) = C.NonForest;
             else
                 CHG(ETS(i)) = C.NFEdge;

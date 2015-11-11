@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 11/3/2015
+% Last Update: 11/11/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -121,7 +121,7 @@
 %   5.Added landcover class codes.
 %   6.Added model constants.
 %
-% Updates of Version 2.3.1 - 11/3/2015
+% Updates of Version 2.3.1 - 11/11/2015
 %   1.Added new project parameters for study time period control.
 %   2.Added new model constants.
 %   3.Fixed a variable that may cause error.
@@ -154,7 +154,7 @@ function main = fusion_Inputs(file,job)
     end
     
     % check version config file
-    curVersion = 119;
+    curVersion = 10110;
     if ~exist('configVer','var')
         disp('WARNING!!!!');
         disp('WARNING!!!!');
@@ -244,13 +244,21 @@ function main = fusion_Inputs(file,job)
         if ~exist('outlierRemove', 'var')
             outlierRemove = 5;
         end
-        % significance level in chi square test
-        if ~exist('alpha1', 'var')
-            alpha1 = 0.1;
-        end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
             thresNonFstMean = 200;
+        end
+        % threshold of std for non-forest detection
+        if ~exist('thresNonFstStd', 'var')
+            thresNonFstStd = 350;
+        end
+        % threshold of slope for non-forest detection
+        if ~exist('thresNonFstSlp', 'var')
+            thresNonFstSlp = 500;
+        end
+        % threshold of R2 for non-forest detection
+        if ~exist('thresNonFstR2', 'var')
+            thresNonFstR2 = 0.2;
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
@@ -439,16 +447,20 @@ function main = fusion_Inputs(file,job)
         main.model.nSusp = nSuspect;
         % number of outlier to remove in initialization
         main.model.outlr = outlierRemove;
-        % significance level in chi square test
-        main.model.alpha = alpha1;
         % threshold of mean to detect non-forest pixel
-        main.model.nonfstmean = thresNonFstMean;
+        main.model.nonFstMean = thresNonFstMean;
         % threshold of std to detect non-forest pixel
-        main.model.chgedge = thresChgEdge;
+        main.model.nonFstStd = thresNonFstStd;
+        % threshold of slope to detect non-forest pixel
+        main.model.nonFstSlp = thresNonFstSlp;
+        % threshold of r2 to detect non-forest pixel
+        main.model.nonFstR2 = thresNonFstR2;
+        % threshold of std to detect non-forest pixel
+        main.model.chgEdge = thresChgEdge;
         % threshold of detecting edging pixel in stable non-forest pixel
-        main.model.nonfstedge = thresNonFstEdge;
+        main.model.nonFstEdge = thresNonFstEdge;
         % spectral threshold for edge detecting
-        main.model.specedge = thresSpecEdge;
+        main.model.specEdge = thresSpecEdge;
         % threshold for n observation after change to confirm change
         main.model.probThres = thresProbChange;
         % bands used for change detection
