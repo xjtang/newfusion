@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 10/29/2015
+% Last Update: 11/11/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -41,7 +41,7 @@
 % Updates of Version 1.0.5 - 9/17/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.1 - 10/29/2015
+% Updates of Version 1.1 - 11/11/2015
 %   1.Adjusted according to a major change in the model.
 %   2.Parameterize class codes.
 %   3.Added the std lines in the plots.
@@ -72,11 +72,13 @@ function [R,Model] = tune_model(var1,var2,var3)
         Model.nCosc = nConsecutive;
         Model.nSusp = nSuspect;
         Model.outlr = outlierRemove;
-        Model.alpha = alpha1;
-        Model.nonfstmean = thresNonFstMean;
-        Model.chgedge = thresChgEdge;
-        Model.nonfstedge = thresNonFstEdge;
-        Model.specedge = thresSpecEdge;
+        Model.nonFstMean = thresNonFstMean;
+        Model.nonFstStd = thresNonFstStd;
+        Model.nonFstSlp = thresNonFstSlp;
+        Model.nonFstR2 = thresNonFstR2;
+        Model.chgEdge = thresChgEdge;
+        Model.nonFstEdge = thresNonFstEdge;
+        Model.specEdge = thresSpecEdge;
         Model.probThres = thresProbChange;
         Model.band = bandIncluded;
         Model.weight = bandWeight;   
@@ -104,11 +106,13 @@ function [R,Model] = tune_model(var1,var2,var3)
         nConsecutive = Model.nCosc;
         nSuspect = Model.nSusp;
         outlierRemove = Model.outlr;
-        alpha1 = Model.alpha;
-        thresNonFstMean = Model.nonfstmean;
-        thresChgEdge = Model.chgedge;
-        thresNonFstEdge = Model.nonfstedge;
-        thresSpecEdge = Model.specedge;
+        thresNonFstMean = Model.nonFstMean;
+        thresNonFstStd = Model.nonFstStd;
+        thresNonFstSlp = Model.nonFstSlp;
+        thresNonFstR2 = Model.nonFstR2;
+        thresChgEdge = Model.chgEdge;
+        thresNonFstEdge = Model.nonFstEdge;
+        thresSpecEdge = Model.specEdge;
         thresProbChange = Model.probThres;
         bandIncluded = Model.band;
         bandWeight = Model.weight;
@@ -176,7 +180,7 @@ function [R,Model] = tune_model(var1,var2,var3)
     
     % remove unavailable observation
     TS = raw.Data(:,max(raw.Data>(-9999)));
-    TSD = raw.Date(max(raw.Data>(-9999)));
+    TSD = double(raw.Date(max(raw.Data>(-9999))));
     [nband,nob] = size(TS);
     % record raw reflectance data
     R.nob = nob;
@@ -207,6 +211,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         
         % initialization
         CHG = zeros(1,neb);
+        COEF = zeros(7,3,nband+1);
         mainVec = TS(:,1:initNoB);
         
         % record initial vector
@@ -217,7 +222,8 @@ function [R,Model] = tune_model(var1,var2,var3)
                 initMean = mean(mainVec,2);
                 initStd = std(mainVec,0,2);
                 mainVecRes = mainVec-repmat(initMean,1,initNoB+1-i);
-                mainVecDev = ((1./(initStd)')*abs(mainVecRes))./nband;
+                mainVecNorm = abs(mainVecRes)./repmat(initStd,1,initNoB+1-i);
+                mainVecDev = bandWeight*mainVecNorm;
                 [~,TSmaxI] = max(mainVecDev);
                 mainVec(:,TSmaxI) = [];
             end
@@ -239,7 +245,7 @@ function [R,Model] = tune_model(var1,var2,var3)
             x = TS(:,i);
             xRes = abs(x-initMean);
             xNorm = xRes./initStd;
-            xDev = (ones(1,nband)./nband)*xNorm;
+            xDev = bandWeight*xNorm;
             
             % record result of this pixel
             if i == 1 
@@ -260,13 +266,13 @@ function [R,Model] = tune_model(var1,var2,var3)
                     CHG(i) = C.Changed;
                 else
                     % see if this is a break
-                    if i <= nob+1-nConsecutive && i > NRT
+                    if i <= neb+1-nConsecutive && i > NRT
                         nSusp = 1;
                         for k = (i+1):(i+nConsecutive-1)
                             xk = TS(:,k);
                             xkRes = abs(xk-initMean);
                             xkNorm = xkRes./initStd;
-                            xkDev = (ones(1,nband)./nband)*xkNorm;
+                            xkDev = bandWeight*xkNorm;
                             if xkDev >= nStandDev
                                 nSusp = nSusp + 1;
                             end
@@ -307,57 +313,92 @@ function [R,Model] = tune_model(var1,var2,var3)
         % record break detection result
         R.CHG1 = CHG;
         
-    % post change detection refining
+    % fusion time series segment classification
         % split data into pre and post break
         if max(CHG==C.Break) == 1
             % break exist
             preBreak = TS(:,CHG==C.Stable);
+            preBreakD = TSD(CHG==C.Stable);
             postBreak = TS(:,CHG>=C.Break);
+            postBreakD = TSD(CHG>=C.Break);
+            prePostComb = [preBreak,postBreak];
+            prePostCombD = [preBreakD,postBreakD];
             CHGFlag = 1;
             R.preBreak = preBreak;
+            R.preBreakD = preBreakD;
             R.postBreak = postBreak;
+            R.postBreakD = postBreakD;
+            R.prePostComb = prePostComb;
+            R.prePostCombD = prePostCombD;
         else
             % no break
             preBreak = TS(:,CHG==C.Stable);
+            preBreakD = TSD(CHG==C.Stable);
             CHGFlag = 0;
             R.preBreak = preBreak;
+            R.preBreakD = preBreakD;
         end
+        
+        % linaer model
+        LMCoef = zeros(4,3,nband);
+        for i = 1:nband
+            if CHGFlag == 1
+                LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
+                LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+                R.LMFit1 = LMFit;
+                LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
+                LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+                R.LMFit2 = LMFit;
+                LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
+                LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+                R.LMFit3 = LMFit;
+            else
+                LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
+                LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+                LMCoef(:,2,i) = LMCoef(:,1,i);
+                LMCoef(:,3,i) = LMCoef(:,1,i);
+                R.LMFit1 = LMFit;
+            end
+        end
+        R.LMCoef = LMCoef;
         
         % record coefficients
-        COEF(1,:) = [mean(preBreak,2)',(ones(1,nband)./nband)*abs(mean(preBreak,2))];
-        COEF(2,:) = [mean(postBreak,2)',(ones(1,nband)./nband)*abs(mean(postBreak,2))];
-        COEF(3,:) = [std(preBreak,0,2)',(ones(1,nband)./nband)*abs(std(preBreak,0,2))];
-        COEF(4,:) = [std(postBreak,0,2)',(ones(1,nband)./nband)*abs(std(postBreak,0,2))];
-        COEF(5,:) = [prctile(preBreak,95,2)',(ones(1,nband)./nband)*abs(prctile(preBreak,95,2))];
-        COEF(6,:) = [prctile(postBreak,95,2)',(ones(1,nband)./nband)*abs(prctile(postBreak,95,2))];
-        COEF(7,:) = [prctile(preBreak,5,2)',(ones(1,nband)./nband)*abs(prctile(preBreak,5,2))];
-        COEF(8,:) = [prctile(postBreak,5,2)',(ones(1,nband)./nband)*abs(prctile(postBreak,5,2))];
-        COEF(9,:) = size(preBreak,2);
-        COEF(10,:) = size(postBreak,2);
-        COEF(11,:) = [mean([preBreak,postBreak],2)',(ones(1,nband)./nband)*abs(mean([preBreak,postBreak],2))];
-        COEF(12,:) = [std([preBreak,postBreak],0,2)',(ones(1,nband)./nband)*abs(std([preBreak,postBreak],0,2))];
-        R.Coef.Mean = [COEF(1,:),COEF(2,:),COEF(11,:)];
-        R.Coef.Std = [COEF(3,:),COEF(4,:),COEF(12,:)];
-        R.Coef.Pct = [COEF(5,:),COEF(6,:),COEF(7,:),COEF(8,:)];
-        R.Coef.nob = [COEF(9,1),COEF(10,1)];
-        
-        % chi square testing
-        ChiTest = zeros(3,nband);
-        ChiTestP = zeros(3,nband);
-        for i =1:nband
-            [ChiTest(1,i),ChiTestP(1,i)] = chi2gof(preBreak(i,:),'Alpha',alpha1);
-            [ChiTest(2,i),ChiTestP(2,i)] = chi2gof(postBreak(i,:),'Alpha',alpha1);
-            [ChiTest(3,i),ChiTestP(3,i)] = chi2gof([preBreak(i,:),postBreak(i,:)],'Alpha',alpha1);
+        COEF(1,1,:) = [mean(preBreak,2)',bandWeight*abs(mean(preBreak,2))];
+        COEF(2,1,:) = [std(preBreak,0,2)',bandWeight*abs(std(preBreak,0,2))];
+        COEF(3,1,:) = size(preBreak,2);
+        if CHGFlag == 1
+            COEF(1,2,:) = [mean(postBreak,2)',bandWeight*abs(mean(postBreak,2))];
+            COEF(1,3,:) = [mean([preBreak,postBreak],2)',bandWeight*abs(mean([preBreak,postBreak],2))];
+            COEF(2,2,:) = [std(postBreak,0,2)',bandWeight*abs(std(postBreak,0,2))];
+            COEF(2,3,:) = [std([preBreak,postBreak],0,2)',bandWeight*abs(std([preBreak,postBreak],0,2))];
+            COEF(3,2,:) = size(postBreak,2);
+            COEF(3,3,:) = COEF(3,1,1) + COEF(3,2,1)  ;
+        else
+            COEF(1,2,:) = COEF(1,1,:);
+            COEF(1,3,:) = COEF(1,1,:);
+            COEF(2,2,:) = COEF(2,1,:);
+            COEF(2,3,:) = COEF(2,1,:);
+            COEF(3,2,:) = COEF(3,1,:);
+            COEF(3,3,:) = COEF(3,1,:);
         end
-        R.ChiTest = ChiTest;
-        R.ChiTestP = ChiTestP;
+        COEF(4,:,1:nband) = LMCoef(1,:,:);
+        COEF(5,:,1:nband) = LMCoef(2,:,:);
+        COEF(6,:,1:nband) = LMCoef(3,:,:);
+        COEF(7,:,1:nband) = LMCoef(4,:,:);
+        COEF(4,:,nband+1) = bandWeight*squeeze(abs(LMCoef(1,:,:)))';
+        COEF(5,:,nband+1) = bandWeight*squeeze(abs(LMCoef(2,:,:)))';
+        COEF(6,:,nband+1) = bandWeight*squeeze(abs(LMCoef(3,:,:)))';
+        COEF(7,:,nband+1) = bandWeight*squeeze(abs(LMCoef(4,:,:)))';
+        R.Coef = COEF;
         
         % assign class to each segment in fusion TS
-        if max(ChiTest(1,:)) < 1 && mean(abs(COEF(1,1:nband))) <= thresNonFstMean
+        if (COEF(1,1,nband+1)<=thresNonFstMean)&&(COEF(2,1,nband+1)<=thresNonFstStd)...
+                &&(COEF(5,1,nband+1)<=thresNonFstSlp)&&(COEF(6,1,nband+1)<=thresNonFstR2)
             % pre-break is forest, check if post-break exist
             if CHGFlag == 1
                 % check if post is non-forest
-                if max(ChiTest(2,:)) < 1 && mean(abs(COEF(2,1:nband))) <= thresNonFstMean
+                if (COEF(1,1,nband+1)<=thresNonFstMean)&&(COEF(2,1,nband+1)<=thresNonFstStd)...
+                        &&(COEF(5,1,nband+1)<=thresNonFstSlp)&&(COEF(6,1,nband+1)<=thresNonFstR2)
                     % ppost-break is forest, false break
                     CHGFlag = 0;
                 end
@@ -368,8 +409,9 @@ function [R,Model] = tune_model(var1,var2,var3)
                     CHG(CHG==C.Changed) = C.Outlier;
                     CHG(CHG==C.ChgEdge) = C.Stable;
                     % check this pixel as a whole again if this is non-forest
-                    if max(ChiTest(3,:)) < 1 && mean(abs(COEF(11,1:nband))) <= thresNonFstMean
-                        for i = 1:nob
+                    if (COEF(1,1,nband+1)<=thresNonFstMean)&&(COEF(2,1,nband+1)<=thresNonFstStd)...
+                            &&(COEF(5,1,nband+1)<=thresNonFstSlp)&&(COEF(6,1,nband+1)<=thresNonFstR2)
+                        for i = 1:neb
                             x = TS(:,i);
                             if mean(abs(x)) >= thresSpecEdge
                                 CHG(i) = C.NonForest;
@@ -382,7 +424,7 @@ function [R,Model] = tune_model(var1,var2,var3)
             end
         else
             % pre-break is non-forest, this is non-forest pixel        
-            for i = 1:nob
+            for i = 1:neb
                 x = TS(:,i);
                 if mean(abs(x)) >= thresSpecEdge
                     CHG(i) = C.NonForest;
