@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 11/11/2015
+% Last Update: 11/12/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,7 +71,7 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
-% Updates of Version 2.6 - 11/11/2015
+% Updates of Version 2.6 - 11/12/2015
 %   1.Redesigned the change detection process.
 %   2.Removed water pixel detecting.
 %   3.Added linear regression on fusion time series segment.
@@ -215,14 +215,14 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     for i = 1:nband
         if CHGFlag == 1
             LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
             LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
-            LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+            LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
             LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
-            LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+            LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
         else
             LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
             LMCoef(:,2,i) = LMCoef(:,1,i);
             LMCoef(:,3,i) = LMCoef(:,1,i);
         end
