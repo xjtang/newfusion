@@ -349,19 +349,19 @@ function [R,Model] = tune_model(var1,var2,var3)
             if CHGFlag == 1
                 LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
                 LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
-                R.LMFit1 = LMFit;
+                R.LMFitPre(i) = LMFit;
                 LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
                 LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
-                R.LMFit2 = LMFit;
+                R.LMFit2Post(i) = LMFit;
                 LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
                 LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
-                R.LMFit3 = LMFit;
+                R.LMFit3All(i) = LMFit;
             else
                 LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
                 LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
                 LMCoef(:,2,i) = LMCoef(:,1,i);
                 LMCoef(:,3,i) = LMCoef(:,1,i);
-                R.LMFit1 = LMFit;
+                R.LMFit1(i) = LMFit;
             end
         end
         R.LMCoef = LMCoef;
