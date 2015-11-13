@@ -349,19 +349,19 @@ function [R,Model] = tune_model(var1,var2,var3)
             if CHGFlag == 1
                 LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
                 LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
-                R.LMFitPre.([Band num2str(i)]) = LMFit;
+                R.LMFitPre.(['Band' num2str(i)]) = LMFit;
                 LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
                 LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
-                R.LMFit2Post.([Band num2str(i)]) = LMFit;
+                R.LMFit2Post.(['Band' num2str(i)]) = LMFit;
                 LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
                 LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
-                R.LMFit3All.([Band num2str(i)]) = LMFit;
+                R.LMFit3All.(['Band' num2str(i)]) = LMFit;
             else
                 LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
                 LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
                 LMCoef(:,2,i) = LMCoef(:,1,i);
                 LMCoef(:,3,i) = LMCoef(:,1,i);
-                R.LMFit1.([Band num2str(i)]) = LMFit;
+                R.LMFit1.(['Band' num2str(i)]) = LMFit;
             end
         end
         R.LMCoef = LMCoef;
