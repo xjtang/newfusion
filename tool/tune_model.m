@@ -204,6 +204,9 @@ function [R,Model] = tune_model(var1,var2,var3)
     R.Date = TSD;
     R.neb = neb;
     R.Model.NRT = NRT;
+    % normalize time series date
+    TSD = floor(TSD./1000)+rem(TSD,1000)./cons.diy;
+    
     
     % break detecting   
     
