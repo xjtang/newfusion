@@ -132,6 +132,10 @@ function [R,Model] = tune_model(var1,var2,var3)
         return;
     end
     
+    % normalize weight
+    bandWeight = bandWeight./(sum(bandWeight));
+    Model.weight = bandWeight; 
+    
     % record model parameters
     R.Model = Model;
     R.Pixel = [row,col];
