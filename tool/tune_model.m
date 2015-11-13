@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 11/11/2015
+% Last Update: 11/13/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -41,7 +41,7 @@
 % Updates of Version 1.0.5 - 9/17/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.1 - 11/11/2015
+% Updates of Version 1.1 - 11/13/2015
 %   1.Adjusted according to a major change in the model.
 %   2.Parameterize class codes.
 %   3.Added the std lines in the plots.
@@ -344,17 +344,17 @@ function [R,Model] = tune_model(var1,var2,var3)
         for i = 1:nband
             if CHGFlag == 1
                 LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-                LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+                LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
                 R.LMFit1 = LMFit;
                 LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
-                LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+                LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
                 R.LMFit2 = LMFit;
                 LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
-                LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+                LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
                 R.LMFit3 = LMFit;
             else
                 LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-                LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted;LMFit.RMSE];
+                LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
                 LMCoef(:,2,i) = LMCoef(:,1,i);
                 LMCoef(:,3,i) = LMCoef(:,1,i);
                 R.LMFit1 = LMFit;
