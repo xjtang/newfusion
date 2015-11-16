@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 11/13/2015
+% Last Update: 11/16/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -41,13 +41,14 @@
 % Updates of Version 1.0.5 - 9/17/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.1 - 11/13/2015
+% Updates of Version 1.1 - 11/16/2015
 %   1.Adjusted according to a major change in the model.
 %   2.Parameterize class codes.
 %   3.Added the std lines in the plots.
 %   4.Fixed a variable that may cause error.
 %   5.Added study time period control.
-%   6.Bug fix.
+%   6.Plot the linear model.
+%   7.Bug fix.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -485,8 +486,10 @@ function [R,Model] = tune_model(var1,var2,var3)
         % make plot
         figure();
         for i = 1:nband
+            % plot each band on the same plot
             subplot(nband,1,i);
             hold on;
+            % plot different types of points in different color
             if max(CHG==1) == 1
                 plot(Y(CHG==1),TS(i,CHG==1),'g.','MarkerSize',15);
             end
@@ -511,10 +514,13 @@ function [R,Model] = tune_model(var1,var2,var3)
             if max(CHG==8) == 1
                 plot(Y(CHG==7),TS(i,CHG==7),'y.','MarkerSize',15);
             end
-            stdline1 = refline(0,COEF(1,i)+nStandDev*COEF(3,i));
-            set(stdline1,'Color','r');
-            stdline2 = refline(0,COEF(1,i)-nStandDev*COEF(3,i));
-            set(stdline2,'Color','r');
+            % plot the std lines
+            plot([R.Date(start),R.Date(end)],ones(1,2).*(COEF(1,1,i)+nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
+            plot([R.Date(start),R.Date(end)],ones(1,2).*(COEF(1,1,i)-nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
+            % plot the linear models
+            
+            
+            % adjust captions and axis
             title(['Band ' num2str(bandIncluded(i))]);
             xlim([floor(Y(1)),floor(Y(end))+1]);
             ylim([-2000,2000]);
@@ -522,7 +528,8 @@ function [R,Model] = tune_model(var1,var2,var3)
             xlabel('Date');
             ylabel('Fusion');
         end
-    
+        hold off;
+        
     % done
     
 end
