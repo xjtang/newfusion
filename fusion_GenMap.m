@@ -53,7 +53,7 @@ function fusion_GenMap(main)
     
     % initialize
     MAP = ones(length(main.etm.line),length(main.etm.sample),4)*main.cons.outna;
-    CMAP = ones(length(main.etm.line),length(main.etm.sample),3,length(main.model.band)+1,6)*main.cons.outna;
+    CMAP = ones(length(main.etm.line),length(main.etm.sample),length(main.model.band)+1,6)*main.cons.outna;
     
     % start timer
     tic;
@@ -96,12 +96,12 @@ function fusion_GenMap(main)
             MAP(i,j,4) = genMap(X,CHG.Date,4,main.model,main.TSclass,main.LCclass);
             
             % assign coef map result
-            CMAP(i,j,:,1) = squeeze(CHG.Coef(1,:,j,:));
-            CMAP(i,j,:,2) = squeeze(CHG.Coef(2,:,j,:));
-            CMAP(i,j,:,3) = squeeze(CHG.Coef(4,:,j,:));
-            CMAP(i,j,:,4) = squeeze(CHG.Coef(5,:,j,:));
-            CMAP(i,j,:,5) = squeeze(CHG.Coef(6,:,j,:));
-            CMAP(i,j,:,6) = squeeze(CHG.Coef(7,:,j,:));
+            CMAP(i,j,:,1) = CHG.Coef(1,3,j,:);
+            CMAP(i,j,:,2) = CHG.Coef(2,3,j,:);
+            CMAP(i,j,:,3) = CHG.Coef(4,3,j,:);
+            CMAP(i,j,:,4) = CHG.Coef(5,3,j,:);
+            CMAP(i,j,:,5) = CHG.Coef(6,3,j,:);
+            CMAP(i,j,:,6) = CHG.Coef(7,3,j,:);
             
         end 
         
