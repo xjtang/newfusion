@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 11/2/2015
+% Last Update: 11/16/2015
 %
 % Input Arguments: NA
 % 
@@ -62,9 +62,10 @@
 %   2.Fixed a variable name that will cause error.
 %   3.Updated comments.
 %
-% Updates of Version 1.1.10 - 11/11/2015
+% Updates of Version 1.1.10 - 11/16/2015
 %   1.Added new thresholds for change detection.
 %   2.Updated version system.
+%   3.Adjusted default values.
 %
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -73,7 +74,7 @@
     configVer = 10110;                % config file version DO NOT CHANGE THIS!!!
     modisPlatform = 'MOD';          % MOD for Terra, MYD for Aqua
     landsatScene = [227,65];        % Landsat path and row
-    dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/fusion/';
+    dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
                                     % data path
                                             
 % main settings
@@ -83,20 +84,20 @@
     diffMethod = 1;                 % method used in difference calculation, max(0) or mean(1)
     cloudThres = 80;                % A threshold on percent cloud cover for data filtering.
     startDate = 2013001;            % start date of this analysis
-    endDate = 2016001;              % end date of this analysis
+    endDate = 2015001;              % end date of this analysis
     nrtDate = 2014001;              % start date of the near real time change detection
     
 % model parameters
-    minNoB = 80;                    % minimum number of valid observation
-    initNoB = 40;                   % number of observation or initialization
+    minNoB = 40;                    % minimum number of valid observation
+    initNoB = 20;                   % number of observation or initialization
     nStandDev = 3;                % number of standard deviation to flag a suspect
     nConsecutive = 6;               % number of consecutive observation to detect change
     nSuspect = 4;                   % number of suspect to confirm a change
-    outlierRemove = 3;              % switch for outlier removing in initialization
+    outlierRemove = 2;              % switch for outlier removing in initialization
     thresNonFstMean = 200;          % threshold of mean for non-forest detection
-    thresNonFstStd = 350;           % threshold of std for non-forest detection
-    thresNonFstSlp = 500;           % threshold of slope for non-forest detection
-    thresNonFstR2 = 0.2;            % threshold of r2 for non-forest detection
+    thresNonFstStd = 200;           % threshold of std for non-forest detection
+    thresNonFstSlp = 200;           % threshold of slope for non-forest detection
+    thresNonFstR2 = 30;            % threshold of r2 for non-forest detection
     thresSpecEdge = 100;            % spectral threshold for edge detecting
     thresChgEdge = 0.65;            % threshold of detecting change edging pixel
     thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel
