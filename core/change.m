@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 11/12/2015
+% Last Update: 11/16/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,7 +71,7 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
-% Updates of Version 2.6 - 11/12/2015
+% Updates of Version 2.6 - 11/16/2015
 %   1.Redesigned the change detection process.
 %   2.Removed water pixel detecting.
 %   3.Added linear regression on fusion time series segment.
@@ -80,7 +80,8 @@
 %   6.Added study time period control.
 %   7.Changed the function of minNoB back to original.
 %   8.Adjusted input parameter names.
-%   9.Bugs fixed.
+%   9.Cleaned up the codes.
+%   10.Bugs fixed.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -261,15 +262,10 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
             &&(COEF(5,1,nband+1)<=model.nonFstSlp)&&(COEF(6,1,nband+1)<=model.nonFstR2)
         % pre-break is forest, check if post-break exist
         if CHGFlag == 1
-            % check if post is non-forest
+            % check if post is forest
             if (COEF(1,2,nband+1)<=model.nonFstMean)&&(COEF(2,2,nband+1)<=model.nonFstStd)...
                     &&(COEF(5,2,nband+1)<=model.nonFstSlp)&&(COEF(6,2,nband+1)<=model.nonFstR2)
                 % post-break is forest, false break
-                CHGFlag = 0;
-            end
-            % deal with false break
-            if CHGFlag == 0
-                % remove change flag
                 CHG(CHG==C.Break) = C.Outlier;
                 CHG(CHG==C.Changed) = C.Outlier;
                 CHG(CHG==C.ChgEdge) = C.Stable;
