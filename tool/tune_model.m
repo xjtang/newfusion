@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 11/16/2015
+% Last Update: 11/17/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -41,7 +41,7 @@
 % Updates of Version 1.0.5 - 9/17/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.1 - 11/16/2015
+% Updates of Version 1.1 - 11/17/2015
 %   1.Adjusted according to a major change in the model.
 %   2.Parameterize class codes.
 %   3.Added the std lines in the plots.
@@ -208,9 +208,7 @@ function [R,Model] = tune_model(var1,var2,var3)
     % normalize time series date
     TSD = floor(TSD./1000)+rem(TSD,1000)./356.25;
     
-    
     % break detecting   
-    
         % check if we have enough observation
         if neb < minNoB
             R.CHG = C.NA;
@@ -221,12 +219,11 @@ function [R,Model] = tune_model(var1,var2,var3)
         CHG = zeros(1,neb);
         COEF = zeros(7,3,nband+1);
         mainVec = TS(:,1:initNoB);
-        
         % record initial vector
         R.initVec = mainVec;
+        % remove outliers in the initial vector
         if outlierRemove > 0
             for i = 1:outlierRemove
-                % remove outliers in the initial observations
                 initMean = mean(mainVec,2);
                 initStd = std(mainVec,0,2);
                 mainVecRes = mainVec-repmat(initMean,1,initNoB+1-i);
