@@ -505,8 +505,8 @@ function [R,Model] = tune_model(var1,var2,var3)
                 plot(X(CHG==C.NFEdge),TS(i,CHG==C.NFEdge),'c.','MarkerSize',15);
             end
             % plot the std lines
-            plot([R.Date(start),R.Date(end)],ones(1,2).*(COEF(1,1,i)+nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
-            plot([R.Date(start),R.Date(end)],ones(1,2).*(COEF(1,1,i)-nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
+            plot([R.Date(1),R.Date(end)],ones(1,2).*(COEF(1,1,i)+nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
+            plot([R.Date(1),R.Date(end)],ones(1,2).*(COEF(1,1,i)-nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
             % plot the linear models
             if CHGFlag == 1
                 plot([X(1),X(CHG==C.Break)],[X(1),X(CHG==C.Break)]*COEF(4,1,i)+COEF(5,1,i),'Color',[0.75,0.75,0.75]);
