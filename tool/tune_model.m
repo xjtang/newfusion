@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 11/18/2015
+% Last Update: 11/19/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -41,7 +41,7 @@
 % Updates of Version 1.0.5 - 9/17/2015
 %   1.Adjusted according to changes in the model.
 %
-% Updates of Version 1.1 - 11/18/2015
+% Updates of Version 1.1 - 11/19/2015
 %   1.Adjusted according to a major change in the model.
 %   2.Parameterize class codes.
 %   3.Added the std lines in the plots.
@@ -516,9 +516,9 @@ function [R,Model] = tune_model(var1,var2,var3)
             end
             % adjust captions and axis
             title(['Band ' num2str(bandIncluded(i))]);
-            xlim([floor(Y(1)),floor(Y(end))+1]);
+            xlim([floor(X(1)),floor(X(end))+1]);
             ylim([-2000,2000]);
-            set(gca,'XTick',floor(Y(1)):(floor(Y(end))+1));
+            set(gca,'XTick',floor(X(1)):(floor(X(end))+1));
             xlabel('Date');
             ylabel('Fusion');
         end
