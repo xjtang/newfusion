@@ -18,7 +18,7 @@
 # -o fusion.qlog
 
 # request more memory
-#$ -pe omp 4
+#$ -pe omp 3
 
 # Now let's keep track of some information just in case anything goes wrong
 
