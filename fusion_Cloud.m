@@ -47,6 +47,7 @@
 %
 % Updates of Version 2.1.1 - 11/20/2015
 %   1.Fixed a bug that cause the image list to have a 0.
+%		2.Fixed a removing file bug.
 %
 % Created on Github on 11/24/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -68,6 +69,13 @@ function fusion_Cloud(main)
     dateDOY = zeros(numel(fileList),1);
     dateFull = zeros(numel(fileList),1);
 
+    % clear dump dir
+    dumpDir = [main.output.dump 'P' num2str(main.set.scene(1),'%03d') 'R' num2str(main.set.scene(2),'%03d') '/SUBCLD/'];
+    if exist(dumpDir,'dir') == 0 
+        mkdir(dumpDir);
+    end
+    system(['rm ',dumpDir,'*']);
+
     % loop through all files in the list
     for i = 1:numel(fileList)
 
@@ -86,14 +94,7 @@ function fusion_Cloud(main)
         dateYear(i) = str2double(fileList(i).name(p:(p+3)));
         dateDOY(i) = str2double(fileList(i).name((p+4):(p+6)));
 
-
         % discard current swath if cloud percent larger than certain threshold
-        dumpDir = [main.output.dump 'P' num2str(main.set.scene(1),'%03d') 'R' num2str(main.set.scene(2),'%03d') '/SUBCLD/'];
-        if exist(dumpDir,'dir') == 0 
-            mkdir(dumpDir);
-        end
-        % clear dump dir
-        system(['rm ',dumpDir,'*']);
         if perCloud(i) > main.set.cloud
             system(['mv ',main.output.modsub,fileList(i).name,' ',dumpDir]);
         else
@@ -105,7 +106,7 @@ function fusion_Cloud(main)
   
     % save result
     outFile = [main.outpath,'cloud.csv'];
-    if exist(outFile,'file') == 0 
+    if exist(outFile,'file')
         disp('Cloud file already exist, overwrite.');
         system(['rm ',outFile]);
     end
@@ -114,7 +115,7 @@ function fusion_Cloud(main)
     
     % make a image list for generating synthetic images
     outFile = [main.outpath,'syn_list.csv'];
-    if exist(outFile,'file') == 0 
+    if exist(outFile,'file') 
         disp('Image list already exist, overwrite.');
         system(['rm ',outFile]);
     end
