@@ -1,6 +1,6 @@
 # Auto save files
-.Rhistory
-.asv
+*.Rhistory
+*.asv
 
 # qsub log file
-.qlog
+*.qlog

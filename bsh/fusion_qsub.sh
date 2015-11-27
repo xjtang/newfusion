@@ -6,7 +6,7 @@
 #$ -S /bin/bash
 
 # Run for 24 hours
-#$ -l h_rt=24:00:00
+#$ -l h_rt=48:00:00
 
 # Forward my current environment
 #$ -V
@@ -15,7 +15,10 @@
 #$ -j y
 
 # Name the file where to redirect standard output and error
-#$ -o fusion.qlog
+# -o fusion.qlog
+
+# request more memory
+#$ -pe omp 3
 
 # Now let's keep track of some information just in case anything goes wrong
 

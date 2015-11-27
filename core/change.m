@@ -1,11 +1,11 @@
 % change.m
-% Version 2.5
+% Version 2.6
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 9/25/2015
+% Last Update: 11/16/2015
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -71,54 +71,63 @@
 %   2.Fixed a bug.
 %   3.Returns model coefficients.
 %
+% Updates of Version 2.6 - 11/16/2015
+%   1.Redesigned the change detection process.
+%   2.Removed water pixel detecting.
+%   3.Added linear regression on fusion time series segment.
+%   4.Use RMSE and slope to assign classes.
+%   5.Read class codes from main input.
+%   6.Added study time period control.
+%   7.Changed the function of minNoB back to original.
+%   8.Adjusted input parameter names.
+%   9.Cleaned up the codes.
+%   10.Bugs fixed.
+%
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-% Classification Scheme
-%  -1 - Ineligible Observation
-%   0 - Default Value
-%   1 - Stable Forest
-%   2 - Outlier (Cloud, Shadow ...)
-%   3 - Break
-%   4 - Changed
-%   5 - Edge of change
-%   6 - Stable Non-forest
-%   7 - Edge of Non-forest
-%   8 - Water or ribarian area
+function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
 
-function [CHG,COEF] = change(TS,sets)
-    
     % analyse input TS 
-    [~,nob] = size(TS);
+    [nband,nob] = size(TS);
+    
+    % normalize time series date
+    TSD = double(TSD);
+    TSD = floor(TSD./1000)+rem(TSD,1000)./cons.diy;
     
     % initilize result
-    CHG = zeros(1,nob);
-    COEF = zeros(6,length(sets.band)+1);
+    CHG = ones(1,nob)*C.Default;
+    COEF = zeros(7,3,nband+1);
     ETS = 1:nob;
-    sets.weight = sets.weight/sum(sets.weight);
 
     % complie eligible observations
     for i = nob:-1:1
-        if max(TS(:,i)==-9999)
-            CHG(i) = -1;
+        if max(TS(:,i)==cons.outna)
+            CHG(i) = C.NA;
             ETS(i) = [];
+            if i <= NRT
+                NRT = NRT - 1;
+            end
         end
     end
     
     % check total number of eligible observation
     [~,neb] = size(ETS);
-    if neb < sets.initNoB
-        CHG = -1;
+    if neb < model.minNoB
+        CHG = C.NA;
         return 
     end
         
     % initilization
-    mainVec = TS(:,ETS(1:sets.initNoB));
-    if sets.outlr > 0
-        for i = 1:sets.outlr
+    mainVec = TS(:,ETS(1:model.initNoB));
+    if model.outlr > 0
+        for i = 1:model.outlr
             % remove outliers in the initial observations
             initMean = mean(mainVec,2);
-            mainVecDev = sets.weight*abs(mainVec-repmat(initMean,1,sets.initNoB+1-i));
+            initStd = std(mainVec,0,2);
+            mainVecRes = mainVec-repmat(initMean,1,model.initNoB+1-i);
+            mainVecNorm = abs(mainVecRes)./repmat(initStd,1,model.initNoB+1-i);
+            mainVecDev = model.weight*mainVecNorm;
             [~,TSmaxI] = max(mainVecDev);
             mainVec(:,TSmaxI) = [];
         end
@@ -134,48 +143,48 @@ function [CHG,COEF] = change(TS,sets)
         x = TS(:,ETS(i));
         xRes = abs(x-initMean);
         xNorm = xRes./initStd;
-        xDev = sets.weight*xNorm;
+        xDev = model.weight*xNorm;
         
         % check if possible change occured
-        if xDev >= sets.nSD 
+        if xDev >= model.nSD 
             % check if change already detected
             if CHGFlag == 1
                 % set result to changed
-                CHG(ETS(i)) = 4;
+                CHG(ETS(i)) = C.Changed;
             else
                 % see if this is a break
-                if i <= length(ETS)+1-sets.nCosc && i > sets.minNoB
+                if i <= length(ETS)+1-model.nCosc && i > NRT
                     nSusp = 1;
-                    for k = (i+1):(i+sets.nCosc-1)
+                    for k = (i+1):(i+model.nCosc-1)
                         xk = TS(:,ETS(k));
                         xkRes = abs(xk-initMean);
                         xkNorm = xkRes./initStd;
-                        xkDev = sets.weight*xkNorm;
-                        if xkDev >= sets.nSD
+                        xkDev = model.weight*xkNorm;
+                        if xkDev >= model.nSD
                             nSusp = nSusp + 1;
                         end
                     end
-                    if nSusp >= sets.nSusp
-                        CHG(ETS(i)) = 3;
+                    if nSusp >= model.nSusp
+                        CHG(ETS(i)) = C.Break;
                         CHGFlag = 1;
                     else
-                        CHG(ETS(i)) = 2;
+                        CHG(ETS(i)) = C.Outlier;
                     end
                 else
                     % this is an outlier
-                    CHG(ETS(i)) = 2;
+                    CHG(ETS(i)) = C.Outlier;
                 end
             end
         else
             % check if change already detected
             if CHGFlag == 1
                 % set result to edge of change
-                CHG(ETS(i)) = 5;
+                CHG(ETS(i)) = C.ChgEdge;
             else
                 % set result to stable
-                CHG(ETS(i)) = 1;
+                CHG(ETS(i)) = C.Stable;
                 % update main vector
-                if i > sets.initNoB
+                if i > model.initNoB
                     mainVec = [mainVec,TS(:,ETS(i))];  %#ok<*AGROW>
                     initMean = mean(mainVec,2);
                     initStd = std(mainVec,0,2);
@@ -185,108 +194,103 @@ function [CHG,COEF] = change(TS,sets)
 
     end
     
-    % post change detection refining
-    % split data into pre-break and post-break
-    if max(CHG==3) == 1
+    % split data into pre and post break
+    if max(CHG==C.Break) == 1
         % break exist
-        preBreakClean = TS(:,CHG==1);
-        postBreak = TS(:,CHG>=3);
-        % remove outliers in post break
-        if sets.outlr > 0
-            for i = 1:sets.outlr
-                pMean = mean(postBreak,2);
-                pMeanDev = sets.weight*abs(postBreak-repmat(pMean,1,size(postBreak,2)));
-                [~,TSmaxI] = max(pMeanDev);
-                postBreak(:,TSmaxI) = [];
-            end
-        end
+        preBreak = TS(:,CHG==C.Stable);
+        preBreakD = TSD(CHG==C.Stable);
+        postBreak = TS(:,CHG>=C.Break);
+        postBreakD = TSD(CHG>=C.Break);
+        prePostComb = [preBreak,postBreak];
+        prePostCombD = [preBreakD,postBreakD];
         CHGFlag = 1;
-        % record coefficients
-        COEF(1,:) = [mean(preBreakClean,2)',sets.weight*abs(mean(preBreakClean,2))];
-        COEF(2,:) = [std(preBreakClean,0,2)',sets.weight*abs(std(preBreakClean,0,2))];
-        COEF(3,:) = [mean(postBreak,2)',sets.weight*abs(mean(postBreak,2))];
-        COEF(4,:) = [std(postBreak,0,2)',sets.weight*abs(std(postBreak,0,2))];
-        COEF(5,:) = [mean([preBreakClean,postBreak],2)',sets.weight*abs(mean([preBreakClean,postBreak],2))];
-        COEF(6,:) = [std([preBreakClean,postBreak],0,2)',sets.weight*abs(std([preBreakClean,postBreak],0,2))];
     else
         % no break
-        preBreakClean = TS(:,CHG==1);
+        preBreak = TS(:,CHG==C.Stable);
+        preBreakD = TSD(CHG==C.Stable);
         CHGFlag = 0;
-        COEF(1,:) = [mean(preBreakClean,2)',sets.weight*abs(mean(preBreakClean,2))]';
-        COEF(2,:) = [std(preBreakClean,0,2)',sets.weight*abs(std(preBreakClean,0,2))]';
-        COEF(3,:) = COEF(1,:);
-        COEF(4,:) = COEF(2,:);
-        COEF(5,:) = COEF(1,:);
-        COEF(6,:) = COEF(2,:);
     end
     
-    % see if pre-brake is non-forest
-    pMean = sets.weight*abs(mean(preBreakClean,2));
-    pSTD = sets.weight*abs(std(preBreakClean,0,2));
-    if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
-        % deal with stable non-forest pixel
-        for i = 1:length(ETS)
-            x = TS(:,ETS(i));
-            if sets.weight*abs(x) >= sets.specedge
-                CHG(ETS(i)) = 6;
-            else
-                CHG(ETS(i)) = 7;
-            end
+    % linear model
+    LMCoef = zeros(4,3,nband);
+    for i = 1:nband
+        if CHGFlag == 1
+            LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
+            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+            LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
+            LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+            LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
+            LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+        else
+            LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
+            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+            LMCoef(:,2,i) = LMCoef(:,1,i);
+            LMCoef(:,3,i) = LMCoef(:,1,i);
         end
+    end
+    
+    % record coefficients
+    COEF(1,1,:) = [mean(preBreak,2)',model.weight*abs(mean(preBreak,2))];
+    COEF(2,1,:) = [std(preBreak,0,2)',model.weight*abs(std(preBreak,0,2))];
+    COEF(3,1,:) = size(preBreak,2);
+    if CHGFlag == 1
+        COEF(1,2,:) = [mean(postBreak,2)',model.weight*abs(mean(postBreak,2))];
+        COEF(1,3,:) = [mean([preBreak,postBreak],2)',model.weight*abs(mean([preBreak,postBreak],2))];
+        COEF(2,2,:) = [std(postBreak,0,2)',model.weight*abs(std(postBreak,0,2))];
+        COEF(2,3,:) = [std([preBreak,postBreak],0,2)',model.weight*abs(std([preBreak,postBreak],0,2))];
+        COEF(3,2,:) = size(postBreak,2);
+        COEF(3,3,:) = COEF(3,1,1) + COEF(3,2,1)  ;
     else
+        COEF(1,2,:) = COEF(1,1,:);
+        COEF(1,3,:) = COEF(1,1,:);
+        COEF(2,2,:) = COEF(2,1,:);
+        COEF(2,3,:) = COEF(2,1,:);
+        COEF(3,2,:) = COEF(3,1,:);
+        COEF(3,3,:) = COEF(3,1,:);
+    end
+    COEF(4,:,1:nband) = LMCoef(1,:,:);
+    COEF(5,:,1:nband) = LMCoef(2,:,:);
+    COEF(6,:,1:nband) = LMCoef(3,:,:);
+    COEF(7,:,1:nband) = LMCoef(4,:,:);
+    COEF(4,:,nband+1) = model.weight*squeeze(abs(LMCoef(1,:,:)))';
+    COEF(5,:,nband+1) = model.weight*squeeze(abs(LMCoef(2,:,:)))';
+    COEF(6,:,nband+1) = model.weight*squeeze(abs(LMCoef(3,:,:)))';
+    COEF(7,:,nband+1) = model.weight*squeeze(abs(LMCoef(4,:,:)))';
+    
+    % assign class
+    if (COEF(1,1,nband+1)<=model.nonFstMean)&&(COEF(2,1,nband+1)<=model.nonFstStd)...
+            &&(COEF(5,1,nband+1)<=model.nonFstSlp)&&(COEF(6,1,nband+1)<=model.nonFstR2)
         % pre-break is forest, check if post-break exist
         if CHGFlag == 1
-            % compare pre-break and post-break
-            if manova1([preBreakClean';postBreak'],[ones(size(preBreakClean,2),1);(ones(size(postBreak,2),1)*2)]) == 0
-                % pre and post are the same, false break
-                CHGFlag = 0;
-            else
-                % pre and post different, check if post is non-forest
-                % use relative mean to pre-break
-                pMean = sets.weight*abs(mean(postBreak,2)-mean(preBreakClean,2));
-                pSTD = sets.weight*abs(std(postBreak,0,2));
-                if pMean < sets.nonfstmean && pSTD < sets.nonfstdev 
-                    % post-break is not non-forest, false break
-                    CHGFlag = 0;
-                end
-            end
-            % deal with false break
-            if CHGFlag == 0
-                % remove change flag
-                CHG(CHG==3) = 2;
-                CHG(CHG==4) = 2;
-                CHG(CHG==5) = 1;
+            % check if post is forest
+            if (COEF(1,2,nband+1)<=model.nonFstMean)&&(COEF(2,2,nband+1)<=model.nonFstStd)...
+                    &&(COEF(5,2,nband+1)<=model.nonFstSlp)&&(COEF(6,2,nband+1)<=model.nonFstR2)
+                % post-break is forest, false break
+                CHG(CHG==C.Break) = C.Outlier;
+                CHG(CHG==C.Changed) = C.Outlier;
+                CHG(CHG==C.ChgEdge) = C.Stable;
                 % check this pixel as a whole again if this is non-forest
-                pMean = sets.weight*abs(mean([preBreakClean,postBreak],2));
-                pSTD = sets.weight*abs(std([preBreakClean,postBreak],0,2));
-                if pMean >= sets.nonfstmean || pSTD >= sets.nonfstdev 
+                if (COEF(1,3,nband+1)<=model.nonFstMean)&&(COEF(2,3,nband+1)<=model.nonFstStd)...
+                        &&(COEF(5,3,nband+1)<=model.nonFstSlp)&&(COEF(6,3,nband+1)<=model.nonFstR2)
                     for i = 1:length(ETS)
                         x = TS(:,ETS(i));
-                        if sets.weight*abs(x) >= sets.specedge
-                            CHG(ETS(i)) = 6;
+                        if mean(abs(x)) >= model.specEdge
+                            CHG(ETS(i)) = C.NonForest;
                         else
-                            CHG(ETS(i)) = 7;
+                            CHG(ETS(i)) = C.NFEdge;
                         end
                     end
                 end
             end
         end
-    end
-    
-    % see if this is a water pixel
-    if CHGFlag == 0
-        pMean = sets.weight*mean(preBreakClean,2);
     else
-        pMean = sets.weight*mean([preBreakClean,postBreak],2);
-    end
-    if pMean < sets.water
-        % deal with water pixel
+        % pre-break is non-forest, this is non-forest pixel
         for i = 1:length(ETS)
             x = TS(:,ETS(i));
-            if sets.weight*abs(x) >= sets.specedge
-                CHG(ETS(i)) = 8;
+            if mean(abs(x)) >= model.specEdge
+                CHG(ETS(i)) = C.NonForest;
             else
-                CHG(ETS(i)) = 7;
+                CHG(ETS(i)) = C.NFEdge;
             end
         end
     end

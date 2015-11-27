@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.2.8
+% Version 2.3.1
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 9/24/2015
+% Last Update: 11/11/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -113,6 +113,21 @@
 %   1.Added version control of the config file.
 %   2.Adjusted default value.
 %
+% Updates of Version 2.3 - 10/18/2015
+%   1.Added new parameters.
+%   2.Remvoed un-used parameters.
+%   3.Adjusted default values.
+%   4.Added fusion TS segment class codes.
+%   5.Added landcover class codes.
+%   6.Added model constants.
+%
+% Updates of Version 2.3.1 - 11/11/2015
+%   1.Added new project parameters for study time period control.
+%   2.Added new model constants.
+%   3.Fixed a variable that may cause error.
+%   4.Deleted unused parameters.
+%   5.Normalize weight.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -139,7 +154,7 @@ function main = fusion_Inputs(file,job)
     end
     
     % check version config file
-    curVersion = 116;
+    curVersion = 10110;
     if ~exist('configVer','var')
         disp('WARNING!!!!');
         disp('WARNING!!!!');
@@ -187,23 +202,31 @@ function main = fusion_Inputs(file,job)
         if ~exist('diffMethod', 'var')
             diffMethod = 1;
         end
-        % change map method
-        if ~exist('mapType', 'var')
-            mapType = 3;
-        end
         % cloud threshold
         if ~exist('cloudThres', 'var')
             cloudThres = 80;
+        end
+        % start date of the study time period
+        if ~exist('startDate', 'var')
+            startDate = 2012001;
+        end
+        % start date of the study time period
+        if ~exist('endDate', 'var')
+            endDate = 2015001;
+        end
+        % start date of the near real time change detection
+        if ~exist('nrtDate', 'var')
+            nrtDate = 2014001;
         end
         
         % model parameters
         % number of observation before a break can be detected
         if ~exist('minNoB', 'var')
-            minNoB = 40;
+            minNoB = 80;
         end
         % number of observation or initialization
         if ~exist('initNoB', 'var')
-            initNoB = 40;
+            initNoB = 80;
         end
         % number of standard deviation to flag a suspect
         if ~exist('nStandDev', 'var')
@@ -223,11 +246,19 @@ function main = fusion_Inputs(file,job)
         end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 175;
+            thresNonFstMean = 200;
         end
         % threshold of std for non-forest detection
         if ~exist('thresNonFstStd', 'var')
-            thresNonFstStd = 125;
+            thresNonFstStd = 350;
+        end
+        % threshold of slope for non-forest detection
+        if ~exist('thresNonFstSlp', 'var')
+            thresNonFstSlp = 500;
+        end
+        % threshold of R2 for non-forest detection
+        if ~exist('thresNonFstR2', 'var')
+            thresNonFstR2 = 0.2;
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
@@ -240,10 +271,6 @@ function main = fusion_Inputs(file,job)
         % spectral threshold for edge detecting
         if ~exist('thresSpecEdge', 'var')
             thresSpecEdge = 100;
-        end
-        % spectral threshold for detecting water
-        if ~exist('thresWater', 'var')
-            thresWater = -350;
         end
         % threshold for n observation after change to confirm change
         if ~exist('thresProbChange', 'var')
@@ -272,19 +299,15 @@ function main = fusion_Inputs(file,job)
         % MODIS Surface Reflectance data (swath data)
         main.input.swath = [main.path modisPlatform '09/'];
 
-        % for 250m resolution fusion process only:
-        % gridded 250m resolution band 1 and 2 surface reflectance data
-        main.input.g250m = [main.path modisPlatform '09GQ/'];
-
         % for BRDF correction process only:
         % daily gridded MODIS suface reflectance data
         main.input.grid = [main.path modisPlatform '09GA/'];
         % BRDF/Albedo model parameters product
         main.input.brdf = [main.path 'MCD43A1/'];
-
-        % for gridding process only:
-        % MODIS geolocation data
-        main.input.geo = [main.path modisPlatform '03/'];
+        
+        % for 250m BRDF correction process only:
+        % gridded 250m resolution band 1 and 2 surface reflectance data
+        main.input.g250m = [main.path modisPlatform '09GQ/'];
         
     % set output data location (create if not exist)
         % main outputs:
@@ -364,7 +387,25 @@ function main = fusion_Inputs(file,job)
         if exist(main.output.vault,'dir') == 0 
             mkdir([main.path 'VAULT']);
         end
-          
+
+    % model constants
+        % NA value for Landsat images
+        main.cons.etmna = -9999;
+        % scale factor of landsat images
+        main.cons.etmsf = 10000;
+        % NA value for synthetic images
+        main.cons.synna = 0;
+        % NA value for MCD43A1 products
+        main.cons.mcdna = 30000;
+        % scale factor for MCD43A1 products
+        main.cons.mcdsf = 1000;
+        % scale factor for modis angles
+        main.cons.angsf = 100;
+        % Na value for outputs
+        main.cons.outna = -9999;
+        % days in one year
+        main.cons.diy = 365.25;
+        
     % project information
         % config file version
         main.set.cver = configVer;
@@ -384,10 +425,14 @@ function main = fusion_Inputs(file,job)
         main.set.bias = BIAS;
         % max (0) or mean (1) in calculating difference map
         main.set.dif = diffMethod;
-        % type of map to be generated, date(1)/month(2) of change, change only map (3)
-        main.set.map = mapType;
         % a threshold on percent cloud cover for data filtering
         main.set.cloud = cloudThres;
+        % start date of the study time period
+        main.set.sdate = startDate;
+        % end date of the study time period
+        main.set.edate = endDate;
+        % start date of the near real time change detection
+        main.set.cdate = nrtDate;
         
     % settings and parameters for the change detection model
         % number of observation before a break can be detected
@@ -403,23 +448,46 @@ function main = fusion_Inputs(file,job)
         % number of outlier to remove in initialization
         main.model.outlr = outlierRemove;
         % threshold of mean to detect non-forest pixel
-        main.model.nonfstmean = thresNonFstMean;
+        main.model.nonFstMean = thresNonFstMean;
         % threshold of std to detect non-forest pixel
-        main.model.nonfstdev = thresNonFstStd;
-        % threshold of detecting change edging pixel
-        main.model.chgedge = thresChgEdge;
+        main.model.nonFstStd = thresNonFstStd;
+        % threshold of slope to detect non-forest pixel
+        main.model.nonFstSlp = thresNonFstSlp;
+        % threshold of r2 to detect non-forest pixel
+        main.model.nonFstR2 = thresNonFstR2;
+        % threshold of std to detect non-forest pixel
+        main.model.chgEdge = thresChgEdge;
         % threshold of detecting edging pixel in stable non-forest pixel
-        main.model.nonfstedge = thresNonFstEdge;
+        main.model.nonFstEdge = thresNonFstEdge;
         % spectral threshold for edge detecting
-        main.model.specedge = thresSpecEdge;
-        % spectral threshold for detecting water
-        main.model.water = thresWater;
+        main.model.specEdge = thresSpecEdge;
         % threshold for n observation after change to confirm change
         main.model.probThres = thresProbChange;
         % bands used for change detection
         main.model.band = bandIncluded;
-        % weight of each band in change detection
-        main.model.weight = bandWeight;
+        % weight of each band in change detection (normalized)
+        main.model.weight = bandWeight./(sum(bandWeight));
+        
+    % fusion TS segment class codes
+        main.TSclass.NA = -1;           % not available
+        main.TSclass.Default = 0;       % default
+        main.TSclass.Stable = 1;        % stable forest
+        main.TSclass.Outlier = 2;       % outlier (e.g. cloud)
+        main.TSclass.Break = 3;         % change break
+        main.TSclass.Changed = 4;       % changed to non-forest
+        main.TSclass.ChgEdge = 5;       % edge of change
+        main.TSclass.NonForest = 6;     % stable non-forest
+        main.TSclass.NFEdge = 7;        % edge of stable non-forest
+        
+    % land cover clas codes
+        main.LCclass.NA = -9999;        % no data
+        main.LCclass.Default = -1;      % default
+        main.LCclass.Forest = 0;        % stable forest
+        main.LCclass.NonForest = 5;     % stable non-forest
+        main.LCclass.NFEdge = 6;        % non-forest edge
+        main.LCclass.Change = 10;       % change
+        main.LCclass.CEdge = 11;        % edge of change
+        main.LCclass.Prob = 12;         % unconfirmed change
         
     % image properties
         % grab the first ETM file

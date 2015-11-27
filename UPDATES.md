@@ -3,6 +3,18 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.2.5 - 11/16/2015
+--------------
+- Redesigned the change detection model.  
+- Implemented model constants.  
+- Added a study time period control system.  
+- Updated the tune_model tool.  
+- Parameterized fusion time series and classification class codes.  
+- Expanded collection of coefficients.  
+- Added a linear model for classifying fusion time series segments.  
+- Implement large area multiple Landsat scenes processing.  
+- Bugs fixed.  
+
 Version 1.2.4 - 9/25/2015
 --------------
 - Added version control for the config file.  

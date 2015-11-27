@@ -9,6 +9,6 @@ $1(main)
 quit
 MATLAB_ENV
 
-echo 'Done!'
+# echo 'Done!'
 
 # End
