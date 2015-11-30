@@ -1,11 +1,11 @@
 % config.m
-% Version 1.1.10
+% Version 1.1.11
 % Configuration File
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 11/16/2015
+% Last Update: 11/29/2015
 %
 % Input Arguments: NA
 % 
@@ -67,12 +67,15 @@
 %   2.Updated version system.
 %   3.Adjusted default values.
 %
+% Updates of Version 1.1.11 - 11/29/2015
+%   1.Adjusted default values.
+%
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 % project information
-    configVer = 10110;                % config file version DO NOT CHANGE THIS!!!
-    modisPlatform = 'MOD';          % MOD for Terra, MYD for Aqua
+    configVer = 10111;              % config file version DO NOT CHANGE THIS!!!
+    modisPlatform = 'ALL';          % MOD for Terra, MYD for Aqua
     landsatScene = [227,65];        % Landsat path and row
     dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
                                     % data path
@@ -90,14 +93,14 @@
 % model parameters
     minNoB = 40;                    % minimum number of valid observation
     initNoB = 20;                   % number of observation or initialization
-    nStandDev = 3;                % number of standard deviation to flag a suspect
+    nStandDev = 3;                  % number of standard deviation to flag a suspect
     nConsecutive = 6;               % number of consecutive observation to detect change
     nSuspect = 4;                   % number of suspect to confirm a change
     outlierRemove = 2;              % switch for outlier removing in initialization
     thresNonFstMean = 200;          % threshold of mean for non-forest detection
     thresNonFstStd = 200;           % threshold of std for non-forest detection
     thresNonFstSlp = 200;           % threshold of slope for non-forest detection
-    thresNonFstR2 = 30;            % threshold of r2 for non-forest detection
+    thresNonFstR2 = 30;             % threshold of r2 for non-forest detection
     thresSpecEdge = 100;            % spectral threshold for edge detecting
     thresChgEdge = 0.65;            % threshold of detecting change edging pixel
     thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel

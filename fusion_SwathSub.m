@@ -75,12 +75,14 @@ function fusion_SwathSub(main)
 
         % all files exist
         if numel(File.MOD09)<1
-            disp(['Cannot find MOD09 for Julian Day: ', DayStr]);
+            disp(['Cannot find Swath for Julian Day: ', DayStr]);
             continue;
         end
 
         % loop through MODIS swath images of that date
         for I_TIME = 1:numel(File.MOD09)
+            
+            
             
             % construct time string
             TimeStr = regexp(File.MOD09(I_TIME).name,'\.','split');

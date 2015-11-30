@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.3.1
+% Version 2.3.2
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 11/11/2015
+% Last Update: 11/29/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -128,6 +128,10 @@
 %   4.Deleted unused parameters.
 %   5.Normalize weight.
 %
+% Updates of Version 2.3.2 - 11/29/2015
+%   1.Adjuste default values.
+%   2.Added support for combining Terra and Aqua.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -182,7 +186,7 @@ function main = fusion_Inputs(file,job)
         end
         % modis platform
         if ~exist('modisPlatform', 'var')
-            modisPlatform = 'MOD';
+            modisPlatform = 'M*D';
         end
         
         % main settings
@@ -297,17 +301,17 @@ function main = fusion_Inputs(file,job)
         % Landsat ETM images to fuse
         main.input.etm = [main.path 'ETMSYN/P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
         % MODIS Surface Reflectance data (swath data)
-        main.input.swath = [main.path modisPlatform '09/'];
+        main.input.swath = [main.path 'SWATH/'];
 
         % for BRDF correction process only:
         % daily gridded MODIS suface reflectance data
-        main.input.grid = [main.path modisPlatform '09GA/'];
+        main.input.grid = [main.path 'GRID/'];
         % BRDF/Albedo model parameters product
         main.input.brdf = [main.path 'MCD43A1/'];
-        
+          
         % for 250m BRDF correction process only:
         % gridded 250m resolution band 1 and 2 surface reflectance data
-        main.input.g250m = [main.path modisPlatform '09GQ/'];
+        main.input.g250m = [main.path 'GRID250/'];
         
     % set output data location (create if not exist)
         % main outputs:
@@ -520,6 +524,7 @@ function main = fusion_Inputs(file,job)
         
     % date information
         % dates of MODIS swath images used for this study
+        
         main.date.swath = getDateList(main.input.swath);
         % dates of Landsat synthetic images used for this study
         main.date.etm = getDateList(main.input.etm);
