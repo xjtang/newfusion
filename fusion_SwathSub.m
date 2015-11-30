@@ -59,6 +59,13 @@ function fusion_SwathSub(main)
 
     % start the timer
     tic;
+
+    % check platform
+    if strcmp(main.set.plat,'ALL')
+        plat = 'M*D';
+    else
+        plat = main.set.plat;
+    end
     
     % loop through all files
     for I_Day = 1:numel(main.date.swath)
@@ -77,17 +84,16 @@ function fusion_SwathSub(main)
         % loop through MODIS swath images of that date
         for I_TIME = 1:numel(File.MOD09)
             
-            
-            
             % construct time string
             TimeStr = regexp(File.MOD09(I_TIME).name,'\.','split');
             TimeStr = char(TimeStr(3));
             
-            % check platform
-            if 
+            % check current platform
+            fileName = char(File.MOD09(I_TIME).name);
+            thisPlat = fileName(regexp(fileName,'M.?D'):(regexp(fileName,'M.?D')+2));
             
             % check if file already exist
-            output = [main.output.modsub,plat,'09SUB.','ALL.',DayStr,'.',TimeStr,'.mat'];
+            output = [main.output.modsub,thisPlat,'09SUB.','ALL.',DayStr,'.',TimeStr,'.mat'];
             if exist(output,'file')>0 
                 disp([output ' already exist, skip one'])
                 continue;
@@ -200,7 +206,7 @@ function fusion_SwathSub(main)
                 MOD09SUB = swathInterpQA(MOD09SUB);
 
                 % save and end timer
-                save([main.output.modsub,plat,'09SUB.','ALL.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
+                save([main.output.modsub,thisPlat,'09SUB.','ALL.',DayStr,'.',TimeStr,'.mat'],'-struct','MOD09SUB');
                 disp(['Done with ',DayStr,' in ',num2str(toc,'%.f'),' seconds']);
             else
                 disp(['No points in: ',File.MOD09(I_TIME).name]);
