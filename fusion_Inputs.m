@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 11/29/2015
+% Last Update: 12/1/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -128,7 +128,7 @@
 %   4.Deleted unused parameters.
 %   5.Normalize weight.
 %
-% Updates of Version 2.3.2 - 11/29/2015
+% Updates of Version 2.3.2 - 12/1/2015
 %   1.Adjuste default values.
 %   2.Added support for combining Terra and Aqua.
 %
@@ -178,7 +178,7 @@ function main = fusion_Inputs(file,job)
         % project information
         % data path
         if ~exist('dataPath', 'var')
-            dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/fusion/';
+            dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
         end
         % landsat path and row
         if ~exist('landsatScene', 'var')
@@ -186,7 +186,7 @@ function main = fusion_Inputs(file,job)
         end
         % modis platform
         if ~exist('modisPlatform', 'var')
-            modisPlatform = 'M*D';
+            modisPlatform = 'ALL';
         end
         
         % main settings
@@ -212,7 +212,7 @@ function main = fusion_Inputs(file,job)
         end
         % start date of the study time period
         if ~exist('startDate', 'var')
-            startDate = 2012001;
+            startDate = 2013001;
         end
         % start date of the study time period
         if ~exist('endDate', 'var')
@@ -226,15 +226,15 @@ function main = fusion_Inputs(file,job)
         % model parameters
         % number of observation before a break can be detected
         if ~exist('minNoB', 'var')
-            minNoB = 80;
+            minNoB = 40;
         end
         % number of observation or initialization
         if ~exist('initNoB', 'var')
-            initNoB = 80;
+            initNoB = 20;
         end
         % number of standard deviation to flag a suspect
         if ~exist('nStandDev', 'var')
-            nStandDev = 2.5;
+            nStandDev = 3;
         end
         % number of consecutive observation to detect change
         if ~exist('nConsecutive', 'var')
@@ -246,23 +246,23 @@ function main = fusion_Inputs(file,job)
         end
         % switch for outlier removing in initialization
         if ~exist('outlierRemove', 'var')
-            outlierRemove = 5;
+            outlierRemove = 2;
         end
         % threshold of mean for non-forest detection
         if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 200;
+            thresNonFstMean = 150;
         end
         % threshold of std for non-forest detection
         if ~exist('thresNonFstStd', 'var')
-            thresNonFstStd = 350;
+            thresNonFstStd = 250;
         end
         % threshold of slope for non-forest detection
         if ~exist('thresNonFstSlp', 'var')
-            thresNonFstSlp = 500;
+            thresNonFstSlp = 200;
         end
         % threshold of R2 for non-forest detection
         if ~exist('thresNonFstR2', 'var')
-            thresNonFstR2 = 0.2;
+            thresNonFstR2 = 30;
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
@@ -524,7 +524,6 @@ function main = fusion_Inputs(file,job)
         
     % date information
         % dates of MODIS swath images used for this study
-        
         main.date.swath = getDateList(main.input.swath);
         % dates of Landsat synthetic images used for this study
         main.date.etm = getDateList(main.input.etm);
