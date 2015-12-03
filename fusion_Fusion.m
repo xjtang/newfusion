@@ -137,7 +137,7 @@ function fusion_Fusion(main)
             
             % check if results for this file already exist
             output = dir([main.output.modsubf thisPlat '*' 'ALL' '*' DayStr '.' TimeStr '*']);
-            if exist(output,'file')>0 
+            if numel(output)<1
                 disp([DayStr ' result already exist, skip this file.']);
                 continue;
             end
