@@ -97,6 +97,13 @@ function fusion_Fusion(main)
             continue;
         end
         
+        % check if results for this date already exist
+        File.Check = dir([main.output.modsubf plat '*' 'ALL' '*' DayStr '*']);
+        if numel(File.Check) >= numel(File.MOD09SUB)
+            disp([DayStr ' all files already exist, skip this date.']);
+            continue;
+        end
+        
         % read ETM
         File.ETM = dir([main.input.etm,'*',DayStr,'*.hdr']);
         if  numel(File.ETM) ~= 1
@@ -118,7 +125,7 @@ function fusion_Fusion(main)
         ETMSWIR2 = ETM(:,:,6);
 
         % loop through MOD09SUB file of current date
-        for I_TIME = (numel(File.Check)+1):numel(File.MOD09SUB)
+        for I_TIME = 1:numel(File.MOD09SUB)
             
             % construct time string
             TimeStr = regexp(File.MOD09SUB(I_TIME).name,'\.','split');
@@ -128,10 +135,10 @@ function fusion_Fusion(main)
             fileName = char(File.MOD09SUB(I_TIME).name);
             thisPlat = fileName(regexp(fileName,'M.?D'):(regexp(fileName,'M.?D')+2));
             
-            % check if result already exist
-            File.Check = dir([main.output.modsubf thisPlat '*' 'ALL' '*' DayStr '.' TimeStr '*']);
-            if numel(File.Check) >= numel(File.MOD09SUB)
-                disp([DayStr ' already exist, skip this date.']);
+            % check if results for this file already exist
+            output = dir([main.output.modsubf thisPlat '*' 'ALL' '*' DayStr '.' TimeStr '*']);
+            if exist(output,'file')>0 
+                disp([DayStr ' result already exist, skip this file.']);
                 continue;
             end
             
