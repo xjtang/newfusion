@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 12/1/2015
+% Last Update: 12/4/2015
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -128,9 +128,10 @@
 %   4.Deleted unused parameters.
 %   5.Normalize weight.
 %
-% Updates of Version 2.3.2 - 12/1/2015
+% Updates of Version 2.3.2 - 12/4/2015
 %   1.Adjuste default values.
 %   2.Added support for combining Terra and Aqua.
+%   3.Added output log files.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -391,6 +392,12 @@ function main = fusion_Inputs(file,job)
         if exist(main.output.vault,'dir') == 0 
             mkdir([main.path 'VAULT']);
         end
+        
+        % log files
+        % cloud cover summary
+        main.log.cloud = [main.outpath 'cloud.csv'];
+        % list of dates for generating synthetic images
+        main.log.syn = [main.outpath 'syn_list.csv'];
 
     % model constants
         % NA value for Landsat images
