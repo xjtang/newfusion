@@ -15,7 +15,7 @@
 #$ -j y
 
 # Name the file where to redirect standard output and error
-#$ -o fusion.qlog
+# -o fusion.qlog
 
 # request more memory
 #$ -pe omp 3
