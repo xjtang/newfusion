@@ -1,11 +1,11 @@
 # gen_preview.R
-# Version 1.5
+# Version 1.5.1
 # Tools
 #
 # Project: New Fusion
 # By xjtang
 # Created On: 11/30/2014
-# Last Update: 9/25/2015
+# Last Update: 12/21/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -42,6 +42,9 @@
 #
 # Updates of Version 1.5 - 9/25/2015
 #   1.Adjusted for a major update in the main program.
+#
+# Updates of Version 1.5.1 - 12/21/2015
+#   1.Removed platform control.
 #
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
