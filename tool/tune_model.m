@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.1
+% Version 1.1.1
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 11/19/2015
+% Last Update: 12/21/2015
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -49,6 +49,9 @@
 %   5.Added study time period control.
 %   6.Plot the linear model.
 %   7.Bug fix.
+%
+% Updates of Version 1.1.1 - 12/21/2015
+%   1.Added support for combining terra and aqua.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -186,23 +189,42 @@ function [R,Model] = tune_model(var1,var2,var3)
     % remove unavailable observation
     TS = raw.Data(:,max(raw.Data>(-9999)));
     TSD = double(raw.Date(max(raw.Data>(-9999))));
+    TSP = raw.Plat(max(raw.Data>(-9999)));
     [nband,nob] = size(TS);
     % record raw reflectance data
     R.nob = nob;
     R.nbanb = nband;
     R.fullTS = TS;
     R.fullDate = TSD;
+    R.fullPlat= TSP;
+    
+    % platform control
+    if strcmp(modisPlatform,'MOD')
+        TSD = TSD(TSP==1,:);
+        TS = TS(:,TSP==1);
+        TSP = TSP(TSP==1);
+    elseif strcmp(modisPlatform,'MYD')
+        TSD = TSD(TSP==2,:);
+        TS = TS(:,TSP==2);
+        TSP = TSP(TSP==2);
+    end
+    R.platTS = TS;
+    R.platDate = TSD;
+    R.platPlat= TSP;
     
     % study time period control
     TS = TS(:,TSD>=startDate);
     TSD = TSD(TSD>=startDate);
+    TSP = TSP(TSD>=startDate);
     TS = TS(:,TSD<=endDate);
     TSD = TSD(TSD<=endDate);
+    TSP = TSP(TSD<=endDate);
     NRT = sum(TSD<nrtDate);
     [~,neb] = size(TS);
     % record study time period controled time series
     R.TS = TS;
     R.Date = TSD;
+    R.Plat = TSP;
     R.neb = neb;
     R.Model.NRT = NRT;
     % normalize time series date
