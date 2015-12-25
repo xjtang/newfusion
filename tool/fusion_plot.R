@@ -1,11 +1,11 @@
 # fusion_plot.R
-# Version 1.4.1
+# Version 1.4.2
 # Tools
 #
 # Project: New Fusion
 # By xjtang
 # Created On: 12/02/2014
-# Last Update: 9/24/2015
+# Last Update: 12/23/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -40,6 +40,9 @@
 #
 # Updates of Version 1.4.1 - 9/24/2015
 #   1.Fixed a bug.
+#
+# Updates of Version 1.4.2 - 12/23/2015
+#   1.Added support for combining terra and aqua.
 #
 # Released on Github on 12/05/2014, check Github Commits for updates afterwards.
 #------------------------------------------------------------
@@ -228,7 +231,6 @@ fusion_plot <- function(file,outFile,plat='MOD',res=500,cmask=T,rs=T){
 # Input Arguments: 
 #   path (String) - path to all input files
 #   output (String) - output location
-#   plat (String) - platform ('MOD' or 'MYD')
 #   res (Integer) - resolution of the image (250 or 500).
 #   cmask (Logical) - apply cloud mask or not
 #   rs (Logical) - do regression or not
@@ -236,8 +238,7 @@ fusion_plot <- function(file,outFile,plat='MOD',res=500,cmask=T,rs=T){
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-batch_fusion_plot <- function(path,output,plat='MOD',res=500,
-                              cmask=T,rs=T){
+batch_fusion_plot <- function(path,output,res=500,cmask=T,rs=T){
   
   # find all files
   pattern <- paste('.*',plat,'.*','ALL','m.*.mat',sep='')
@@ -259,6 +260,7 @@ batch_fusion_plot <- function(path,output,plat='MOD',res=500,
   for(i in 1:length(fileList)){
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
     time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
+    plat <- gsub('.*(M.*D).*','\\1',fileList[i])
     outFile <- paste(output,'/PLOT_',plat,'_',res,'m_',date,'_',time,'.png',sep='')
     fusion_plot(fileList[i],outFile,plat,res,cmask,rs)
     cat(paste(outFile,'...done\n'))

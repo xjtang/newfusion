@@ -5,7 +5,7 @@
 # Project: New Fusion
 # By xjtang
 # Created On: 11/30/2014
-# Last Update: 12/21/2015
+# Last Update: 12/23/2015
 #
 # Input Arguments: 
 #   See specific function.
@@ -43,7 +43,7 @@
 # Updates of Version 1.5 - 9/25/2015
 #   1.Adjusted for a major update in the main program.
 #
-# Updates of Version 1.5.1 - 12/21/2015
+# Updates of Version 1.5.1 - 12/23/2015
 #   1.Removed platform control.
 #
 # Released on Github on 11/30/2014, check Github Commits for updates afterwards.
@@ -195,7 +195,6 @@ gen_preview <- function(file,outFile,subType='SUB',res=500,
 #   path (String) - path to all input files
 #   output (String) - output location
 #   subType (String) - the type of the input SwathSub ('SUB',or,'FUS')
-#   plat (String) - platform ('MOD' or 'MYD')
 #   res (Integer) - resolution of the image (250 or 500)
 #   comp (Vector) - composite of the preview image (default 5,4,3)
 #   stretch (Vector) - stretch of the image (default 0-5000)
@@ -203,11 +202,11 @@ gen_preview <- function(file,outFile,subType='SUB',res=500,
 # Output Arguments: 
 #   r (Integer) - 0: Successful
 #
-batch_gen_preview <- function(path,output,subType='SUB',plat='MOD',res=500,
+batch_gen_preview <- function(path,output,subType='SUB',res=500,
                               comp=c(5,4,3),stretch=c(0,5000)){
   
   # find all files
-  pattern <- paste('.*',plat,'.*','ALL','.*.mat',sep='')
+  pattern <- paste('.*','M.*D','.*','ALL','.*.mat',sep='')
   fileList <- list.files(path=path,pattern=pattern,full.names=T,recursive=T)
 
   # check if we have files found
@@ -226,6 +225,7 @@ batch_gen_preview <- function(path,output,subType='SUB',plat='MOD',res=500,
   for(i in 1:length(fileList)){
     date <- gsub('.*(\\d\\d\\d\\d\\d\\d\\d).*','\\1',fileList[i])
     time <- gsub('.*(\\d\\d\\d\\d).*','\\1',fileList[i])
+    plat <- gsub('.*(M.*D).*','\\1',fileList[i])
     outFile <- paste(output,'/PREV_',plat,subType,'_',res,'m_',date,'_',time,'.png',sep='')
     gen_preview(fileList[i],outFile,subType,res,comp,stretch)
     cat(paste(outFile,'...done\n'))
