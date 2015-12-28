@@ -3,6 +3,18 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.2.6 - 12/28/2015
+--------------
+- Combining data from Aqua and Terra to produce better results.  
+- All steps before change detection now process data from both platform by default.  
+- Platform information recorded in cache file.  
+- Optimized the cript for submiting jobs.  
+- Improved ploting function in tune_model.  
+- Some tools updated and tested.  
+- Bugs fixed.  
+- Updated documentation.  
+- Adjusted default values.  
+
 Version 1.2.5 - 11/16/2015
 --------------
 - Redesigned the change detection model.  
