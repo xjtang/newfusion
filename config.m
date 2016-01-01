@@ -1,5 +1,5 @@
 % config.m
-% Version 1.1.11
+% Version 1.1.12
 % Configuration File
 %
 % Project: New Fusion
@@ -7,7 +7,7 @@
 % Created On: 7/2/2015
 % Last Update: 11/29/2015
 %
-% Input Arguments: NA
+% Input Arguments: NA                    
 % 
 % Output Arguments: NA
 %
@@ -70,11 +70,15 @@
 % Updates of Version 1.1.11 - 11/29/2015
 %   1.Adjusted default values.
 %
+% Updates of Version 1.1.12 - 1/1/2016
+%   1.Added a change detection threshold on rmse.
+%   2.Updated version system.
+%
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 % project information
-    configVer = 10111;              % config file version DO NOT CHANGE THIS!!!
+    configVer = 10112;              % config file version DO NOT CHANGE THIS!!!
     modisPlatform = 'ALL';          % MOD for Terra, MYD for Aqua
     landsatScene = [227,65];        % Landsat path and row
     dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
@@ -101,6 +105,7 @@
     thresNonFstStd = 200;           % threshold of std for non-forest detection
     thresNonFstSlp = 200;           % threshold of slope for non-forest detection
     thresNonFstR2 = 30;             % threshold of r2 for non-forest detection
+    thresNonFstRMSE = 200;          % threshold of RMSE for non-forest detection
     thresSpecEdge = 100;            % spectral threshold for edge detecting
     thresChgEdge = 0.65;            % threshold of detecting change edging pixel
     thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel

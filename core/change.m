@@ -85,6 +85,7 @@
 %
 % Updates of Version 2.6.1 - 1/1/2016
 %   1.Bug fix.
+%   2.Added a change detection threshold on RMSE.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -262,19 +263,22 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     
     % assign class
     if (COEF(1,1,nband+1)<=model.nonFstMean)&&(COEF(2,1,nband+1)<=model.nonFstStd)...
-            &&(COEF(5,1,nband+1)<=model.nonFstSlp)&&(COEF(6,1,nband+1)<=model.nonFstR2)
+            &&(COEF(5,1,nband+1)<=model.nonFstSlp)&&(COEF(6,1,nband+1)<=model.nonFstR2)...
+            &&(COEF(7,1,nband+1)<=model.nonFstRMSE)
         % pre-break is forest, check if post-break exist
         if CHGFlag == 1
             % check if post is forest
             if (COEF(1,2,nband+1)<=model.nonFstMean)&&(COEF(2,2,nband+1)<=model.nonFstStd)...
-                    &&(COEF(5,2,nband+1)<=model.nonFstSlp)&&(COEF(6,2,nband+1)<=model.nonFstR2)
+                    &&(COEF(5,2,nband+1)<=model.nonFstSlp)&&(COEF(6,2,nband+1)<=model.nonFstR2)...
+                    &&(COEF(7,1,nband+1)<=model.nonFstRMSE)
                 % post-break is forest, false break
                 CHG(CHG==C.Break) = C.Outlier;
                 CHG(CHG==C.Changed) = C.Outlier;
                 CHG(CHG==C.ChgEdge) = C.Stable;
                 % check this pixel as a whole again if this is non-forest
                 if ~((COEF(1,3,nband+1)<=model.nonFstMean)&&(COEF(2,3,nband+1)<=model.nonFstStd)...
-                        &&(COEF(5,3,nband+1)<=model.nonFstSlp)&&(COEF(6,3,nband+1)<=model.nonFstR2))
+                        &&(COEF(5,3,nband+1)<=model.nonFstSlp)&&(COEF(6,3,nband+1)<=model.nonFstR2)...
+                        &&(COEF(7,1,nband+1)<=model.nonFstRMSE))
                     for i = 1:length(ETS)
                         x = TS(:,ETS(i));
                         if mean(abs(x)) >= model.specEdge

@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.3.2
+% Version 2.3.3
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 12/6/2015
+% Last Update: 1/1/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -134,6 +134,10 @@
 %   3.Added output log files.
 %   4.Changed the location of the dump folder
 %
+% Updates of Version 2.3.3 - 1/1/2016
+%   1.Added a change detection threshold on rmse.
+%   2.Updated version system.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -160,7 +164,7 @@ function main = fusion_Inputs(file,job)
     end
     
     % check version config file
-    curVersion = 10110;
+    curVersion = 10112;
     if ~exist('configVer','var')
         disp('WARNING!!!!');
         disp('WARNING!!!!');
@@ -265,6 +269,10 @@ function main = fusion_Inputs(file,job)
         % threshold of R2 for non-forest detection
         if ~exist('thresNonFstR2', 'var')
             thresNonFstR2 = 30;
+        end
+        % threshold of RMSE for non-forest detection
+        if ~exist('thresNonFstRMSE', 'var')
+            thresNonFstRMSE = 200;
         end
         % threshold of detecting change edging pixel
         if ~exist('thresChgEdge', 'var')
@@ -467,6 +475,8 @@ function main = fusion_Inputs(file,job)
         main.model.nonFstSlp = thresNonFstSlp;
         % threshold of r2 to detect non-forest pixel
         main.model.nonFstR2 = thresNonFstR2;
+        % threshold of RMSE to detect non-forest pixel
+        main.model.nonFstRMSE = thresNonFstRMSE;
         % threshold of std to detect non-forest pixel
         main.model.chgEdge = thresChgEdge;
         % threshold of detecting edging pixel in stable non-forest pixel

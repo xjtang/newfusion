@@ -53,6 +53,7 @@
 % Updates of Version 1.1.1 - 1/1/2016
 %   1.Added support for combining terra and aqua.
 %   2.Bug fix.
+%   3.Added a change detection threshold on RMSE.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -81,6 +82,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         Model.nonFstStd = thresNonFstStd;
         Model.nonFstSlp = thresNonFstSlp;
         Model.nonFstR2 = thresNonFstR2;
+        Model.nonFstRMSE = thresNonFstRMSE;
         Model.chgEdge = thresChgEdge;
         Model.nonFstEdge = thresNonFstEdge;
         Model.specEdge = thresSpecEdge;
@@ -115,6 +117,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         thresNonFstStd = Model.nonFstStd;
         thresNonFstSlp = Model.nonFstSlp;
         thresNonFstR2 = Model.nonFstR2;
+        thresNonFstRMSE = Model.nonFstRMSE;
         thresChgEdge = Model.chgEdge;
         thresNonFstEdge = Model.nonFstEdge;
         thresSpecEdge = Model.specEdge;
@@ -421,19 +424,22 @@ function [R,Model] = tune_model(var1,var2,var3)
         
         % assign class to each segment in fusion TS
         if (COEF(1,1,nband+1)<=thresNonFstMean)&&(COEF(2,1,nband+1)<=thresNonFstStd)...
-                &&(COEF(5,1,nband+1)<=thresNonFstSlp)&&(COEF(6,1,nband+1)<=thresNonFstR2)
+                &&(COEF(5,1,nband+1)<=thresNonFstSlp)&&(COEF(6,1,nband+1)<=thresNonFstR2)...
+                &&(COEF(7,1,nband+1)<=thresNonFstRMSE)
             % pre-break is forest, check if post-break exist
             if CHGFlag == 1
                 % check if post is non-forest
                 if (COEF(1,2,nband+1)<=thresNonFstMean)&&(COEF(2,2,nband+1)<=thresNonFstStd)...
-                        &&(COEF(5,2,nband+1)<=thresNonFstSlp)&&(COEF(6,2,nband+1)<=thresNonFstR2)
+                        &&(COEF(5,2,nband+1)<=thresNonFstSlp)&&(COEF(6,2,nband+1)<=thresNonFstR2)...
+                        &&(COEF(7,1,nband+1)<=thresNonFstRMSE)
                     % post-break is forest, false break
                     CHG(CHG==C.Break) = C.Outlier;
                     CHG(CHG==C.Changed) = C.Outlier;
                     CHG(CHG==C.ChgEdge) = C.Stable;
                     % check this pixel as a whole again if this is non-forest
                     if ~((COEF(1,3,nband+1)<=thresNonFstMean)&&(COEF(2,3,nband+1)<=thresNonFstStd)...
-                            &&(COEF(5,3,nband+1)<=thresNonFstSlp)&&(COEF(6,3,nband+1)<=thresNonFstR2))
+                            &&(COEF(5,3,nband+1)<=thresNonFstSlp)&&(COEF(6,3,nband+1)<=thresNonFstR2)...
+                            &&(COEF(7,1,nband+1)<=thresNonFstRMSE))
                         for i = 1:neb
                             x = TS(:,i);
                             if mean(abs(x)) >= thresSpecEdge
