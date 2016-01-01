@@ -1,11 +1,11 @@
 % change.m
-% Version 2.6
+% Version 2.6.1
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 11/16/2015
+% Last Update: 1/1/2016
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -82,6 +82,9 @@
 %   8.Adjusted input parameter names.
 %   9.Cleaned up the codes.
 %   10.Bugs fixed.
+%
+% Updates of Version 2.6.1 - 1/1/2016
+%   1.Bug fix.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -270,8 +273,8 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
                 CHG(CHG==C.Changed) = C.Outlier;
                 CHG(CHG==C.ChgEdge) = C.Stable;
                 % check this pixel as a whole again if this is non-forest
-                if (COEF(1,3,nband+1)<=model.nonFstMean)&&(COEF(2,3,nband+1)<=model.nonFstStd)...
-                        &&(COEF(5,3,nband+1)<=model.nonFstSlp)&&(COEF(6,3,nband+1)<=model.nonFstR2)
+                if ~((COEF(1,3,nband+1)<=model.nonFstMean)&&(COEF(2,3,nband+1)<=model.nonFstStd)...
+                        &&(COEF(5,3,nband+1)<=model.nonFstSlp)&&(COEF(6,3,nband+1)<=model.nonFstR2))
                     for i = 1:length(ETS)
                         x = TS(:,ETS(i));
                         if mean(abs(x)) >= model.specEdge

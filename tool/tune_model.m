@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 12/21/2015
+% Last Update: 1/1/2016
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -50,8 +50,9 @@
 %   6.Plot the linear model.
 %   7.Bug fix.
 %
-% Updates of Version 1.1.1 - 12/21/2015
+% Updates of Version 1.1.1 - 1/1/2016
 %   1.Added support for combining terra and aqua.
+%   2.Bug fix.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -427,13 +428,13 @@ function [R,Model] = tune_model(var1,var2,var3)
                 if (COEF(1,2,nband+1)<=thresNonFstMean)&&(COEF(2,2,nband+1)<=thresNonFstStd)...
                         &&(COEF(5,2,nband+1)<=thresNonFstSlp)&&(COEF(6,2,nband+1)<=thresNonFstR2)
                     % post-break is forest, false break
-                    CHGFlag == 0
+                    CHGFlag = 0;
                     CHG(CHG==C.Break) = C.Outlier;
                     CHG(CHG==C.Changed) = C.Outlier;
                     CHG(CHG==C.ChgEdge) = C.Stable;
                     % check this pixel as a whole again if this is non-forest
-                    if (COEF(1,3,nband+1)<=thresNonFstMean)&&(COEF(2,3,nband+1)<=thresNonFstStd)...
-                            &&(COEF(5,3,nband+1)<=thresNonFstSlp)&&(COEF(6,3,nband+1)<=thresNonFstR2)
+                    if ~((COEF(1,3,nband+1)<=thresNonFstMean)&&(COEF(2,3,nband+1)<=thresNonFstStd)...
+                            &&(COEF(5,3,nband+1)<=thresNonFstSlp)&&(COEF(6,3,nband+1)<=thresNonFstR2))
                         for i = 1:neb
                             x = TS(:,i);
                             if mean(abs(x)) >= thresSpecEdge
