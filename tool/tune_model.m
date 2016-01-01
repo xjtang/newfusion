@@ -400,7 +400,7 @@ function [R,Model] = tune_model(var1,var2,var3)
             COEF(2,2,:) = [std(postBreak,0,2)',bandWeight*abs(std(postBreak,0,2))];
             COEF(2,3,:) = [std([preBreak,postBreak],0,2)',bandWeight*abs(std([preBreak,postBreak],0,2))];
             COEF(3,2,:) = size(postBreak,2);
-            COEF(3,3,:) = COEF(3,1,1) + COEF(3,2,1)  ;
+            COEF(3,3,:) = COEF(3,1,1) + COEF(3,2,1);
         else
             COEF(1,2,:) = COEF(1,1,:);
             COEF(1,3,:) = COEF(1,1,:);
@@ -527,14 +527,14 @@ function [R,Model] = tune_model(var1,var2,var3)
                 plot(X(CHG==C.NFEdge),TS(i,CHG==C.NFEdge),'c.','MarkerSize',15);
             end
             % plot the std lines
-            plot([R.Date(1),R.Date(end)],ones(1,2).*(COEF(1,1,i)+nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
-            plot([R.Date(1),R.Date(end)],ones(1,2).*(COEF(1,1,i)-nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
+            plot([X(1),X(end)],ones(1,2).*(COEF(1,1,i)+nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
+            plot([X(1),X(end)],ones(1,2).*(COEF(1,1,i)-nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
             % plot the linear models
             if CHGFlag == 1
-                plot([X(1),X(CHG==C.Break)],[X(1),X(CHG==C.Break)]*COEF(4,1,i)+COEF(5,1,i),'Color',[0.75,0.75,0.75]);
-                plot([X(CHG==C.Break),X(end)],[X(CHG==C.Break),X(end)]*COEF(4,2,i)+COEF(5,2,i),'Color',[0.75,0.75,0.75]);
+                plot([X(1),X(R.CHG1==C.Break)],[X(1),X(R.CHG1==C.Break)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
+                plot([X(R.CHG1==C.Break),X(end)],[X(R.CHG1==C.Break),X(end)]*COEF(5,2,i)+COEF(4,2,i),'Color',[0.75,0.75,0.75]);
             else
-                plot([X(1),X(end)],[X(1),X(end)]*COEF(4,1,i)+COEF(5,1,i),'Color',[0.75,0.75,0.75]);
+                plot([X(1),X(end)],[X(1),X(end)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
             end
             % adjust captions and axis
             title(['Band ' num2str(bandIncluded(i))]);
