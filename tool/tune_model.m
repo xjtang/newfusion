@@ -428,7 +428,6 @@ function [R,Model] = tune_model(var1,var2,var3)
                 if (COEF(1,2,nband+1)<=thresNonFstMean)&&(COEF(2,2,nband+1)<=thresNonFstStd)...
                         &&(COEF(5,2,nband+1)<=thresNonFstSlp)&&(COEF(6,2,nband+1)<=thresNonFstR2)
                     % post-break is forest, false break
-                    CHGFlag = 0;
                     CHG(CHG==C.Break) = C.Outlier;
                     CHG(CHG==C.Changed) = C.Outlier;
                     CHG(CHG==C.ChgEdge) = C.Stable;
