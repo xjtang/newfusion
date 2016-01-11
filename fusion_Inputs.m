@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.3.3
+% Version 2.4
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 1/1/2016
+% Last Update: 1/6/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -134,9 +134,12 @@
 %   3.Added output log files.
 %   4.Changed the location of the dump folder
 %
-% Updates of Version 2.3.3 - 1/1/2016
+% Updates of Version 2.4 - 1/6/2016
 %   1.Added a change detection threshold on rmse.
 %   2.Updated version system.
+%   3.Removed loading module part, modules are loaded externally.
+%   4.Added support for running with compliled version.
+%   5.Program terminates if file or path not specified.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -145,16 +148,9 @@ function main = fusion_Inputs(file,job)
 
     % add the fusion package to system path
     addpath(genpath(fileparts(mfilename('fullpath'))));
-
-    % load module
-    system('module load hdf/4.2.5');
-    system('module load gdal/1.10.0');
     
     % check input argument
-    if ~exist('file', 'var')
-        file = '/projectnb/landsat/projects/fusion/codes/new_fusion/config.m';
-    end
-    if (~exist('job', 'var'))||(min(job)<1)||(job(1)>job(2))
+    if (min(job)<1)||(job(1)>job(2))
         job = [0,0];
     end
     
@@ -302,6 +298,9 @@ function main = fusion_Inputs(file,job)
     % set project main path
     main.path = dataPath;
     main.outpath = [main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
+    if exist(main.path,'dir') == 0 
+        error('Main project directory does not exist.');
+    end
     if exist(main.outpath,'dir') == 0 
         mkdir([main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d')]);
     end
