@@ -1,11 +1,11 @@
 % change.m
-% Version 2.6.1
+% Version 2.6.2
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 1/1/2016
+% Last Update: 1/12/2016
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -87,6 +87,9 @@
 %   1.Bug fix.
 %   2.Added a change detection threshold on RMSE.
 %
+% Updates of Version 2.6.2 - 1/12/2016
+%   1.Enhanced performance and speed.
+%
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -104,16 +107,11 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     COEF = zeros(7,3,nband+1);
     ETS = 1:nob;
 
-    % complie eligible observations
-    for i = nob:-1:1
-        if max(TS(:,i)==cons.outna)
-            CHG(i) = C.NA;
-            ETS(i) = [];
-            if i <= NRT
-                NRT = NRT - 1;
-            end
-        end
-    end
+    % complie eligible observations   
+    neob = max(TS == cons.outna);
+    CHG(neob) = C.NA;
+    ETS(neob) = [];
+    NRT = NRT - sum(neob(1:NRT));
     
     % check total number of eligible observation
     [~,neb] = size(ETS);
