@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 1/11/2016
-% Last Update: 1/11/2016
+% Last Update: 1/12/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -21,7 +21,7 @@
 %   1.Customize a config file for your project.
 %   2.Run this stript with correct inputs.
 %
-% Version 1.0 - 1/11/2016
+% Version 1.0 - 1/12/2016
 %   This script is the wrap-up function to run fusion.
 %
 % Released on Github on 1/11/2016, check Github Commits for updates afterwards.
@@ -34,8 +34,8 @@ function fusion_Run(file,job,njob,func)
         addpath(genpath(fileparts(mfilename('fullpath'))));
     end
     
-    % correct input argument type if it is not deplyed
-    if ~isdeployed 
+    % correct input argument type if it is deplyed
+    if isdeployed 
         job = str2double(job);
         njob = str2double(njob);
     end

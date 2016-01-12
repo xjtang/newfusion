@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 1/11/2016
+% Last Update: 1/12/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -134,7 +134,7 @@
 %   3.Added output log files.
 %   4.Changed the location of the dump folder
 %
-% Updates of Version 2.4 - 1/11/2016
+% Updates of Version 2.4 - 1/12/2016
 %   1.Added a change detection threshold on rmse.
 %   2.Updated version system.
 %   3.Use new core script to load config file.
@@ -144,6 +144,7 @@
 %   7.Removed loading module part, modules are loaded externally.
 %   8.Removed the part that checks the inputs from config file.
 %   9.Removed the part that add path.
+%   10.Bugs fixed.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -157,23 +158,23 @@ function main = fusion_Inputs(file,job)
     
     % load config file
     if exist(file,'file')
-        readConfig(file);
+        config = readConfig(file);
     end
 
     % set project main path
-    main.path = dataPath;
-    main.outpath = [main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
+    main.path = config.dataPath;
+    main.outpath = [main.path 'P' num2str(config.landsatScene(1),'%03d') 'R' num2str(config.landsatScene(2),'%03d') '/'];
     if exist(main.path,'dir') == 0 
         error('Main project directory does not exist.');
     end
     if exist(main.outpath,'dir') == 0 
-        mkdir([main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d')]);
+        mkdir([main.path 'P' num2str(config.landsatScene(1),'%03d') 'R' num2str(config.landsatScene(2),'%03d')]);
     end
     
     % set input data location
         % main inputs:
         % Landsat ETM images to fuse
-        main.input.etm = [main.path 'ETMSYN/P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
+        main.input.etm = [main.path 'ETMSYN/P' num2str(config.landsatScene(1),'%03d') 'R' num2str(config.landsatScene(2),'%03d') '/'];
         % MODIS Surface Reflectance data (swath data)
         main.input.swath = [main.path 'SWATH/'];
 
@@ -292,67 +293,67 @@ function main = fusion_Inputs(file,job)
         
     % project information
         % config file version
-        main.set.cver = configVer;
+        main.set.cver = config.configVer;
         % platform of MODIS
-        main.set.plat = modisPlatform;
+        main.set.plat = config.modisPlatform;
         % Landsat scene
-        main.set.scene = landsatScene;
+        main.set.scene = config.landsatScene;
         % job information
         main.set.job = job;
         
     % settings and parameters
         % apply BRDF correction or not
-        main.set.brdf = BRDF;
+        main.set.brdf = config.BRDF;
         % discard ratio of Landsat image (% image discarded on the edge)
-        main.set.dis = discardRatio;
+        main.set.dis = config.discardRatio;
         % correct for bias in difference map
-        main.set.bias = BIAS;
+        main.set.bias = config.BIAS;
         % max (0) or mean (1) in calculating difference map
-        main.set.dif = diffMethod;
+        main.set.dif = config.diffMethod;
         % a threshold on percent cloud cover for data filtering
-        main.set.cloud = cloudThres;
+        main.set.cloud = config.cloudThres;
         % start date of the study time period
-        main.set.sdate = startDate;
+        main.set.sdate = config.startDate;
         % end date of the study time period
-        main.set.edate = endDate;
+        main.set.edate = config.endDate;
         % start date of the near real time change detection
-        main.set.cdate = nrtDate;
+        main.set.cdate = config.nrtDate;
         
     % settings and parameters for the change detection model
         % number of observation before a break can be detected
-        main.model.minNoB = minNoB;
+        main.model.minNoB = config.minNoB;
         % number of observations to initialize the model
-        main.model.initNoB = initNoB;
+        main.model.initNoB = config.initNoB;
         % coefficiant of std in change detection
-        main.model.nSD = nStandDev;
+        main.model.nSD = config.nStandDev;
         % number of consective observation of detect change
-        main.model.nCosc = nConsecutive;
+        main.model.nCosc = config.nConsecutive;
         % number of suspective observation to confirm the change
-        main.model.nSusp = nSuspect;
+        main.model.nSusp = config.nSuspect;
         % number of outlier to remove in initialization
-        main.model.outlr = outlierRemove;
+        main.model.outlr = config.outlierRemove;
         % threshold of mean to detect non-forest pixel
-        main.model.nonFstMean = thresNonFstMean;
+        main.model.nonFstMean = config.thresNonFstMean;
         % threshold of std to detect non-forest pixel
-        main.model.nonFstStd = thresNonFstStd;
+        main.model.nonFstStd = config.thresNonFstStd;
         % threshold of slope to detect non-forest pixel
-        main.model.nonFstSlp = thresNonFstSlp;
+        main.model.nonFstSlp = config.thresNonFstSlp;
         % threshold of r2 to detect non-forest pixel
-        main.model.nonFstR2 = thresNonFstR2;
+        main.model.nonFstR2 = config.thresNonFstR2;
         % threshold of RMSE to detect non-forest pixel
-        main.model.nonFstRMSE = thresNonFstRMSE;
+        main.model.nonFstRMSE = config.thresNonFstRMSE;
         % threshold of std to detect non-forest pixel
-        main.model.chgEdge = thresChgEdge;
+        main.model.chgEdge = config.thresChgEdge;
         % threshold of detecting edging pixel in stable non-forest pixel
-        main.model.nonFstEdge = thresNonFstEdge;
+        main.model.nonFstEdge = config.thresNonFstEdge;
         % spectral threshold for edge detecting
-        main.model.specEdge = thresSpecEdge;
+        main.model.specEdge = config.thresSpecEdge;
         % threshold for n observation after change to confirm change
-        main.model.probThres = thresProbChange;
+        main.model.probThres = config.thresProbChange;
         % bands used for change detection
-        main.model.band = bandIncluded;
+        main.model.band = config.bandIncluded;
         % weight of each band in change detection (normalized)
-        main.model.weight = bandWeight./(sum(bandWeight));
+        main.model.weight = config.bandWeight./(sum(config.bandWeight));
         
     % fusion TS segment class codes
         main.TSclass.NA = -1;           % not available
