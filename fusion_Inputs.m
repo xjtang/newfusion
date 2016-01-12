@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 1/6/2016
+% Last Update: 1/11/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -134,20 +134,21 @@
 %   3.Added output log files.
 %   4.Changed the location of the dump folder
 %
-% Updates of Version 2.4 - 1/6/2016
+% Updates of Version 2.4 - 1/11/2016
 %   1.Added a change detection threshold on rmse.
 %   2.Updated version system.
-%   3.Removed loading module part, modules are loaded externally.
-%   4.Added support for running with compliled version.
-%   5.Program terminates if file or path not specified.
+%   3.Use new core script to load config file.
+%   4.Program terminates if file or path not specified.
+%   5.Added support for running with compliled version.
+%   6.Shifted some work to other scripts.
+%   7.Removed loading module part, modules are loaded externally.
+%   8.Removed the part that checks the inputs from config file.
+%   9.Removed the part that add path.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 function main = fusion_Inputs(file,job)
-
-    % add the fusion package to system path
-    addpath(genpath(fileparts(mfilename('fullpath'))));
     
     % check input argument
     if (min(job)<1)||(job(1)>job(2))
@@ -156,145 +157,9 @@ function main = fusion_Inputs(file,job)
     
     % load config file
     if exist(file,'file')
-        run(file);
+        readConfig(file);
     end
-    
-    % check version config file
-    curVersion = 10112;
-    if ~exist('configVer','var')
-        disp('WARNING!!!!');
-        disp('WARNING!!!!');
-        disp('Unknown config file version, unexpected error may occur.');
-        disp('WARNING!!!!');
-        disp('WARNING!!!!');
-        configVer = 0;
-    elseif configVer < curVersion
-        disp('WARNING!!!!');
-        disp('WARNING!!!!');
-        disp('You are using older version of config file, unexpected error may occur.');
-        disp('WARNING!!!!');
-        disp('WARNING!!!!');
-    end
-    
-    % check if all parameters exist in config file
-        % project information
-        % data path
-        if ~exist('dataPath', 'var')
-            dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
-        end
-        % landsat path and row
-        if ~exist('landsatScene', 'var')
-            landsatScene = [227,65];
-        end
-        % modis platform
-        if ~exist('modisPlatform', 'var')
-            modisPlatform = 'ALL';
-        end
-        
-        % main settings
-        % BRDF switch
-        if ~exist('BRDF', 'var')
-            BRDF = 0;
-        end
-        % bias switch
-        if ~exist('BIAS', 'var')
-            BIAS = 1;
-        end
-        % discard ratio
-        if ~exist('discardRatio', 'var')
-            discardRatio = 0;
-        end
-        % difference map method
-        if ~exist('diffMethod', 'var')
-            diffMethod = 1;
-        end
-        % cloud threshold
-        if ~exist('cloudThres', 'var')
-            cloudThres = 80;
-        end
-        % start date of the study time period
-        if ~exist('startDate', 'var')
-            startDate = 2013001;
-        end
-        % start date of the study time period
-        if ~exist('endDate', 'var')
-            endDate = 2015001;
-        end
-        % start date of the near real time change detection
-        if ~exist('nrtDate', 'var')
-            nrtDate = 2014001;
-        end
-        
-        % model parameters
-        % number of observation before a break can be detected
-        if ~exist('minNoB', 'var')
-            minNoB = 40;
-        end
-        % number of observation or initialization
-        if ~exist('initNoB', 'var')
-            initNoB = 20;
-        end
-        % number of standard deviation to flag a suspect
-        if ~exist('nStandDev', 'var')
-            nStandDev = 3;
-        end
-        % number of consecutive observation to detect change
-        if ~exist('nConsecutive', 'var')
-            nConsecutive = 6;
-        end
-        % number of suspect to confirm a change
-        if ~exist('nSuspect', 'var')
-            nSuspect = 4;
-        end
-        % switch for outlier removing in initialization
-        if ~exist('outlierRemove', 'var')
-            outlierRemove = 2;
-        end
-        % threshold of mean for non-forest detection
-        if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 150;
-        end
-        % threshold of std for non-forest detection
-        if ~exist('thresNonFstStd', 'var')
-            thresNonFstStd = 250;
-        end
-        % threshold of slope for non-forest detection
-        if ~exist('thresNonFstSlp', 'var')
-            thresNonFstSlp = 200;
-        end
-        % threshold of R2 for non-forest detection
-        if ~exist('thresNonFstR2', 'var')
-            thresNonFstR2 = 30;
-        end
-        % threshold of RMSE for non-forest detection
-        if ~exist('thresNonFstRMSE', 'var')
-            thresNonFstRMSE = 200;
-        end
-        % threshold of detecting change edging pixel
-        if ~exist('thresChgEdge', 'var')
-            thresChgEdge = 0.65;
-        end
-        % threshold of detecting non-forest edging pixel
-        if ~exist('thresNonFstEdge', 'var')
-            thresNonFstEdge = 0.35;
-        end
-        % spectral threshold for edge detecting
-        if ~exist('thresSpecEdge', 'var')
-            thresSpecEdge = 100;
-        end
-        % threshold for n observation after change to confirm change
-        if ~exist('thresProbChange', 'var')
-            thresProbChange = 8;
-        end
-        % bands to be included in change detection
-        if ~exist('bandIncluded', 'var')
-            bandIncluded = [7,8];
-        end
-        % weight on each band
-        if ~exist('bandWeight', 'var')
-            bandWeight = [1,1];
-        end
-        
+
     % set project main path
     main.path = dataPath;
     main.outpath = [main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
