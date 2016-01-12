@@ -9,7 +9,6 @@
 #
 # Input Arguments: 
 #   file - a csv file with the cloud states
-#   outPath - the output location
 #   
 # Output Arguments: NA
 #
