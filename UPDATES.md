@@ -3,6 +3,19 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.3 - 12/28/2015
+--------------
+- Added change detection threshold on RMSE.  
+- No point swath is recorded to be excluded in future runs.  
+- Improved output file handeling.  
+- Improved model efficiency.  
+- Added new core script to fit simple linear model.  
+- Added new core script to read the config file in text format.  
+- Added a wrap-up function to run fusion steps with one command.  
+- Made a few changes to the model to support for a compiled version.  
+- Consolidate output log.  
+- Bugs fixed.  
+
 Version 1.2.6 - 12/28/2015
 --------------
 - Combining data from Aqua and Terra to produce better results.  
