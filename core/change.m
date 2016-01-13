@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 1/12/2016
+% Last Update: 1/13/2016
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -87,8 +87,9 @@
 %   1.Bug fix.
 %   2.Added a change detection threshold on RMSE.
 %
-% Updates of Version 2.6.2 - 1/12/2016
+% Updates of Version 2.6.2 - 1/13/2016
 %   1.Enhanced performance and speed.
+%   2.Implemented the new linear model feature.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -217,15 +218,15 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     LMCoef = zeros(4,3,nband);
     for i = 1:nband
         if CHGFlag == 1
-            LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
-            LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
-            LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
-            LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
-            LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+            LMFit = lm(preBreakD',preBreak(i,:)');
+            LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
+            LMFit = lm(postBreakD',postBreak(i,:)');
+            LMCoef(:,2,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
+            LMFit = lm(prePostCombD',prePostComb(i,:)');
+            LMCoef(:,3,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
         else
-            LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+            LMFit = lm(preBreakD',preBreak(i,:)');
+            LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
             LMCoef(:,2,i) = LMCoef(:,1,i);
             LMCoef(:,3,i) = LMCoef(:,1,i);
         end
