@@ -1,12 +1,12 @@
 % fusion_Run.m
-% Version 1.0
+% Version 1.0.1
 % Step 0
 % Main Shell
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 1/11/2016
-% Last Update: 1/12/2016
+% Last Update: 1/15/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -23,6 +23,9 @@
 %
 % Version 1.0 - 1/12/2016
 %   This script is the wrap-up function to run fusion.
+%
+% Updates of Version 1.0.1 - 1/15/2016
+%   1.Used a switch instead of str2func, better support compiling.
 %
 % Released on Github on 1/11/2016, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -44,8 +47,32 @@ function fusion_Run(file,job,njob,func)
     main = fusion_Inputs(file,[job,njob]);
 
     % run specific function
-    func2 = str2func(['fusion_',func]);
-    func2(main);
+    switch func
+        case 'SwathSub'
+            fusion_SwathSub(main);
+        case 'BRDF'
+            fusion_BRDF(main);
+        case 'Cloud'
+            fusion_Cloud(main);
+        case 'Fusion'
+            fusion_Fusion(main);
+        case 'BRDFusion'
+            fusion_BRDFusion(main);
+        case 'Dif'
+            fusion_Dif(main);
+        case 'WriteHDF'
+            fusion_WriteHDF(main);
+        case 'WriteETM'
+            fusion_WriteETM(main);
+        case 'Cache'
+            fusion_Cache(main);
+        case 'Change'
+            fusion_Change(main);
+        case 'GenMap'
+            fusion_GenMap(main);            
+        otherwise
+            disp('can not recognize the function, please check inputs.')
+    end
     
     % done
     
