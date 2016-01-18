@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 1/11/2016
-% Last Update: 1/15/2016
+% Last Update: 1/17/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -24,8 +24,9 @@
 % Version 1.0 - 1/12/2016
 %   This script is the wrap-up function to run fusion.
 %
-% Updates of Version 1.0.1 - 1/15/2016
+% Updates of Version 1.0.1 - 1/17/2016
 %   1.Used a switch instead of str2func, better support compiling.
+%   2.Added a exit in the end.
 %
 % Released on Github on 1/11/2016, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -75,5 +76,6 @@ function fusion_Run(file,job,njob,func)
     end
     
     % done
+    exit;
     
 end
