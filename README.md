@@ -32,6 +32,7 @@ fusion_WriteETM - Reproject and write difference image to ETM image
 fusion_Cache - Cache all the fusion time series images into matlab file  
 fusion_Change - Detect change in the fusion time series  
 fusion_GenMap - Generate change map in ENVI format  
+compile - Function to compile the model  
 config - Example of a configuration file (optimized for a study site in Amazon)  
 
 **Supplimental Scripts:**  
@@ -39,6 +40,7 @@ config - Example of a configuration file (optimized for a study site in Amazon)
 core - some key functions that will be used by the main scripts  
 ext - some external functions written by other authors  
 bash - bash scripts for running fusion in qshell  
+mcc - compiled version of the mode.  
 doc - documentations of the model  
 tool - some small tools for pre- / post- fusion analysis  
 **some tools have not been tested since the last majot update.** 
@@ -61,10 +63,11 @@ Instruction
 
 **Preparing**  
 
-- Download required input data and allocate enough disk space for output
-- Organize all input data in one folder with original folders and file names (such as MOD09, MOD09GA)
-- Clone (or pull) the fusion repo. to your server or local computer
-- Copy and customize the configuration file
+- Download required input data and allocate enough disk space for output  
+- Organize all input data in one folder with original folders and file names (such as MOD09, MOD09GA)  
+- Clone (or pull) the fusion repo. to your server or local computer  
+- Copy and customize the configuration file  
+- Compile the model is necessary  
 
 **To run fusion step by step**  
 
@@ -85,10 +88,13 @@ Dependencies
 ------
 
 **For main functions:**    
-MATLAB (r2011b or higher)  
+MATLAB (r2013a or higher)  
 gdal (1.10.0 or higher)  
 hdf (4.2.5 or higher)  
 bash (4.1.2 or higher)  
+
+**For compiled version:**  
+MATLAB Compiler Runtime (8.1/2013a or higher)
 
 **For some minor functions:**  
 R (2.15.2 or higher)  
