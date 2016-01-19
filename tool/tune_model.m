@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.1.1
+% Version 1.2
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 1/1/2016
+% Last Update: 1/19/2016
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -55,6 +55,12 @@
 %   2.Bug fix.
 %   3.Added a change detection threshold on RMSE.
 %
+% Updats of Version 1.2.0 - 1/19/2016
+%   1.Added sub function for linear model.
+%   2.Added sub function for reading config file in text format.
+%   3.Implemented the sub functions in the main function.
+%   4.Removed unnecessary codes.
+%
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -66,39 +72,12 @@ function [R,Model] = tune_model(var1,var2,var3)
         file = var1;
         % load config file
         if exist(file,'file')
-            run(file);
+            Model = readConfig(file);
         else
             disp('config file does not exist, abort.');
             return;
         end
         % assign model parameters and return
-        Model.minNoB = minNoB;
-        Model.initNoB = initNoB;
-        Model.nSD = nStandDev;
-        Model.nCosc = nConsecutive;
-        Model.nSusp = nSuspect;
-        Model.outlr = outlierRemove;
-        Model.nonFstMean = thresNonFstMean;
-        Model.nonFstStd = thresNonFstStd;
-        Model.nonFstSlp = thresNonFstSlp;
-        Model.nonFstR2 = thresNonFstR2;
-        Model.nonFstRMSE = thresNonFstRMSE;
-        Model.chgEdge = thresChgEdge;
-        Model.nonFstEdge = thresNonFstEdge;
-        Model.specEdge = thresSpecEdge;
-        Model.probThres = thresProbChange;
-        Model.band = bandIncluded;
-        Model.weight = bandWeight;   
-        Model.path = dataPath;
-        Model.scene = landsatScene;
-        Model.platform = modisPlatform;
-        Model.BRDF = BRDF;
-        Model.BIAS = BIAS;
-        Model.discardRatio = discardRatio;
-        Model.diffMethod = diffMethod;
-        Model.startDate = startDate;
-        Model.endDate = endDate;
-        Model.nrtDate = nrtDate;
         Model.config = file;
         R = -1;
         return;
@@ -127,14 +106,9 @@ function [R,Model] = tune_model(var1,var2,var3)
         dataPath = Model.path;
         landsatScene = Model.scene;
         modisPlatform = Model.platform;
-        BRDF = Model.BRDF;
-        BIAS = Model.BIAS;
-        discardRatio = Model.discardRatio;
-        diffMethod = Model.diffMethod;
         startDate = Model.startDate;
         endDate = Model.endDate;
         nrtDate = Model.nrtDate;
-        file = Model.config;
     else
         disp('invald number of input arguments,abort.');
         return;
@@ -374,18 +348,18 @@ function [R,Model] = tune_model(var1,var2,var3)
         LMCoef = zeros(4,3,nband);
         for i = 1:nband
             if CHGFlag == 1
-                LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-                LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+                LMFit = lm(preBreakD',preBreak(i,:)');
+                LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
                 R.LMFitPre.(['Band' num2str(i)]) = LMFit;
-                LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
-                LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+                LMFit = lm(postBreakD',postBreak(i,:)');
+                LMCoef(:,2,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
                 R.LMFitPost.(['Band' num2str(i)]) = LMFit;
-                LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
-                LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+                LMFit = lm(prePostCombD',prePostComb(i,:)');
+                LMCoef(:,3,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
                 R.LMFitAll.(['Band' num2str(i)]) = LMFit;
             else
-                LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-                LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+                LMFit = lm(preBreakD',preBreak(i,:)');
+                LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
                 LMCoef(:,2,i) = LMCoef(:,1,i);
                 LMCoef(:,3,i) = LMCoef(:,1,i);
                 R.LMFit.(['Band' num2str(i)]) = LMFit;
@@ -555,4 +529,147 @@ function [R,Model] = tune_model(var1,var2,var3)
     % done
     
 end
+
+% local functions
+function LModel = lm(X,Y)
+    X2 = [ones(length(X),1) X];
+    b = X2\Y;
+    Yhat = X2*b;
+    SSE = sum((Y-Yhat).^2);
+    TSS = sum((Y-mean(Y)).^2);
+    R2 = 1-SSE/TSS;
+    n = length(X);
+    RMSE = sqrt(SSE/(n-2));
+    LModel.a = b(2);
+    LModel.b = b(1);
+    LModel.R2 = R2;
+    LModel.RMSE = RMSE;
+end
+
+function config = readConfig(file)
+    config = [];
+    if ~exist(file,'file') 
+        disp('Config file does not exist.');
+        return;
+    end
+    Fconfig = fopen(file,'r');
+    while ~feof(Fconfig)
+        thisLine = strtrim(fgetl(Fconfig));
+        if isempty(thisLine)
+            continue;
+        elseif strcmp(thisLine(1),'%')
+            continue;
+        end
+        [trueLine,~] = strtok(thisLine,'%;');
+        [keyName,rem] = strtok(trueLine,'=');
+        [keyString,~] = strtok(rem,'=');
+        keyName = strtrim(keyName);
+        keyString = strtrim(keyString);
+        if strcmp(keyString(1),'''')
+            keyValue = strrep(keyString,'''','');
+        elseif strcmp(keyString(1),'[')
+            keyValue = str2num(keyString);
+        else
+            keyValue = str2double(keyString);
+        end
+        config.(keyName) = keyValue;
+    end
+    fclose(Fconfig);
+    curVersion = 10112;
+    if ~isfield(config,'configVer')
+        disp('WARNING!!!!');
+        disp('Unknown config file version, unexpected error may occur.');
+        disp('WARNING!!!!');
+        config.configVer = 0;
+    elseif config.configVer < curVersion
+        disp('WARNING!!!!');
+        disp('You are using older version of config file, unexpected error may occur.');
+        disp('WARNING!!!!');
+    end
+    if ~isfield(config,'dataPath')
+        config.dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
+    end
+    if ~isfield(config,'landsatScene')
+        config.landsatScene = [227,65];
+    end
+    if ~isfield(config,'modisPlatform')
+        config.modisPlatform = 'ALL';
+    end
+    if ~isfield(config,'BRDF')
+        config.BRDF = 0;
+    end
+    if ~isfield(config,'BIAS')
+        config.BIAS = 1;
+    end
+    if ~isfield(config,'discardRatio')
+        config.discardRatio = 0;
+    end
+    if ~isfield(config,'diffMethod')
+        config.diffMethod = 1;
+    end
+    if ~isfield(config,'cloudThres')
+        config.cloudThres = 80;
+    end
+    if ~isfield(config,'startDate')
+        config.startDate = 2013001;
+    end
+    if ~isfield(config,'endDate')
+        config.endDate = 2015001;
+    end
+    if ~isfield(config,'nrtDate')
+        config.nrtDate = 2014001;
+    end
+    if ~isfield(config,'minNoB')
+        config.minNoB = 40;
+    end
+    if ~isfield(config,'initNoB')
+        config.initNoB = 20;
+    end
+    if ~isfield(config,'nStandDev')
+        config.nStandDev = 3;
+    end
+    if ~isfield(config,'nConsecutive')
+        config.nConsecutive = 6;
+    end
+    if ~isfield(config,'nSuspect')
+        config.nSuspect = 4;
+    end
+    if ~isfield(config,'outlierRemove')
+        config.outlierRemove = 2;
+    end
+    if ~isfield(config,'thresNonFstMean')
+        config.thresNonFstMean = 150;
+    end
+    if ~isfield(config,'thresNonFstStd')
+        config.thresNonFstStd = 250;
+    end
+    if ~isfield(config,'thresNonFstSlp')
+        config.thresNonFstSlp = 200;
+    end
+    if ~isfield(config,'thresNonFstR2')
+        config.thresNonFstR2 = 30;
+    end
+    if ~isfield(config,'thresNonFstRMSE')
+        config.thresNonFstRMSE = 200;
+    end
+    if ~isfield(config,'thresChgEdge')
+        config.thresChgEdge = 0.65;
+    end
+    if ~isfield(config,'thresNonFstEdge')
+        config.thresNonFstEdge = 0.35;
+    end
+    if ~isfield(config,'thresSpecEdge')
+        config.thresSpecEdge = 100;
+    end
+    if ~isfield(config,'thresProbChange')
+        config.thresProbChange = 8;
+    end
+    if ~isfield(config,'bandIncluded')
+        config.bandIncluded = [7,8];
+    end
+    if ~isfield(config,'bandWeight')
+        config.bandWeight = [1,1];
+    end
+end
+
 
