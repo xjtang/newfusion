@@ -31,7 +31,7 @@ echo "=========================================================="
 # Run the bash script
 matlab -nodisplay -nojvm -singleCompThread << MATLAB_ENV
 cd ../
-fusion_Run('$2',$3,$4,'$1')
+fusion_Run('$1',$2,$3,'$4')
 quit
 MATLAB_ENV
 

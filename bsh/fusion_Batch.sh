@@ -10,22 +10,35 @@
 #   3.n jobs
 
 while [[ $# > 0 ]]; do
+
     InArg="$1"
+    VER=Submit
+    SLOT=1
     
     case $InArg in
         -c)
             echo 'Running standalone job.'
+	    VER=Standalone
             ;;
         -m)
             echo 'Requesting extra memory.'
+	    SLOT=3
             ;;
         *)
             echo 'Something else.'
-            ;;
+            FUNC=$1
+	    CONFIle=$2
+	    NJOB=$3
     esac
 
     shift
 
+done
+
+echo 'Total jobs to submit is' $NJOB
+for i in $(seq 1 $NJOB); do
+    echo 'Submitting job no.' $i 'out of' $NJOB
+    qsub -N fusion_$i -pe omp $SLOT ./fusion_${VER}.sh $CONFILE $i $NJOB $FUNC
 done
 
 # end
