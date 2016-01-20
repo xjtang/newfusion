@@ -17,9 +17,6 @@
 # Name the file where to redirect standard output and error
 #$ -o fusion.qlog
 
-# request more memory
-#$ -pe omp 3
-
 # Now let's keep track of some information just in case anything goes wrong
 
 echo "=========================================================="
