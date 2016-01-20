@@ -25,10 +25,10 @@ while [[ $# > 0 ]]; do
 	    SLOT=3
             ;;
         *)
-            echo 'Something else.'
             FUNC=$1
 	    CONFIle=$2
 	    NJOB=$3
+	    break
     esac
 
     shift
