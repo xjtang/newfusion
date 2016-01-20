@@ -9,11 +9,12 @@
 #   2.Config File
 #   3.n jobs
 
+VER=Submit
+SLOT=1
+
 while [[ $# > 0 ]]; do
 
     InArg="$1"
-    VER=Submit
-    SLOT=1
     
     case $InArg in
         -c)
@@ -26,7 +27,7 @@ while [[ $# > 0 ]]; do
             ;;
         *)
             FUNC=$1
-	    CONFIle=$2
+	    CONFILE=$2
 	    NJOB=$3
 	    break
     esac
@@ -38,6 +39,7 @@ done
 echo 'Total jobs to submit is' $NJOB
 for i in $(seq 1 $NJOB); do
     echo 'Submitting job no.' $i 'out of' $NJOB
+    echo 'qsub -N fusion_'$i' -pe omp '$SLOT' ./fusion_'${VER}'.sh '$CONFILE' '$i' '$NJOB' '$FUNC
     qsub -N fusion_$i -pe omp $SLOT ./fusion_${VER}.sh $CONFILE $i $NJOB $FUNC
 done
 
