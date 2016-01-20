@@ -3,7 +3,7 @@
 The New Fusion model uses a single config file to specify all model settings and parameters. Before you can run the model, you need to customize the config file for your project. This page briefly explains the function of each model parameter. The New Fusion model itself has not been published in scientific jounals yet. We will update the information once the model is published and you will have better understanding of these parameters. If you want to test the model now it is recommended to start with the default values.
 
 #### The Config File
-The config file is actually a MATLAB sript file (xxx.m). You can find an example config file ([config.m](../config.m)) that comes with the New Fusion program. The easiest way to customize your own config file for your project is just to copy the example config file and edit your copy. You can either edit it in MATLAB or simply in any text editor. Here is what a config file would look like:
+The config file looks like a MATLAB sript file (xxx.m), but it is actually read as a plain text file. You can find an example config file ([config.m](../config.m)) that comes with the New Fusion program. The easiest way to customize your own config file for your project is just to copy the example config file and edit your copy. You can either edit it in MATLAB or simply in any text editor. Here is what a config file would look like:
 
     % project information
         configVer = 10110;              % config file version, DO NOT CHANGE THIS!!
