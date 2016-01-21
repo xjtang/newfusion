@@ -7,7 +7,7 @@ You can write your own bash script to run each step or you can also use the [bui
 
     [bash]$ cd YourFusionProgram/bsh/
     
-These scripts allows you to submit multiple jobs to run the fusion process. The fusion program will allocate the work equally across jobs. Theoretically you can submit as much jobs as you want. However it is limited by the number of software licenses that you have on the computing cluster if you are running the the regular version. You also have the option to run a standalone compiled version of fusion using the Matlab Compiler Runtime ([MCR](http://www.mathworks.com/products/compiler/mcr/)). This way you will get arround the limitation of software license but it will still limited by the number of available nods on your computing cluster. Nevertheless, it is recommended that you use 50-100 jobs to run the New Fusion model on study area of a single Landsat scene. It is fast enough that the whole process should be done within several hours.
+These scripts allows you to submit multiple jobs to run the fusion process. The fusion program will allocate the work equally across jobs. Theoretically you can submit as much jobs as you want. However it is limited by the number of software licenses that you have on the computing cluster if you are running the the regular version. You also have the option to run a standalone compiled version of fusion using the MATLAB Compiler Runtime ([MCR](http://www.mathworks.com/products/compiler/mcr/)). This way you will get arround the limitation of software license but it will still limited by the number of available nods on your computing cluster. Nevertheless, it is recommended that you use 50-100 jobs to run the New Fusion model on study area of a single Landsat scene. It is fast enough that the whole process should be done within several hours.
 
 Before you run anything, make sure that you have enough disk space and permission to run this project. Also make sure that all the bahs scripts are executable. 
 
@@ -32,5 +32,3 @@ Since the model is automatically initialized, you don't need to run fusion_Input
     [bash]$ ./fusion_Batch.sh -c -m GenMap YourConfigFile 1         # ONE job only
     
 Note that BRDF correction is optional and does not have significant impact of the result in our test studies. You must wait until the previous step is completely finished before you run the next step. Check the status of the jobs to make sure that they are finished. Two steps, fusion_GenMap and fusion_Cloud, can only be processed by one single job.
-
-
