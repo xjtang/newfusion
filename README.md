@@ -66,8 +66,8 @@ Instruction
 - Download required input data and allocate enough disk space for output  
 - Organize all input data in one folder with original folders and file names (such as MOD09, MOD09GA)  
 - Clone (or pull) the fusion repo. to your server or local computer  
+- Compile the model if necessary  
 - Copy and customize the configuration file  
-- Compile the model is necessary  
 
 **To run fusion step by step**  
 

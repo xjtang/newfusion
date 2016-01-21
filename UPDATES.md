@@ -16,8 +16,10 @@ Version 1.3 - 12/28/2015
 - Added new function to compile the model.  
 - Compiled the model as a standalone program.  
 - Added new bash script to run the compiled version.  
+- Added options to the bash script for running standalone and request memory.  
 - Consolidate output log.  
 - Updated the tune_model tool.  
+- Updated documentation.  
 - Bugs fixed.  
 
 Version 1.2.6 - 12/28/2015
