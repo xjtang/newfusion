@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Submit qsub job 
+# Compile
 
 # Specify which shell to use
 #$ -S /bin/bash
 
 # Run for 24 hours
-#$ -l h_rt=48:00:00
+#$ -l h_rt=24:00:00
 
 # Forward my current environment
 #$ -V
@@ -15,10 +15,7 @@
 #$ -j y
 
 # Name the file where to redirect standard output and error
-#$ -o fusion.qlog
-
-# request more memory
-#$ -pe omp 3
+#$ -o compile.qlog
 
 # Now let's keep track of some information just in case anything goes wrong
 
@@ -32,9 +29,11 @@ echo "Task index number : $SGE_TASK_ID"
 echo "=========================================================="
 
 # Run the bash script
-sp='./fusion_Submit.sh'
-chmod u+x $sp
-$sp $1 $2 $3 $4
+matlab -nodisplay -nojvm -singleCompThread << MATLAB_ENV
+cd ../
+compile()
+quit
+MATLAB_ENV
 
 echo "=========================================================="
 echo "Finished on : $(date)"

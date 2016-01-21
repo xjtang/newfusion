@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.3.1
+% Version 2.4
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 11/11/2015
+% Last Update: 1/12/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -128,186 +128,65 @@
 %   4.Deleted unused parameters.
 %   5.Normalize weight.
 %
+% Updates of Version 2.3.2 - 12/6/2015
+%   1.Adjuste default values.
+%   2.Added support for combining Terra and Aqua.
+%   3.Added output log files.
+%   4.Changed the location of the dump folder
+%
+% Updates of Version 2.4 - 1/12/2016
+%   1.Added a change detection threshold on rmse.
+%   2.Updated version system.
+%   3.Use new core script to load config file.
+%   4.Program terminates if file or path not specified.
+%   5.Added support for running with compliled version.
+%   6.Shifted some work to other scripts.
+%   7.Removed loading module part, modules are loaded externally.
+%   8.Removed the part that checks the inputs from config file.
+%   9.Removed the part that add path.
+%   10.Bugs fixed.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 function main = fusion_Inputs(file,job)
-
-    % add the fusion package to system path
-    addpath(genpath(fileparts(mfilename('fullpath'))));
-
-    % load module
-    system('module load hdf/4.2.5');
-    system('module load gdal/1.10.0');
     
     % check input argument
-    if ~exist('file', 'var')
-        file = '/projectnb/landsat/projects/fusion/codes/new_fusion/config.m';
-    end
-    if (~exist('job', 'var'))||(min(job)<1)||(job(1)>job(2))
+    if (min(job)<1)||(job(1)>job(2))
         job = [0,0];
     end
     
     % load config file
     if exist(file,'file')
-        run(file);
+        config = readConfig(file);
     end
-    
-    % check version config file
-    curVersion = 10110;
-    if ~exist('configVer','var')
-        disp('WARNING!!!!');
-        disp('WARNING!!!!');
-        disp('Unknown config file version, unexpected error may occur.');
-        disp('WARNING!!!!');
-        disp('WARNING!!!!');
-        configVer = 0;
-    elseif configVer < curVersion
-        disp('WARNING!!!!');
-        disp('WARNING!!!!');
-        disp('You are using older version of config file, unexpected error may occur.');
-        disp('WARNING!!!!');
-        disp('WARNING!!!!');
-    end
-    
-    % check if all parameters exist in config file
-        % project information
-        % data path
-        if ~exist('dataPath', 'var')
-            dataPath = '/projectnb/landsat/projects/fusion/br_site/data/modis/fusion/';
-        end
-        % landsat path and row
-        if ~exist('landsatScene', 'var')
-            landsatScene = [227,65];
-        end
-        % modis platform
-        if ~exist('modisPlatform', 'var')
-            modisPlatform = 'MOD';
-        end
-        
-        % main settings
-        % BRDF switch
-        if ~exist('BRDF', 'var')
-            BRDF = 0;
-        end
-        % bias switch
-        if ~exist('BIAS', 'var')
-            BIAS = 1;
-        end
-        % discard ratio
-        if ~exist('discardRatio', 'var')
-            discardRatio = 0;
-        end
-        % difference map method
-        if ~exist('diffMethod', 'var')
-            diffMethod = 1;
-        end
-        % cloud threshold
-        if ~exist('cloudThres', 'var')
-            cloudThres = 80;
-        end
-        % start date of the study time period
-        if ~exist('startDate', 'var')
-            startDate = 2012001;
-        end
-        % start date of the study time period
-        if ~exist('endDate', 'var')
-            endDate = 2015001;
-        end
-        % start date of the near real time change detection
-        if ~exist('nrtDate', 'var')
-            nrtDate = 2014001;
-        end
-        
-        % model parameters
-        % number of observation before a break can be detected
-        if ~exist('minNoB', 'var')
-            minNoB = 80;
-        end
-        % number of observation or initialization
-        if ~exist('initNoB', 'var')
-            initNoB = 80;
-        end
-        % number of standard deviation to flag a suspect
-        if ~exist('nStandDev', 'var')
-            nStandDev = 2.5;
-        end
-        % number of consecutive observation to detect change
-        if ~exist('nConsecutive', 'var')
-            nConsecutive = 6;
-        end
-        % number of suspect to confirm a change
-        if ~exist('nSuspect', 'var')
-            nSuspect = 4;
-        end
-        % switch for outlier removing in initialization
-        if ~exist('outlierRemove', 'var')
-            outlierRemove = 5;
-        end
-        % threshold of mean for non-forest detection
-        if ~exist('thresNonFstMean', 'var')
-            thresNonFstMean = 200;
-        end
-        % threshold of std for non-forest detection
-        if ~exist('thresNonFstStd', 'var')
-            thresNonFstStd = 350;
-        end
-        % threshold of slope for non-forest detection
-        if ~exist('thresNonFstSlp', 'var')
-            thresNonFstSlp = 500;
-        end
-        % threshold of R2 for non-forest detection
-        if ~exist('thresNonFstR2', 'var')
-            thresNonFstR2 = 0.2;
-        end
-        % threshold of detecting change edging pixel
-        if ~exist('thresChgEdge', 'var')
-            thresChgEdge = 0.65;
-        end
-        % threshold of detecting non-forest edging pixel
-        if ~exist('thresNonFstEdge', 'var')
-            thresNonFstEdge = 0.35;
-        end
-        % spectral threshold for edge detecting
-        if ~exist('thresSpecEdge', 'var')
-            thresSpecEdge = 100;
-        end
-        % threshold for n observation after change to confirm change
-        if ~exist('thresProbChange', 'var')
-            thresProbChange = 8;
-        end
-        % bands to be included in change detection
-        if ~exist('bandIncluded', 'var')
-            bandIncluded = [7,8];
-        end
-        % weight on each band
-        if ~exist('bandWeight', 'var')
-            bandWeight = [1,1];
-        end
-        
+
     % set project main path
-    main.path = dataPath;
-    main.outpath = [main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
+    main.path = config.dataPath;
+    main.outpath = [main.path 'P' num2str(config.landsatScene(1),'%03d') 'R' num2str(config.landsatScene(2),'%03d') '/'];
+    if exist(main.path,'dir') == 0 
+        error('Main project directory does not exist.');
+    end
     if exist(main.outpath,'dir') == 0 
-        mkdir([main.path 'P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d')]);
+        mkdir([main.path 'P' num2str(config.landsatScene(1),'%03d') 'R' num2str(config.landsatScene(2),'%03d')]);
     end
     
     % set input data location
         % main inputs:
         % Landsat ETM images to fuse
-        main.input.etm = [main.path 'ETMSYN/P' num2str(landsatScene(1),'%03d') 'R' num2str(landsatScene(2),'%03d') '/'];
+        main.input.etm = [main.path 'ETMSYN/P' num2str(config.landsatScene(1),'%03d') 'R' num2str(config.landsatScene(2),'%03d') '/'];
         % MODIS Surface Reflectance data (swath data)
-        main.input.swath = [main.path modisPlatform '09/'];
+        main.input.swath = [main.path 'SWATH/'];
 
         % for BRDF correction process only:
         % daily gridded MODIS suface reflectance data
-        main.input.grid = [main.path modisPlatform '09GA/'];
+        main.input.grid = [main.path 'GRID/'];
         % BRDF/Albedo model parameters product
         main.input.brdf = [main.path 'MCD43A1/'];
-        
+          
         % for 250m BRDF correction process only:
         % gridded 250m resolution band 1 and 2 surface reflectance data
-        main.input.g250m = [main.path modisPlatform '09GQ/'];
+        main.input.g250m = [main.path 'GRID250/'];
         
     % set output data location (create if not exist)
         % main outputs:
@@ -378,15 +257,21 @@ function main = fusion_Inputs(file,job)
         
         % other output folder
         % a dump folder for temporaryly storing dumped data
-        main.output.dump = [main.path 'DUMP/'];
+        main.output.dump = [main.outpath 'DUMP/'];
         if exist(main.output.dump,'dir') == 0 
-            mkdir([main.path 'DUMP']);
+            mkdir([main.outpath 'DUMP']);
         end
         % a folder that contains all files that will be created by tools
-        main.output.vault = [main.path 'VAULT/'];
+        main.output.vault = [main.outpath 'VAULT/'];
         if exist(main.output.vault,'dir') == 0 
-            mkdir([main.path 'VAULT']);
+            mkdir([main.outpath 'VAULT']);
         end
+        
+        % log files
+        % cloud cover summary
+        main.log.cloud = [main.outpath 'cloud.csv'];
+        % list of dates for generating synthetic images
+        main.log.syn = [main.outpath 'syn_list.csv'];
 
     % model constants
         % NA value for Landsat images
@@ -408,65 +293,67 @@ function main = fusion_Inputs(file,job)
         
     % project information
         % config file version
-        main.set.cver = configVer;
+        main.set.cver = config.configVer;
         % platform of MODIS
-        main.set.plat = modisPlatform;
+        main.set.plat = config.modisPlatform;
         % Landsat scene
-        main.set.scene = landsatScene;
+        main.set.scene = config.landsatScene;
         % job information
         main.set.job = job;
         
     % settings and parameters
         % apply BRDF correction or not
-        main.set.brdf = BRDF;
+        main.set.brdf = config.BRDF;
         % discard ratio of Landsat image (% image discarded on the edge)
-        main.set.dis = discardRatio;
+        main.set.dis = config.discardRatio;
         % correct for bias in difference map
-        main.set.bias = BIAS;
+        main.set.bias = config.BIAS;
         % max (0) or mean (1) in calculating difference map
-        main.set.dif = diffMethod;
+        main.set.dif = config.diffMethod;
         % a threshold on percent cloud cover for data filtering
-        main.set.cloud = cloudThres;
+        main.set.cloud = config.cloudThres;
         % start date of the study time period
-        main.set.sdate = startDate;
+        main.set.sdate = config.startDate;
         % end date of the study time period
-        main.set.edate = endDate;
+        main.set.edate = config.endDate;
         % start date of the near real time change detection
-        main.set.cdate = nrtDate;
+        main.set.cdate = config.nrtDate;
         
     % settings and parameters for the change detection model
         % number of observation before a break can be detected
-        main.model.minNoB = minNoB;
+        main.model.minNoB = config.minNoB;
         % number of observations to initialize the model
-        main.model.initNoB = initNoB;
+        main.model.initNoB = config.initNoB;
         % coefficiant of std in change detection
-        main.model.nSD = nStandDev;
+        main.model.nSD = config.nStandDev;
         % number of consective observation of detect change
-        main.model.nCosc = nConsecutive;
+        main.model.nCosc = config.nConsecutive;
         % number of suspective observation to confirm the change
-        main.model.nSusp = nSuspect;
+        main.model.nSusp = config.nSuspect;
         % number of outlier to remove in initialization
-        main.model.outlr = outlierRemove;
+        main.model.outlr = config.outlierRemove;
         % threshold of mean to detect non-forest pixel
-        main.model.nonFstMean = thresNonFstMean;
+        main.model.nonFstMean = config.thresNonFstMean;
         % threshold of std to detect non-forest pixel
-        main.model.nonFstStd = thresNonFstStd;
+        main.model.nonFstStd = config.thresNonFstStd;
         % threshold of slope to detect non-forest pixel
-        main.model.nonFstSlp = thresNonFstSlp;
+        main.model.nonFstSlp = config.thresNonFstSlp;
         % threshold of r2 to detect non-forest pixel
-        main.model.nonFstR2 = thresNonFstR2;
+        main.model.nonFstR2 = config.thresNonFstR2;
+        % threshold of RMSE to detect non-forest pixel
+        main.model.nonFstRMSE = config.thresNonFstRMSE;
         % threshold of std to detect non-forest pixel
-        main.model.chgEdge = thresChgEdge;
+        main.model.chgEdge = config.thresChgEdge;
         % threshold of detecting edging pixel in stable non-forest pixel
-        main.model.nonFstEdge = thresNonFstEdge;
+        main.model.nonFstEdge = config.thresNonFstEdge;
         % spectral threshold for edge detecting
-        main.model.specEdge = thresSpecEdge;
+        main.model.specEdge = config.thresSpecEdge;
         % threshold for n observation after change to confirm change
-        main.model.probThres = thresProbChange;
+        main.model.probThres = config.thresProbChange;
         % bands used for change detection
-        main.model.band = bandIncluded;
+        main.model.band = config.bandIncluded;
         % weight of each band in change detection (normalized)
-        main.model.weight = bandWeight./(sum(bandWeight));
+        main.model.weight = config.bandWeight./(sum(config.bandWeight));
         
     % fusion TS segment class codes
         main.TSclass.NA = -1;           % not available

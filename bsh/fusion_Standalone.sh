@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # Submit qsub job 
 
@@ -28,12 +28,15 @@ echo "Current job name : $JOB_NAME"
 echo "Task index number : $SGE_TASK_ID"
 echo "=========================================================="
 
-# Run the bash script
-matlab -nodisplay -nojvm -singleCompThread << MATLAB_ENV
-cd ../
-fusion_Run('$1',$2,$3,'$4')
-quit
-MATLAB_ENV
+# load module
+module load hdf/4.2.5
+module load gdal/1.10.0
+module load mcr/8.1_2013a
+# module load mcr/9.0_2015b
+
+# Run the standalone versiopn
+cd ../mcc/
+./fusion_v130 $1 $2 $3 $4
 
 echo "=========================================================="
 echo "Finished on : $(date)"

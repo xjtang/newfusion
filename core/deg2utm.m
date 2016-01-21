@@ -1,11 +1,11 @@
 % deg2utm.m
-% Version 6.1
+% Version 6.1.1
 % Core
 %
 % Project: New Fusion
 % By xjtang
 % Created On: Unknown
-% Last Update: 9/17/2014
+% Last Update: 12/1/2015
 %
 % Input Arguments:
 %   Lat (Vector, Double) - vector of latitude in degrees in WGS84 (neg. for West).
@@ -33,6 +33,9 @@
 %   3.Modified for work flow of fusion version 6.1.
 %   4.Handle negative UTMzone as southern hemisphere.
 %
+% Updates of Version 6.1.1 - 12/1/2015
+%   1.Fixed a bug of southern UTM coordinates.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -50,7 +53,6 @@ function [Easting, Northing, UTMzone] = deg2utm(Lat, Lon, UTMzone)
     % normalize UTM zone
     TrueUTM = UTMzone;
     UTMzone = abs(UTMzone);
-
 
     % meridional arc constants	
     A0 = 6367449.146;
@@ -78,7 +80,7 @@ function [Easting, Northing, UTMzone] = deg2utm(Lat, Lon, UTMzone)
     % results
     Northing = (ki+kii.*deltalonrad.*deltalonrad+kiii.*deltalonrad.^4);
     if TrueUTM < 0 
-        Northing(Northing<0) = 10000000+Northing(Northing<0);
+        Northing = 10000000+Northing;
     end
     Easting = 500000+(kiv.*deltalonrad+kv.*deltalonrad.^3);
     UTMzone = TrueUTM;

@@ -1,11 +1,11 @@
 % change.m
-% Version 2.6
+% Version 2.6.2
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 11/16/2015
+% Last Update: 1/13/2016
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel.
@@ -83,6 +83,14 @@
 %   9.Cleaned up the codes.
 %   10.Bugs fixed.
 %
+% Updates of Version 2.6.1 - 1/1/2016
+%   1.Bug fix.
+%   2.Added a change detection threshold on RMSE.
+%
+% Updates of Version 2.6.2 - 1/13/2016
+%   1.Enhanced performance and speed.
+%   2.Implemented the new linear model feature.
+%
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -100,16 +108,11 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     COEF = zeros(7,3,nband+1);
     ETS = 1:nob;
 
-    % complie eligible observations
-    for i = nob:-1:1
-        if max(TS(:,i)==cons.outna)
-            CHG(i) = C.NA;
-            ETS(i) = [];
-            if i <= NRT
-                NRT = NRT - 1;
-            end
-        end
-    end
+    % complie eligible observations   
+    neob = max(TS == cons.outna);
+    CHG(neob) = C.NA;
+    ETS(neob) = [];
+    NRT = NRT - sum(neob(1:NRT));
     
     % check total number of eligible observation
     [~,neb] = size(ETS);
@@ -215,15 +218,15 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     LMCoef = zeros(4,3,nband);
     for i = 1:nband
         if CHGFlag == 1
-            LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
-            LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
-            LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
-            LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
-            LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+            LMFit = lm(preBreakD',preBreak(i,:)');
+            LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
+            LMFit = lm(postBreakD',postBreak(i,:)');
+            LMCoef(:,2,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
+            LMFit = lm(prePostCombD',prePostComb(i,:)');
+            LMCoef(:,3,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
         else
-            LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-            LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+            LMFit = lm(preBreakD',preBreak(i,:)');
+            LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
             LMCoef(:,2,i) = LMCoef(:,1,i);
             LMCoef(:,3,i) = LMCoef(:,1,i);
         end
@@ -259,19 +262,22 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     
     % assign class
     if (COEF(1,1,nband+1)<=model.nonFstMean)&&(COEF(2,1,nband+1)<=model.nonFstStd)...
-            &&(COEF(5,1,nband+1)<=model.nonFstSlp)&&(COEF(6,1,nband+1)<=model.nonFstR2)
+            &&(COEF(5,1,nband+1)<=model.nonFstSlp)&&(COEF(6,1,nband+1)<=model.nonFstR2)...
+            &&(COEF(7,1,nband+1)<=model.nonFstRMSE)
         % pre-break is forest, check if post-break exist
         if CHGFlag == 1
             % check if post is forest
             if (COEF(1,2,nband+1)<=model.nonFstMean)&&(COEF(2,2,nband+1)<=model.nonFstStd)...
-                    &&(COEF(5,2,nband+1)<=model.nonFstSlp)&&(COEF(6,2,nband+1)<=model.nonFstR2)
+                    &&(COEF(5,2,nband+1)<=model.nonFstSlp)&&(COEF(6,2,nband+1)<=model.nonFstR2)...
+                    &&(COEF(7,1,nband+1)<=model.nonFstRMSE)
                 % post-break is forest, false break
                 CHG(CHG==C.Break) = C.Outlier;
                 CHG(CHG==C.Changed) = C.Outlier;
                 CHG(CHG==C.ChgEdge) = C.Stable;
                 % check this pixel as a whole again if this is non-forest
-                if (COEF(1,3,nband+1)<=model.nonFstMean)&&(COEF(2,3,nband+1)<=model.nonFstStd)...
-                        &&(COEF(5,3,nband+1)<=model.nonFstSlp)&&(COEF(6,3,nband+1)<=model.nonFstR2)
+                if ~((COEF(1,3,nband+1)<=model.nonFstMean)&&(COEF(2,3,nband+1)<=model.nonFstStd)...
+                        &&(COEF(5,3,nband+1)<=model.nonFstSlp)&&(COEF(6,3,nband+1)<=model.nonFstR2)...
+                        &&(COEF(7,1,nband+1)<=model.nonFstRMSE))
                     for i = 1:length(ETS)
                         x = TS(:,ETS(i));
                         if mean(abs(x)) >= model.specEdge

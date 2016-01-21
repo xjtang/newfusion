@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.1
+% Version 1.2
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 11/19/2015
+% Last Update: 1/19/2016
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -50,6 +50,17 @@
 %   6.Plot the linear model.
 %   7.Bug fix.
 %
+% Updates of Version 1.1.1 - 1/1/2016
+%   1.Added support for combining terra and aqua.
+%   2.Bug fix.
+%   3.Added a change detection threshold on RMSE.
+%
+% Updats of Version 1.2.0 - 1/19/2016
+%   1.Added sub function for linear model.
+%   2.Added sub function for reading config file in text format.
+%   3.Implemented the sub functions in the main function.
+%   4.Removed unnecessary codes.
+%
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -61,38 +72,12 @@ function [R,Model] = tune_model(var1,var2,var3)
         file = var1;
         % load config file
         if exist(file,'file')
-            run(file);
+            Model = readConfig(file);
         else
             disp('config file does not exist, abort.');
             return;
         end
         % assign model parameters and return
-        Model.minNoB = minNoB;
-        Model.initNoB = initNoB;
-        Model.nSD = nStandDev;
-        Model.nCosc = nConsecutive;
-        Model.nSusp = nSuspect;
-        Model.outlr = outlierRemove;
-        Model.nonFstMean = thresNonFstMean;
-        Model.nonFstStd = thresNonFstStd;
-        Model.nonFstSlp = thresNonFstSlp;
-        Model.nonFstR2 = thresNonFstR2;
-        Model.chgEdge = thresChgEdge;
-        Model.nonFstEdge = thresNonFstEdge;
-        Model.specEdge = thresSpecEdge;
-        Model.probThres = thresProbChange;
-        Model.band = bandIncluded;
-        Model.weight = bandWeight;   
-        Model.path = dataPath;
-        Model.scene = landsatScene;
-        Model.platform = modisPlatform;
-        Model.BRDF = BRDF;
-        Model.BIAS = BIAS;
-        Model.discardRatio = discardRatio;
-        Model.diffMethod = diffMethod;
-        Model.startDate = startDate;
-        Model.endDate = endDate;
-        Model.nrtDate = nrtDate;
         Model.config = file;
         R = -1;
         return;
@@ -103,31 +88,27 @@ function [R,Model] = tune_model(var1,var2,var3)
         col = var3;
         minNoB = Model.minNoB;
         initNoB = Model.initNoB;
-        nStandDev = Model.nSD;
-        nConsecutive = Model.nCosc;
-        nSuspect = Model.nSusp;
-        outlierRemove = Model.outlr;
-        thresNonFstMean = Model.nonFstMean;
-        thresNonFstStd = Model.nonFstStd;
-        thresNonFstSlp = Model.nonFstSlp;
-        thresNonFstR2 = Model.nonFstR2;
-        thresChgEdge = Model.chgEdge;
-        thresNonFstEdge = Model.nonFstEdge;
-        thresSpecEdge = Model.specEdge;
-        thresProbChange = Model.probThres;
-        bandIncluded = Model.band;
-        bandWeight = Model.weight;
-        dataPath = Model.path;
-        landsatScene = Model.scene;
-        modisPlatform = Model.platform;
-        BRDF = Model.BRDF;
-        BIAS = Model.BIAS;
-        discardRatio = Model.discardRatio;
-        diffMethod = Model.diffMethod;
+        nStandDev = Model.nStandDev;
+        nConsecutive = Model.nConsecutive;
+        nSuspect = Model.nSuspect;
+        outlierRemove = Model.outlierRemove;
+        thresNonFstMean = Model.thresNonFstMean;
+        thresNonFstStd = Model.thresNonFstStd;
+        thresNonFstSlp = Model.thresNonFstSlp;
+        thresNonFstR2 = Model.thresNonFstR2;
+        thresNonFstRMSE = Model.thresNonFstRMSE;
+        thresChgEdge = Model.thresChgEdge;
+        thresNonFstEdge = Model.thresNonFstEdge;
+        thresSpecEdge = Model.thresSpecEdge;
+        thresProbChange = Model.thresProbChange;
+        bandIncluded = Model.bandIncluded;
+        bandWeight = Model.bandWeight;
+        dataPath = Model.dataPath;
+        landsatScene = Model.landsatScene;
+        modisPlatform = Model.modisPlatform;
         startDate = Model.startDate;
         endDate = Model.endDate;
         nrtDate = Model.nrtDate;
-        file = Model.config;
     else
         disp('invald number of input arguments,abort.');
         return;
@@ -135,7 +116,7 @@ function [R,Model] = tune_model(var1,var2,var3)
     
     % normalize weight
     bandWeight = bandWeight./(sum(bandWeight));
-    Model.weight = bandWeight; 
+    Model.bandWeight = bandWeight; 
     
     % record model parameters
     R.Model = Model;
@@ -186,23 +167,42 @@ function [R,Model] = tune_model(var1,var2,var3)
     % remove unavailable observation
     TS = raw.Data(:,max(raw.Data>(-9999)));
     TSD = double(raw.Date(max(raw.Data>(-9999))));
+    TSP = raw.Plat(max(raw.Data>(-9999)));
     [nband,nob] = size(TS);
     % record raw reflectance data
     R.nob = nob;
     R.nbanb = nband;
     R.fullTS = TS;
     R.fullDate = TSD;
+    R.fullPlat= TSP;
+    
+    % platform control
+    if strcmp(modisPlatform,'MOD')
+        TSD = TSD(TSP==1,:);
+        TS = TS(:,TSP==1);
+        TSP = TSP(TSP==1);
+    elseif strcmp(modisPlatform,'MYD')
+        TSD = TSD(TSP==2,:);
+        TS = TS(:,TSP==2);
+        TSP = TSP(TSP==2);
+    end
+    R.platTS = TS;
+    R.platDate = TSD;
+    R.platPlat= TSP;
     
     % study time period control
     TS = TS(:,TSD>=startDate);
     TSD = TSD(TSD>=startDate);
+    TSP = TSP(TSD>=startDate);
     TS = TS(:,TSD<=endDate);
     TSD = TSD(TSD<=endDate);
+    TSP = TSP(TSD<=endDate);
     NRT = sum(TSD<nrtDate);
     [~,neb] = size(TS);
     % record study time period controled time series
     R.TS = TS;
     R.Date = TSD;
+    R.Plat = TSP;
     R.neb = neb;
     R.Model.NRT = NRT;
     % normalize time series date
@@ -348,18 +348,18 @@ function [R,Model] = tune_model(var1,var2,var3)
         LMCoef = zeros(4,3,nband);
         for i = 1:nband
             if CHGFlag == 1
-                LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-                LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+                LMFit = lm(preBreakD',preBreak(i,:)');
+                LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
                 R.LMFitPre.(['Band' num2str(i)]) = LMFit;
-                LMFit = LinearModel.fit(postBreakD',postBreak(i,:)');
-                LMCoef(:,2,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+                LMFit = lm(postBreakD',postBreak(i,:)');
+                LMCoef(:,2,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
                 R.LMFitPost.(['Band' num2str(i)]) = LMFit;
-                LMFit = LinearModel.fit(prePostCombD',prePostComb(i,:)');
-                LMCoef(:,3,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+                LMFit = lm(prePostCombD',prePostComb(i,:)');
+                LMCoef(:,3,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
                 R.LMFitAll.(['Band' num2str(i)]) = LMFit;
             else
-                LMFit = LinearModel.fit(preBreakD',preBreak(i,:)');
-                LMCoef(:,1,i) = [LMFit.Coefficients.Estimate;LMFit.Rsquared.Adjusted*100;LMFit.RMSE];
+                LMFit = lm(preBreakD',preBreak(i,:)');
+                LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
                 LMCoef(:,2,i) = LMCoef(:,1,i);
                 LMCoef(:,3,i) = LMCoef(:,1,i);
                 R.LMFit.(['Band' num2str(i)]) = LMFit;
@@ -377,7 +377,7 @@ function [R,Model] = tune_model(var1,var2,var3)
             COEF(2,2,:) = [std(postBreak,0,2)',bandWeight*abs(std(postBreak,0,2))];
             COEF(2,3,:) = [std([preBreak,postBreak],0,2)',bandWeight*abs(std([preBreak,postBreak],0,2))];
             COEF(3,2,:) = size(postBreak,2);
-            COEF(3,3,:) = COEF(3,1,1) + COEF(3,2,1)  ;
+            COEF(3,3,:) = COEF(3,1,1) + COEF(3,2,1);
         else
             COEF(1,2,:) = COEF(1,1,:);
             COEF(1,3,:) = COEF(1,1,:);
@@ -398,20 +398,22 @@ function [R,Model] = tune_model(var1,var2,var3)
         
         % assign class to each segment in fusion TS
         if (COEF(1,1,nband+1)<=thresNonFstMean)&&(COEF(2,1,nband+1)<=thresNonFstStd)...
-                &&(COEF(5,1,nband+1)<=thresNonFstSlp)&&(COEF(6,1,nband+1)<=thresNonFstR2)
+                &&(COEF(5,1,nband+1)<=thresNonFstSlp)&&(COEF(6,1,nband+1)<=thresNonFstR2)...
+                &&(COEF(7,1,nband+1)<=thresNonFstRMSE)
             % pre-break is forest, check if post-break exist
             if CHGFlag == 1
                 % check if post is non-forest
                 if (COEF(1,2,nband+1)<=thresNonFstMean)&&(COEF(2,2,nband+1)<=thresNonFstStd)...
-                        &&(COEF(5,2,nband+1)<=thresNonFstSlp)&&(COEF(6,2,nband+1)<=thresNonFstR2)
+                        &&(COEF(5,2,nband+1)<=thresNonFstSlp)&&(COEF(6,2,nband+1)<=thresNonFstR2)...
+                        &&(COEF(7,1,nband+1)<=thresNonFstRMSE)
                     % post-break is forest, false break
-                    CHGFlag == 0
                     CHG(CHG==C.Break) = C.Outlier;
                     CHG(CHG==C.Changed) = C.Outlier;
                     CHG(CHG==C.ChgEdge) = C.Stable;
                     % check this pixel as a whole again if this is non-forest
-                    if (COEF(1,3,nband+1)<=thresNonFstMean)&&(COEF(2,3,nband+1)<=thresNonFstStd)...
-                            &&(COEF(5,3,nband+1)<=thresNonFstSlp)&&(COEF(6,3,nband+1)<=thresNonFstR2)
+                    if ~((COEF(1,3,nband+1)<=thresNonFstMean)&&(COEF(2,3,nband+1)<=thresNonFstStd)...
+                            &&(COEF(5,3,nband+1)<=thresNonFstSlp)&&(COEF(6,3,nband+1)<=thresNonFstR2)...
+                            &&(COEF(7,1,nband+1)<=thresNonFstRMSE))
                         for i = 1:neb
                             x = TS(:,i);
                             if mean(abs(x)) >= thresSpecEdge
@@ -505,14 +507,14 @@ function [R,Model] = tune_model(var1,var2,var3)
                 plot(X(CHG==C.NFEdge),TS(i,CHG==C.NFEdge),'c.','MarkerSize',15);
             end
             % plot the std lines
-            plot([R.Date(1),R.Date(end)],ones(1,2).*(COEF(1,1,i)+nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
-            plot([R.Date(1),R.Date(end)],ones(1,2).*(COEF(1,1,i)-nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
+            plot([X(1),X(end)],ones(1,2).*(COEF(1,1,i)+nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
+            plot([X(1),X(end)],ones(1,2).*(COEF(1,1,i)-nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
             % plot the linear models
             if CHGFlag == 1
-                plot([X(1),X(CHG==C.Break)],[X(1),X(CHG==C.Break)]*COEF(4,1,i)+COEF(5,1,i),'Color',[0.75,0.75,0.75]);
-                plot([X(CHG==C.Break),X(end)],[X(CHG==C.Break),X(end)]*COEF(4,2,i)+COEF(5,2,i),'Color',[0.75,0.75,0.75]);
+                plot([X(1),X(R.CHG1==C.Break)],[X(1),X(R.CHG1==C.Break)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
+                plot([X(R.CHG1==C.Break),X(end)],[X(R.CHG1==C.Break),X(end)]*COEF(5,2,i)+COEF(4,2,i),'Color',[0.75,0.75,0.75]);
             else
-                plot([X(1),X(end)],[X(1),X(end)]*COEF(4,1,i)+COEF(5,1,i),'Color',[0.75,0.75,0.75]);
+                plot([X(1),X(end)],[X(1),X(end)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
             end
             % adjust captions and axis
             title(['Band ' num2str(bandIncluded(i))]);
@@ -527,4 +529,147 @@ function [R,Model] = tune_model(var1,var2,var3)
     % done
     
 end
+
+% local functions
+function LModel = lm(X,Y)
+    X2 = [ones(length(X),1) X];
+    b = X2\Y;
+    Yhat = X2*b;
+    SSE = sum((Y-Yhat).^2);
+    TSS = sum((Y-mean(Y)).^2);
+    R2 = 1-SSE/TSS;
+    n = length(X);
+    RMSE = sqrt(SSE/(n-2));
+    LModel.a = b(2);
+    LModel.b = b(1);
+    LModel.R2 = R2;
+    LModel.RMSE = RMSE;
+end
+
+function config = readConfig(file)
+    config = [];
+    if ~exist(file,'file') 
+        disp('Config file does not exist.');
+        return;
+    end
+    Fconfig = fopen(file,'r');
+    while ~feof(Fconfig)
+        thisLine = strtrim(fgetl(Fconfig));
+        if isempty(thisLine)
+            continue;
+        elseif strcmp(thisLine(1),'%')
+            continue;
+        end
+        [trueLine,~] = strtok(thisLine,'%;');
+        [keyName,rem] = strtok(trueLine,'=');
+        [keyString,~] = strtok(rem,'=');
+        keyName = strtrim(keyName);
+        keyString = strtrim(keyString);
+        if strcmp(keyString(1),'''')
+            keyValue = strrep(keyString,'''','');
+        elseif strcmp(keyString(1),'[')
+            keyValue = str2num(keyString);
+        else
+            keyValue = str2double(keyString);
+        end
+        config.(keyName) = keyValue;
+    end
+    fclose(Fconfig);
+    curVersion = 10112;
+    if ~isfield(config,'configVer')
+        disp('WARNING!!!!');
+        disp('Unknown config file version, unexpected error may occur.');
+        disp('WARNING!!!!');
+        config.configVer = 0;
+    elseif config.configVer < curVersion
+        disp('WARNING!!!!');
+        disp('You are using older version of config file, unexpected error may occur.');
+        disp('WARNING!!!!');
+    end
+    if ~isfield(config,'dataPath')
+        config.dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
+    end
+    if ~isfield(config,'landsatScene')
+        config.landsatScene = [227,65];
+    end
+    if ~isfield(config,'modisPlatform')
+        config.modisPlatform = 'ALL';
+    end
+    if ~isfield(config,'BRDF')
+        config.BRDF = 0;
+    end
+    if ~isfield(config,'BIAS')
+        config.BIAS = 1;
+    end
+    if ~isfield(config,'discardRatio')
+        config.discardRatio = 0;
+    end
+    if ~isfield(config,'diffMethod')
+        config.diffMethod = 1;
+    end
+    if ~isfield(config,'cloudThres')
+        config.cloudThres = 80;
+    end
+    if ~isfield(config,'startDate')
+        config.startDate = 2013001;
+    end
+    if ~isfield(config,'endDate')
+        config.endDate = 2015001;
+    end
+    if ~isfield(config,'nrtDate')
+        config.nrtDate = 2014001;
+    end
+    if ~isfield(config,'minNoB')
+        config.minNoB = 40;
+    end
+    if ~isfield(config,'initNoB')
+        config.initNoB = 20;
+    end
+    if ~isfield(config,'nStandDev')
+        config.nStandDev = 3;
+    end
+    if ~isfield(config,'nConsecutive')
+        config.nConsecutive = 6;
+    end
+    if ~isfield(config,'nSuspect')
+        config.nSuspect = 4;
+    end
+    if ~isfield(config,'outlierRemove')
+        config.outlierRemove = 2;
+    end
+    if ~isfield(config,'thresNonFstMean')
+        config.thresNonFstMean = 150;
+    end
+    if ~isfield(config,'thresNonFstStd')
+        config.thresNonFstStd = 250;
+    end
+    if ~isfield(config,'thresNonFstSlp')
+        config.thresNonFstSlp = 200;
+    end
+    if ~isfield(config,'thresNonFstR2')
+        config.thresNonFstR2 = 30;
+    end
+    if ~isfield(config,'thresNonFstRMSE')
+        config.thresNonFstRMSE = 200;
+    end
+    if ~isfield(config,'thresChgEdge')
+        config.thresChgEdge = 0.65;
+    end
+    if ~isfield(config,'thresNonFstEdge')
+        config.thresNonFstEdge = 0.35;
+    end
+    if ~isfield(config,'thresSpecEdge')
+        config.thresSpecEdge = 100;
+    end
+    if ~isfield(config,'thresProbChange')
+        config.thresProbChange = 8;
+    end
+    if ~isfield(config,'bandIncluded')
+        config.bandIncluded = [7,8];
+    end
+    if ~isfield(config,'bandWeight')
+        config.bandWeight = [1,1];
+    end
+end
+
 
