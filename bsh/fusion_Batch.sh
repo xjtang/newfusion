@@ -4,6 +4,7 @@
 # n defines number of jobs in total
 # Input Arguments: 
 #   -c run compiled version (optional)
+#   -s request extra slots (optional)
 #   -m request extra memory (optional)
 #   1.Function to execute
 #   2.Config File
@@ -11,6 +12,7 @@
 
 VER=Submit
 SLOT=1
+MEM=1
 
 while [[ $# > 0 ]]; do
 
@@ -19,17 +21,21 @@ while [[ $# > 0 ]]; do
     case $InArg in
         -c)
             echo 'Running standalone job.'
-	    VER=Standalone
+            VER=Standalone
             ;;
         -m)
             echo 'Requesting extra memory.'
-	    SLOT=3
+            SLOT=3
+            ;;
+        -s)
+            echo 'Requesting extra slots.'
+            MEM=94
             ;;
         *)
             FUNC=$1
-	    CONFILE=$2
-	    NJOB=$3
-	    break
+            CONFILE=$2
+            NJOB=$3
+            break
     esac
 
     shift
@@ -39,8 +45,8 @@ done
 echo 'Total jobs to submit is' $NJOB
 for i in $(seq 1 $NJOB); do
     echo 'Submitting job no.' $i 'out of' $NJOB
-    echo 'qsub -N fusion_'$i' -pe omp '$SLOT' ./fusion_'${VER}'.sh '$CONFILE' '$i' '$NJOB' '$FUNC
-    qsub -N fusion_$i -pe omp $SLOT ./fusion_${VER}.sh $CONFILE $i $NJOB $FUNC
+    echo 'qsub -N fusion_'$i' -pe omp '$SLOT' -l mem_total=${MEM}G ./fusion_'${VER}'.sh '$CONFILE' '$i' '$NJOB' '$FUNC
+    qsub -N fusion_$i -pe omp $SLOT -l mem_total=${MEM}G ./fusion_${VER}.sh $CONFILE $i $NJOB $FUNC
 done
 
 # end
