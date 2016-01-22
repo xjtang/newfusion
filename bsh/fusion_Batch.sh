@@ -25,11 +25,11 @@ while [[ $# > 0 ]]; do
             ;;
         -m)
             echo 'Requesting extra memory.'
-            SLOT=3
+            MEM=94
             ;;
         -s)
             echo 'Requesting extra slots.'
-            MEM=94
+            SLOT=3
             ;;
         *)
             FUNC=$1
