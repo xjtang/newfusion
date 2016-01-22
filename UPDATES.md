@@ -3,7 +3,7 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.3 - 12/28/2015
+Version 1.3 - 1/21/2016
 --------------
 - Added change detection threshold on RMSE.  
 - No point swath is recorded to be excluded in future runs.  
@@ -17,6 +17,7 @@ Version 1.3 - 12/28/2015
 - Compiled the model as a standalone program.  
 - Added new bash script to run the compiled version.  
 - Added options to the bash script for running standalone and request memory.  
+- Added separate option for requesting extra memory and slots.  
 - Consolidate output log.  
 - Updated the tune_model tool.  
 - Updated documentation.  
