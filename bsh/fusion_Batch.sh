@@ -45,7 +45,7 @@ done
 echo 'Total jobs to submit is' $NJOB
 for i in $(seq 1 $NJOB); do
     echo 'Submitting job no.' $i 'out of' $NJOB
-    echo 'qsub -N fusion_'$i' -pe omp '$SLOT' -l mem_total=${MEM}G ./fusion_'${VER}'.sh '$CONFILE' '$i' '$NJOB' '$FUNC
+    echo 'qsub -N fusion_'$i' -pe omp '$SLOT' -l mem_total='$MEM'G ./fusion_'${VER}'.sh '$CONFILE' '$i' '$NJOB' '$FUNC
     qsub -N fusion_$i -pe omp $SLOT -l mem_total=${MEM}G ./fusion_${VER}.sh $CONFILE $i $NJOB $FUNC
 done
 
