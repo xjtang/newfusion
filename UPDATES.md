@@ -3,6 +3,13 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.3.1 - 1/25/2016
+--------------
+- Changed job time limit to 24 hours.  
+- Added new bash script to clear results.   
+- Updated documentation.  
+- Bugs fixed  
+
 Version 1.3 - 1/21/2016
 --------------
 - Added change detection threshold on RMSE.  
