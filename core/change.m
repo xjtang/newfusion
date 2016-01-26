@@ -5,13 +5,19 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 1/13/2016
+% Last Update: 1/25/2016
 %
 % Input Arguments:
-%   TS (Matrix) - fusion time series of a pixel.
+%   TS (Matrix) - fusion time series of a pixel
+%   TSD (Matrix) - time series dates
+%   model (Structure) - model settings
+%   cons (Structure) - model constants
+%   C (Structure) - class codes
+%   NRT (Integer) - near real time date
 % 
 % Output Arguments: 
-%   CHG (Vector) - time series of change.
+%   CHG (Vector) - time series of change
+%   COEF (Array) - model coefficients
 %
 % Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
@@ -87,9 +93,10 @@
 %   1.Bug fix.
 %   2.Added a change detection threshold on RMSE.
 %
-% Updates of Version 2.6.2 - 1/13/2016
+% Updates of Version 2.6.2 - 1/25/2016
 %   1.Enhanced performance and speed.
 %   2.Implemented the new linear model feature.
+%   3.Updated instruction in comments.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
