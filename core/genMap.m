@@ -75,7 +75,7 @@ function [LCclass,Cdate,Ddate] = genMap(X,D,sets,C,LC)
     
     % remove invalid observation
     if sum(X~=C.NA) > 0
-        D = D(X~=C.NA);
+        D = D(X~=C.NA,:);
         X = X(X~=C.NA);
     else
         return;
