@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 7/7/2015
-% Last Update: 1/26/2016
+% Last Update: 1/27/2016
 %
 % Input Arguments:
 %   X (Vector) - change time series
@@ -58,10 +58,11 @@
 %   4.Adjusted input parameter names.
 %   5.Bug fix.
 %
-% Updates of Version 1.3 - 1/26/2016
+% Updates of Version 1.3 - 1/27/2016
 %   1.Updated comments and instruction.
 %   2.Generates one single structure for outputs.
 %   3.Added change detection date as part of the output.
+%   4.Bug fix.
 %
 % Released on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
