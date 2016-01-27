@@ -99,36 +99,6 @@ function fusion_GenMap(main)
         CMAP(i,j,:,:,5) = CHG.Coef(6,:,j,:);
         CMAP(i,j,:,:,6) = CHG.Coef(7,:,j,:);
         
-        % processing
-        for j = main.etm.sample
-            
-            % subset data
-            X = squeeze(CHG.Data(j,:));
-            
-            % see if this pixel is eligible
-            if max(X) <= 0
-                continue
-            end
-            
-            % assign change map result
-            MAP(i,j,1) = genMap(X,CHG.Date,1,main.model,main.TSclass,main.LCclass);
-            MAP(i,j,2) = genMap(X,CHG.Date,2,main.model,main.TSclass,main.LCclass);
-            MAP(i,j,3) = genMap(X,CHG.Date,3,main.model,main.TSclass,main.LCclass);
-            MAP(i,j,4) = genMap(X,CHG.Date,4,main.model,main.TSclass,main.LCclass);
-            
-            % assign coef map result
-            CMAP(i,:,:,:,1) = CHG.Coef(:,1,:,:);
-            CMAP(i,:,:,:,2) = CHG.Coef(:,2,:,:);
-            CMAP(i,:,:,:,3) = CHG.Coef(:,4,:,:);
-            CMAP(i,:,:,:,4) = CHG.Coef(:,5,:,:);
-            CMAP(i,:,:,:,5) = CHG.Coef(:,6,:,:);
-            CMAP(i,:,:,:,6) = CHG.Coef(:,7,:,:);
-            
-        end 
-        
-        % clear processed line
-        clear 'CHG';
-        
         % show progress
         disp(['Done with line ',num2str(i),' in ',num2str(toc,'%.f'),' seconds']);
         
