@@ -76,7 +76,7 @@ function config = readConfig(file)
     fclose(Fconfig);
     
     % check version config file
-    curVersion = 10112;
+    curVersion = 10113;
     if ~isfield(config,'configVer')
         disp('WARNING!!!!');
         disp('Unknown config file version, unexpected error may occur.');
