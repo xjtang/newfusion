@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.4
+% Version 2.4.1
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 1/12/2016
+% Last Update: 1/26/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -145,6 +145,9 @@
 %   8.Removed the part that checks the inputs from config file.
 %   9.Removed the part that add path.
 %   10.Bugs fixed.
+%
+% Updates of Version 2.4.1 - 1/26/2016
+%   1.Added a new parameter to control the linear model check.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -354,6 +357,8 @@ function main = fusion_Inputs(file,job)
         main.model.band = config.bandIncluded;
         % weight of each band in change detection (normalized)
         main.model.weight = config.bandWeight./(sum(config.bandWeight));
+        % minimum number of observations to trigger linear model check
+        main.model.lmMinNoB = config.lmMinNoB;
         
     % fusion TS segment class codes
         main.TSclass.NA = -1;           % not available

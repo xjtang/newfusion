@@ -105,7 +105,7 @@ function [LCclass,Cdate,Ddate] = genMap(X,D,sets,C,LC)
         LCclass = LC.Change;
         [~,breakPoint] = max(X==C.Break);
         Cdate = D(breakPoint,1);
-        Ddate = D(breakPoint+sets.nCosc,1);
+        Ddate = D(breakPoint+sets.nCosc-1,1);
         % could be change edge
         if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgEdge
             LCclass = LC.CEdge;
