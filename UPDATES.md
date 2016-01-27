@@ -3,10 +3,13 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.3.1 - 1/25/2016
+Version 1.3.1 - 1/27/2016
 --------------
 - Changed job time limit to 24 hours.  
 - Added new bash script to clear results.   
+- Added min NoB control on linear model check.  
+- Embeded the assign class part to fusion_Change.  
+- Updated config file and config file version.  
 - Updated documentation.  
 - Bugs fixed  
 
