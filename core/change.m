@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 1/26/2016
+% Last Update: 2/2/2016
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel
@@ -98,7 +98,11 @@
 %   2.Implemented the new linear model feature.
 %   3.Updated instruction in comments.
 %   4.Added minimum nob check of linear model check.
-%   5.Use abs slope instead of just slope
+%   5.Use abs slope instead of just slope.
+%
+% Updates of Version 2.7.1 - 2/2/2016
+%   1.Improve the false break removal process.
+%   2.Improve outlier removal process in change detection.
 %
 % Released on Github on 3/31/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -133,16 +137,18 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
     % initilization
     mainVec = TS(:,ETS(1:model.initNoB));
     if model.outlr > 0
-        for i = 1:model.outlr
             % remove outliers in the initial observations
             initMean = mean(mainVec,2);
             initStd = std(mainVec,0,2);
             mainVecRes = mainVec-repmat(initMean,1,model.initNoB+1-i);
             mainVecNorm = abs(mainVecRes)./repmat(initStd,1,model.initNoB+1-i);
             mainVecDev = model.weight*mainVecNorm;
+        for i = 1:model.outlr
             [~,TSmaxI] = max(mainVecDev);
-            mainVec(:,TSmaxI) = [];
+            mainVec(:,TSmaxI) = -9999;
+            mainVecDev(TSmaxI) = -9999;
         end
+        mainVec = mainVec(mainVec(1,:)>-9999);
     end
     initMean = mean(mainVec,2);
     initStd = std(mainVec,0,2);

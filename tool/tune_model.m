@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.2.1
+% Version 1.2.2
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 1/26/2016
+% Last Update: 2/2/2016
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -66,6 +66,11 @@
 %   2.Added nob check for linear model check.
 %   3.Used abs slope instead of slope.
 %   4.Record detection date in results.
+%
+% Updates of Version 1.2.2 - 2/2/2016
+%   1.Adjusted according to a major change in the model.
+%   2.Improve the false break removal process.
+%   3.Improve outlier removal process in change detection.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -230,15 +235,17 @@ function [R,Model] = tune_model(var1,var2,var3)
         R.initVec = mainVec;
         % remove outliers in the initial vector
         if outlierRemove > 0
-            for i = 1:outlierRemove
                 initMean = mean(mainVec,2);
                 initStd = std(mainVec,0,2);
                 mainVecRes = mainVec-repmat(initMean,1,initNoB+1-i);
                 mainVecNorm = abs(mainVecRes)./repmat(initStd,1,initNoB+1-i);
                 mainVecDev = bandWeight*mainVecNorm;
+            for i = 1:outlierRemove
                 [~,TSmaxI] = max(mainVecDev);
-                mainVec(:,TSmaxI) = [];
+                mainVec(:,TSmaxI) = -9999;
+                mainVecDev(TSmaxI) = -9999;
             end
+            mainVec = mainVec(mainVec(1,:)>-9999);
         end
         initMean = mean(mainVec,2);
         initStd = std(mainVec,0,2);
