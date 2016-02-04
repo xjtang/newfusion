@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.4
+% Version 2.4.2
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 1/12/2016
+% Last Update: 2/4/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -146,6 +146,12 @@
 %   9.Removed the part that add path.
 %   10.Bugs fixed.
 %
+% Updates of Version 2.4.1 - 1/26/2016
+%   1.Added a new parameter to control the linear model check.
+%
+% Updates of Version 2.4.2 - 2/4/2016
+%   1.Initiate two subfolders in the dump folder.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -261,6 +267,16 @@ function main = fusion_Inputs(file,job)
         if exist(main.output.dump,'dir') == 0 
             mkdir([main.outpath 'DUMP']);
         end
+        % subfolder in dump folder for no point swath record
+        main.output.swathna = [main.output.dump 'SWATHNA/'];
+        if exist(main.output.swathna,'dir') == 0 
+            mkdir([main.output.dump 'SWATHNA']);
+        end
+        % subfolder in dump folder for cloudy swath
+        main.output.cloud = [main.output.dump 'SUBCLD/'];
+        if exist(main.output.cloud,'dir') == 0 
+            mkdir([main.output.dump 'SUBCLD']);
+        end
         % a folder that contains all files that will be created by tools
         main.output.vault = [main.outpath 'VAULT/'];
         if exist(main.output.vault,'dir') == 0 
@@ -354,6 +370,8 @@ function main = fusion_Inputs(file,job)
         main.model.band = config.bandIncluded;
         % weight of each band in change detection (normalized)
         main.model.weight = config.bandWeight./(sum(config.bandWeight));
+        % minimum number of observations to trigger linear model check
+        main.model.lmMinNoB = config.lmMinNoB;
         
     % fusion TS segment class codes
         main.TSclass.NA = -1;           % not available

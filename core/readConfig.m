@@ -1,11 +1,11 @@
 % readConfig.m
-% Version 1.0
+% Version 1.0.1
 % Core
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 1/11/2016
-% Last Update: 1/11/2016
+% Last Update: 1/27/2016
 %
 % Input Arguments:
 %   file (String) - full path and file name to the config file
@@ -18,6 +18,10 @@
 %
 % Version 1.0 - 1/11/2016
 %   Function to read config.m file as a text file.
+%
+% Updates of Version 1.0.1 - 1/27/2016
+%   1.Added a new parameter to control the linear model check.
+%   2.Updated default confg file version.
 %
 % Released on Github on 1/11/2016, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -73,7 +77,7 @@ function config = readConfig(file)
     fclose(Fconfig);
     
     % check version config file
-    curVersion = 10112;
+    curVersion = 10113;
     if ~isfield(config,'configVer')
         disp('WARNING!!!!');
         disp('Unknown config file version, unexpected error may occur.');
@@ -202,6 +206,10 @@ function config = readConfig(file)
         % weight on each band
         if ~isfield(config,'bandWeight')
             config.bandWeight = [1,1];
+        end
+        % weight on each band
+        if ~isfield(config,'lmMinNoB')
+            config.lmMinNoB = 20;
         end
     
     % done

@@ -3,6 +3,30 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.3.2 - 2/4/2016
+--------------
+- Export single class maps for all three major classe.  
+- Improve outlier removal process in change detection.  
+- SwathSub will check the cloud folder for existing file.  
+- Cloud process will recheck files in SUBCLD folder.  
+- BRDF correction is moved to a separate folder.  
+- Update and support will no longer be provided for BRDF correction.  
+- Replaced all system functions in the scrips.  
+- Improved false break removal process.  
+- Added a tool to reproject results to MODIS grid.  
+- Bugs fixed.  
+
+Version 1.3.1 - 1/30/2016
+--------------
+- Changed job time limit to 24 hours.  
+- Added new bash script to clear results.   
+- Added min NoB control on linear model check.  
+- Embeded the assign class part to fusion_Change.  
+- Updated config file and config file version.  
+- Updated documentation.  
+- Bugs fixed  
+- Recompiled
+
 Version 1.3 - 1/21/2016
 --------------
 - Added change detection threshold on RMSE.  

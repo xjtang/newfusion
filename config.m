@@ -1,11 +1,11 @@
 % config.m
-% Version 1.1.12
+% Version 1.1.13
 % Configuration File
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 11/29/2015
+% Last Update: 1/26/2016
 %
 % Input Arguments: NA                    
 % 
@@ -74,11 +74,13 @@
 %   1.Added a change detection threshold on rmse.
 %   2.Updated version system.
 %
+% Updates of Version 1.1.13 - 1/26/2016
+%
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 % project information
-    configVer = 10112;              % config file version DO NOT CHANGE THIS!!!
+    configVer = 10113;              % config file version DO NOT CHANGE THIS!!!
     modisPlatform = 'ALL';          % MOD for Terra, MYD for Aqua
     landsatScene = [227,65];        % Landsat path and row
     dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
@@ -112,6 +114,7 @@
     thresProbChange = 8;            % threshold for n observation after change to confirm change
     bandIncluded = [7,8];           % bands to be included in change detection (band 7/8 are 250m)
     bandWeight = [1,1];             % weight on each band
+    lmMinNoB = 20;                  % minimum number of observations to trigger linear model check
     
 % done
     
