@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.4.1
+% Version 2.4.2
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 1/26/2016
+% Last Update: 2/4/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -149,6 +149,9 @@
 % Updates of Version 2.4.1 - 1/26/2016
 %   1.Added a new parameter to control the linear model check.
 %
+% Updates of Version 2.4.2 - 2/4/2016
+%   1.Initiate two subfolders in the dump folder.
+%
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
@@ -263,6 +266,16 @@ function main = fusion_Inputs(file,job)
         main.output.dump = [main.outpath 'DUMP/'];
         if exist(main.output.dump,'dir') == 0 
             mkdir([main.outpath 'DUMP']);
+        end
+        % subfolder in dump folder for no point swath record
+        main.output.swathna = [main.output.dump 'SWATHNA/'];
+        if exist(main.output.swathna,'dir') == 0 
+            mkdir([main.output.dump 'SWATHNA']);
+        end
+        % subfolder in dump folder for cloudy swath
+        main.output.cloud = [main.output.dump 'SUBCLD/'];
+        if exist(main.output.cloud,'dir') == 0 
+            mkdir([main.output.dump 'SUBCLD']);
         end
         % a folder that contains all files that will be created by tools
         main.output.vault = [main.outpath 'VAULT/'];
