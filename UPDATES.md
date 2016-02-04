@@ -9,11 +9,12 @@ Version 1.3.2 - 2/4/2016
 - Improve outlier removal process in change detection.  
 - SwathSub will check the cloud folder for existing file.  
 - Cloud process will recheck files in SUBCLD folder.  
-- BRDF correction is moved to a separate folder.  
-- Update and support will no longer be provided for BRDF correction.  
+- Converted BRDF correction into a standalone separate process.  
 - Replaced all system functions in the scrips.  
 - Improved false break removal process.  
 - Added a tool to reproject results to MODIS grid.  
+- Config file checks are moved from core script to inputs script.  
+- Converted uncommonly changed parameters into internal model parameters.  
 - Bugs fixed.  
 
 Version 1.3.1 - 1/30/2016
