@@ -6,7 +6,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 2/4/2016
+% Last Update: 2/5/2016
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -149,8 +149,13 @@
 % Updates of Version 2.4.1 - 1/26/2016
 %   1.Added a new parameter to control the linear model check.
 %
-% Updates of Version 2.4.2 - 2/4/2016
+% Updates of Version 2.5 - 2/4/2016
 %   1.Initiate two subfolders in the dump folder.
+%   2.Changed discard ratio to a internal model parameter.
+%   3.Changed diffMethod to a internal model parameter.
+%   4.Changed bias correction swith to a internal model parameter.
+%   5.Reistated check for config file version.
+%   6.Reistated check for Parameters completion.
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -167,6 +172,130 @@ function main = fusion_Inputs(file,job)
         config = readConfig(file);
     end
 
+    % check config file version
+    curVersion = 10200;
+    if ~isfield(config,'configVer')
+        disp('WARNING!!!!');
+        disp('Unknown config file version, unexpected error may occur.');
+        disp('WARNING!!!!');
+        config.configVer = 0;
+    elseif config.configVer < curVersion
+        disp('WARNING!!!!');
+        disp('You are using older version of config file, unexpected error may occur.');
+        disp('WARNING!!!!');
+    end
+    
+    % check if all parameters is returned from the config file read
+        % project information
+        % data path
+        if ~isfield(config,'dataPath')
+            config.dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
+        end
+        % landsat path and row
+        if ~isfield(config,'landsatScene')
+            config.landsatScene = [227,65];
+        end
+        % modis platform
+        if ~isfield(config,'modisPlatform')
+            config.modisPlatform = 'ALL';
+        end
+        
+        % main settings
+        % cloud threshold
+        if ~isfield(config,'cloudThres')
+            config.cloudThres = 80;
+        end
+        % start date of the study time period
+        if ~isfield(config,'startDate')
+            config.startDate = 2013001;
+        end
+        % start date of the study time period
+        if ~isfield(config,'endDate')
+            config.endDate = 2015001;
+        end
+        % start date of the near real time change detection
+        if ~isfield(config,'nrtDate')
+            config.nrtDate = 2014001;
+        end
+        
+        % model parameters
+        % number of observation before a break can be detected
+        if ~isfield(config,'minNoB')
+            config.minNoB = 40;
+        end
+        % number of observation or initialization
+        if ~isfield(config,'initNoB')
+            config.initNoB = 20;
+        end
+        % number of standard deviation to flag a suspect
+        if ~isfield(config,'nStandDev')
+            config.nStandDev = 3;
+        end
+        % number of consecutive observation to detect change
+        if ~isfield(config,'nConsecutive')
+            config.nConsecutive = 6;
+        end
+        % number of suspect to confirm a change
+        if ~isfield(config,'nSuspect')
+            config.nSuspect = 4;
+        end
+        % switch for outlier removing in initialization
+        if ~isfield(config,'outlierRemove')
+            config.outlierRemove = 2;
+        end
+        % threshold of mean for non-forest detection
+        if ~isfield(config,'thresNonFstMean')
+            config.thresNonFstMean = 150;
+        end
+        % threshold of std for non-forest detection
+        if ~isfield(config,'thresNonFstStd')
+            config.thresNonFstStd = 200;
+        end
+        % threshold of slope for non-forest detection
+        if ~isfield(config,'thresNonFstSlp')
+            config.thresNonFstSlp = 200;
+        end
+        % threshold of R2 for non-forest detection
+        if ~isfield(config,'thresNonFstR2')
+            config.thresNonFstR2 = 45;
+        end
+        % threshold of RMSE for non-forest detection
+        if ~isfield(config,'thresNonFstRMSE')
+            config.thresNonFstRMSE = 150;
+        end
+        % threshold of detecting change edging pixel
+        if ~isfield(config,'thresChgEdge')
+            config.thresChgEdge = 0.65;
+        end
+        % threshold of detecting non-forest edging pixel
+        if ~isfield(config,'thresNonFstEdge')
+            config.thresNonFstEdge = 0.35;
+        end
+        % spectral threshold for edge detecting
+        if ~isfield(config,'thresSpecEdge')
+            config.thresSpecEdge = 100;
+        end
+        % threshold for n observation after change to confirm change
+        if ~isfield(config,'thresProbChange')
+            config.thresProbChange = 20;
+        end
+        % bands to be included in change detection
+        if ~isfield(config,'bandIncluded')
+            config.bandIncluded = [7,8];
+        end
+        % weight on each band
+        if ~isfield(config,'bandWeight')
+            config.bandWeight = [1,1];
+        end
+        % weight on each band
+        if ~isfield(config,'lmMinNoB')
+            config.lmMinNoB = 20;
+        end
+        % threshold for false break detection
+        if ~isfield(config,'thresFlsBreak')
+            config.thresFlsBreak = 0.8;
+        end
+    
     % set project main path
     main.path = config.dataPath;
     main.outpath = [main.path 'P' num2str(config.landsatScene(1),'%03d') 'R' num2str(config.landsatScene(2),'%03d') '/'];
@@ -307,6 +436,14 @@ function main = fusion_Inputs(file,job)
         % days in one year
         main.cons.diy = 365.25;
         
+    % internal model parameters
+        % discard ratio of Landsat image (% image discarded on the edge)
+        main.set.dis = 0;
+        % correct for bias in difference map
+        main.set.bias = 1;
+        % max (0) or mean (1) in calculating difference map
+        main.set.dif = 1;
+        
     % project information
         % config file version
         main.set.cver = config.configVer;
@@ -318,14 +455,6 @@ function main = fusion_Inputs(file,job)
         main.set.job = job;
         
     % settings and parameters
-        % apply BRDF correction or not
-        main.set.brdf = config.BRDF;
-        % discard ratio of Landsat image (% image discarded on the edge)
-        main.set.dis = config.discardRatio;
-        % correct for bias in difference map
-        main.set.bias = config.BIAS;
-        % max (0) or mean (1) in calculating difference map
-        main.set.dif = config.diffMethod;
         % a threshold on percent cloud cover for data filtering
         main.set.cloud = config.cloudThres;
         % start date of the study time period
@@ -372,6 +501,8 @@ function main = fusion_Inputs(file,job)
         main.model.weight = config.bandWeight./(sum(config.bandWeight));
         % minimum number of observations to trigger linear model check
         main.model.lmMinNoB = config.lmMinNoB;
+        % threshold for false break detection
+        main.model.thresFlsBreak = config.thresFlsBreak;
         
     % fusion TS segment class codes
         main.TSclass.NA = -1;           % not available
