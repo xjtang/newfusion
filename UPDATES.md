@@ -10,7 +10,7 @@ Version 1.3.2 - 2/4/2016
 - SwathSub will check the cloud folder for existing file.  
 - Cloud process will recheck files in SUBCLD folder.  
 - Converted BRDF correction into a standalone separate process.  
-- Replaced all system functions in the scrips.  
+- Removed all system commands in main scrips.  
 - Improved false break removal process.  
 - Added a tool to reproject results to MODIS grid.  
 - Config file checks are moved from core script to inputs script.  
