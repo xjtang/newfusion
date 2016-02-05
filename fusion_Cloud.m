@@ -69,7 +69,9 @@
 function fusion_Cloud(main)
 
     % move cloudy image back
-    movefile([main.output.cloud,'*'],main.output.modsub,'f');
+    if numel(dir([main.output.cloud,'*']))>0
+        movefile([main.output.cloud,'*'],main.output.modsub,'f');
+    end
     
 	% get list of all valid files in the input directory
     fileList = dir([main.output.modsub,'M*D','09SUB*','ALL*.mat']);
