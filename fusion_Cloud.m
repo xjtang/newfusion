@@ -61,6 +61,7 @@
 % Updates of Version 2.1.4 - 2/4/2016
 %   1.The script will move cloudy swathsub back in case parameter changed.
 %   2.SUBCLD folder initiated in fusion_Inputs.
+%   3.Replaced system command with matlab command.
 %
 % Created on Github on 11/24/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -68,7 +69,7 @@
 function fusion_Cloud(main)
 
     % move cloudy image back
-    system(['mv -f ',main.output.cloud,'* ',main.output.modsub]);
+    movefile([main.output.cloud,'*'],main.output.modsub,'f');
     
 	% get list of all valid files in the input directory
     fileList = dir([main.output.modsub,'M*D','09SUB*','ALL*.mat']);
@@ -117,7 +118,7 @@ function fusion_Cloud(main)
 
         % discard current swath if cloud percent larger than certain threshold
         if perCloud(i) > main.set.cloud
-            system(['mv -f ',main.output.modsub,fileList(i).name,' ',main.output.cloud]);
+            movefile(main.output.modsub,fileList(i).name,main.output.cloud,'f');
         else
             % add to synthetic image list
             dateFull(i) = str2double(fileList(i).name(p:(p+6)));
@@ -128,7 +129,7 @@ function fusion_Cloud(main)
     % save result
     if exist(main.log.cloud,'file')
         disp('Cloud file already exist, overwrite.');
-        system(['rm ',main.log.cloud]);
+        delete(main.log.cloud);
     end
     r = [dateYear,dateDOY,perCloud,plat];
     dlmwrite(main.log.cloud,r,'delimiter',',','precision',10);
@@ -136,7 +137,7 @@ function fusion_Cloud(main)
     % make a image list for generating synthetic images
     if exist(main.log.syn,'file') 
         disp('Image list already exist, overwrite.');
-        system(['rm ',main.log.syn]);
+        delete(main.log.syn);
     end
     r = unique(dateFull);
     dlmwrite(main.log.syn,r(r>0),'delimiter',',','precision',10);

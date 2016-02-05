@@ -138,7 +138,7 @@ function fusion_Change(main)
         end
         
         % save current file
-        save([main.output.chgmat 'ts.r' num2str(i) '.chg.mat'],'-struct','CHG')
+        save([main.output.chgmat 'ts.r' num2str(i) '.chg.mat'],'-struct','CHG');
         disp(['Done with line',num2str(i),' in ',num2str(toc,'%.f'),' seconds']); 
         
     end
