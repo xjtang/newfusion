@@ -149,7 +149,7 @@
 % Updates of Version 2.4.1 - 1/26/2016
 %   1.Added a new parameter to control the linear model check.
 %
-% Updates of Version 2.5 - 2/4/2016
+% Updates of Version 2.5 - 2/5/2016
 %   1.Initiate two subfolders in the dump folder.
 %   2.Changed discard ratio to a internal model parameter.
 %   3.Changed diffMethod to a internal model parameter.
@@ -361,11 +361,6 @@ function main = fusion_Inputs(file,job)
         main.output.modBRDF = [main.path 'BRDF/'];
         if exist(main.output.modBRDF,'dir') == 0 
             mkdir([main.path 'BRDF']);
-        end
-        % fused synthetic MODISimage with BRDF correction
-        main.output.modsubbrdf = [main.outpath 'BRDFFUS/'];
-        if exist(main.output.modsubbrdf,'dir') == 0 
-            mkdir([main.outpath 'BRDFFUS']);
         end
     
         % from change detection
