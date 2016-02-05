@@ -315,7 +315,7 @@ function main = fusion_Inputs(file,job)
 
         % for BRDF correction process only:
         % daily gridded MODIS suface reflectance data
-        main.input.grid = [main.path 'GRID/'];
+        main.input.grid = [main.path 'MOD09GA/'];
         % BRDF/Albedo model parameters product
         main.input.brdf = [main.path 'MCD43A1/'];
           
@@ -559,12 +559,10 @@ function main = fusion_Inputs(file,job)
         main.date.swath = getDateList(main.input.swath);
         % dates of Landsat synthetic images used for this study
         main.date.etm = getDateList(main.input.etm);
-        if main.set.brdf == 1
-            % dates of the MODIS gridded images used for this study
-            main.date.grid = getDateList(main.input.grid);
-            % dates of the BRDF data used for this study
-            main.date.brdf = getDateList(main.input.brdf);
-        end
+        % dates of the MODIS gridded images used for this study
+        main.date.grid = getDateList(main.input.grid);
+        % dates of the BRDF data used for this study
+        main.date.brdf = getDateList(main.input.brdf);
     
     % divide into parts
         if min(job>0)       
