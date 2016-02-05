@@ -120,7 +120,7 @@ function fusion_Cloud(main)
 
         % discard current swath if cloud percent larger than certain threshold
         if perCloud(i) > main.set.cloud
-            movefile(main.output.modsub,fileList(i).name,main.output.cloud,'f');
+            movefile([main.output.modsub,fileList(i).name],main.output.cloud,'f');
         else
             % add to synthetic image list
             dateFull(i) = str2double(fileList(i).name(p:(p+6)));
