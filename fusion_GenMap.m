@@ -97,9 +97,9 @@ function fusion_GenMap(main)
         MAP(i,:,3) = CHG.Class;
         
         % assign sinle class maps
-        SCMAP(i,((CHG.Class==main.LCclass.Change)||(CHG.Class==main.LCclass.CEdge)...
-            ||(CHG.Class==main.LCclass.Prob)),1) = 1;
-        SCMAP(i,((CHG.Class==main.LCclass.NonForest)||(CHG.Class==main.LCclass.NFEdge)),2) = 1;
+        SCMAP(i,((CHG.Class==main.LCclass.Change)|(CHG.Class==main.LCclass.CEdge)...
+            |(CHG.Class==main.LCclass.Prob)),1) = 1;
+        SCMAP(i,((CHG.Class==main.LCclass.NonForest)|(CHG.Class==main.LCclass.NFEdge)),2) = 1;
         SCMAP(i,(CHG.Class==main.LCclass.Forest),3) = 1;
         SCMAP(i,(CHG.Class==main.LCclass.NA),:) = -9999;
 
