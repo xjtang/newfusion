@@ -123,24 +123,17 @@ function fusion_GenMap(main)
             delete(outFile);
             delete([outFile,'.hdr']);
         end
-
-        % export change map
-        enviwrite(outFile,squeeze(MAP(:,:,i)),[main.etm.ulEast,main.etm.ulNorth],main.etm.utm,3,[30,30],'bsq');
-
-    end
         
-    % export single class map
-    % determine file name
-    outFile = [main.output.chgmap char(CMapName(end))];
-    % see if change map already exist
-    if exist(outFile,'file')
-        disp('Change map already exist, overwrite.')
-        delete(outFile);
-        delete([outFile,'.hdr']);
+        if i == length(CMapName)
+            % export change map
+            enviwrite(outFile,SCMAP,[main.etm.ulEast,main.etm.ulNorth],main.etm.utm,3,[30,30],'bsq');
+        else
+            % export change map
+            enviwrite(outFile,squeeze(MAP(:,:,i)),[main.etm.ulEast,main.etm.ulNorth],main.etm.utm,3,[30,30],'bsq');
+        end
+        
     end
-    % export change map
-    enviwrite(outFile,SCMAP,[main.etm.ulEast,main.etm.ulNorth],main.etm.utm,3,[30,30],'bsq');
-    
+
     % export coef maps
     for i = 1:length(CoefName1)
         for j = 1:length(CoefName2)
