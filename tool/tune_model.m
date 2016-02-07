@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.2.2
+% Version 1.2.3
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 2/2/2016
+% Last Update: 2/5/2016
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -72,6 +72,11 @@
 %   2.Improve the false break removal process.
 %   3.Improve outlier removal process in change detection.
 %
+% Updates of Version 1.2.3 - 2/5/2016
+%   1.Adjusted according to a major change in the model.
+%   2.Added false break check. 
+%   3.Added new parameters for false break check.
+%
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
@@ -121,6 +126,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         endDate = Model.endDate;
         nrtDate = Model.nrtDate;
         lmMinNoB = Model.lmMinNoB;
+        thresFlsBreak = Model.thresFlsBreak;
     else
         disp('invald number of input arguments,abort.');
         return;
@@ -349,6 +355,17 @@ function [R,Model] = tune_model(var1,var2,var3)
             R.postBreakD = postBreakD;
             R.prePostComb = prePostComb;
             R.prePostCombD = prePostCombD;
+            % false break check
+            if (sum(CHG==C.ChgEdge)/(sum(CHG>=C.Break)-nSuspect)) >= thresFlsBreak
+                postBreak = TS(:,CHG==C.ChgEdge);
+                postBreakD = TSD(CHG==C.ChgEdge);
+                prePostComb = [preBreak,postBreak];
+                prePostCombD = [preBreakD,postBreakD];
+                R.postBreak2 = postBreak;
+                R.postBreakD2 = postBreakD;
+                R.prePostComb2 = prePostComb;
+                R.prePostCombD2 = prePostCombD;
+            end
         else
             % no break
             preBreak = TS(:,CHG==C.Stable);
@@ -600,7 +617,7 @@ function config = readConfig(file)
         config.(keyName) = keyValue;
     end
     fclose(Fconfig);
-    curVersion = 10112;
+    curVersion = 10200;
     if ~isfield(config,'configVer')
         disp('WARNING!!!!');
         disp('Unknown config file version, unexpected error may occur.');
@@ -697,6 +714,9 @@ function config = readConfig(file)
     end
     if ~isfield(config,'lmMinNoB')
         config.lmMinNoB = 20;
+    end
+    if ~isfield(config,'thresFlsBreak')
+        config.lmMinNoB = 0.8;
     end
 end
 

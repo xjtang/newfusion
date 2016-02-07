@@ -217,8 +217,14 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
         % break exist
         preBreak = TS(:,CHG==C.Stable);
         preBreakD = TSD(CHG==C.Stable);
-        postBreak = TS(:,CHG>=C.Break);
-        postBreakD = TSD(CHG>=C.Break);
+        % false break check
+        if (sum(CHG==C.ChgEdge)/(sum(CHG>=C.Break)-main.model.nSusp)) >= main.model.thresFlsBreak
+            postBreak = TS(:,CHG==C.ChgEdge);
+            postBreakD = TSD(CHG==C.ChgEdge);
+        else
+            postBreak = TS(:,CHG>=C.Break);
+            postBreakD = TSD(CHG>=C.Break);
+        end
         prePostComb = [preBreak,postBreak];
         prePostCombD = [preBreakD,postBreakD];
         CHGFlag = 1;
