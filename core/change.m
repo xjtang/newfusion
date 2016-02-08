@@ -5,7 +5,7 @@
 % Project: New fusion
 % By xjtang
 % Created On: 3/31/2015
-% Last Update: 2/6/2016
+% Last Update: 2/8/2016
 %
 % Input Arguments:
 %   TS (Matrix) - fusion time series of a pixel
@@ -100,7 +100,7 @@
 %   4.Added minimum nob check of linear model check.
 %   5.Use abs slope instead of just slope.
 %
-% Updates of Version 2.7.1 - 2/6/2016
+% Updates of Version 2.7.1 - 2/8/2016
 %   1.Improve the false break removal process.
 %   2.Improve outlier removal process in change detection.
 %
@@ -218,7 +218,7 @@ function [CHG,COEF] = change(TS,TSD,model,cons,C,NRT)
         preBreak = TS(:,CHG==C.Stable);
         preBreakD = TSD(CHG==C.Stable);
         % false break check
-        if (sum(CHG==C.ChgEdge)/(sum(CHG>=C.Break)-main.model.nSusp)) >= main.model.thresFlsBreak
+        if (sum(CHG==C.ChgEdge)/(sum(CHG>=C.Break)-model.nSusp)) >= model.thresFlsBreak
             postBreak = TS(:,CHG==C.ChgEdge);
             postBreakD = TSD(CHG==C.ChgEdge);
         else
