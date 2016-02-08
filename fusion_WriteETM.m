@@ -119,7 +119,7 @@ function fusion_WriteETM(main)
             thisPlat = fileName(regexp(fileName,'M.?D'):(regexp(fileName,'M.?D')+2));
             
             % check if result already exist
-            output = dir([main.output.dif thisplat '*' DayStr '*' TimeStr '*']);
+            output = dir([main.output.dif thisPlat '*' DayStr '*' TimeStr '*']);
             if numel(output) >= 1
                 disp([DayStr ' files already exist, skip this file.']);
                 continue;
