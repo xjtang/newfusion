@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 2/5/2016
+% Last Update: 2/8/2016
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -72,7 +72,7 @@
 %   2.Improve the false break removal process.
 %   3.Improve outlier removal process in change detection.
 %
-% Updates of Version 1.2.3 - 2/5/2016
+% Updates of Version 1.2.3 - 2/8/2016
 %   1.Adjusted according to a major change in the model.
 %   2.Added false break check. 
 %   3.Added new parameters for false break check.
@@ -243,8 +243,8 @@ function [R,Model] = tune_model(var1,var2,var3)
         if outlierRemove > 0
                 initMean = mean(mainVec,2);
                 initStd = std(mainVec,0,2);
-                mainVecRes = mainVec-repmat(initMean,1,initNoB+1-i);
-                mainVecNorm = abs(mainVecRes)./repmat(initStd,1,initNoB+1-i);
+                mainVecRes = mainVec-repmat(initMean,1,initNoB);
+                mainVecNorm = abs(mainVecRes)./repmat(initStd,1,initNoB);
                 mainVecDev = bandWeight*mainVecNorm;
             for i = 1:outlierRemove
                 [~,TSmaxI] = max(mainVecDev);
