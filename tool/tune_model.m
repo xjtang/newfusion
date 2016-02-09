@@ -251,7 +251,7 @@ function [R,Model] = tune_model(var1,var2,var3)
                 mainVec(:,TSmaxI) = -9999;
                 mainVecDev(TSmaxI) = -9999;
             end
-            mainVec = mainVec(mainVec(1,:)>-9999);
+            mainVec = mainVec(:,mainVec(1,:)>-9999);
         end
         initMean = mean(mainVec,2);
         initStd = std(mainVec,0,2);
