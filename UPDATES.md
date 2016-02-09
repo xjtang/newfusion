@@ -3,9 +3,9 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.3.2 - 2/4/2016
+Version 1.3.2 - 2/9/2016
 --------------
-- Export single class maps for all three major classe.  
+- Export individual class maps for all three major classe.  
 - Improve outlier removal process in change detection.  
 - SwathSub will check the cloud folder for existing file.  
 - Cloud process will recheck files in SUBCLD folder.  
@@ -15,6 +15,8 @@ Version 1.3.2 - 2/4/2016
 - Added a tool to reproject results to MODIS grid.  
 - Config file checks are moved from core script to inputs script.  
 - Converted uncommonly changed parameters into internal model parameters.  
+- Updated the compiled version.  
+- Updated documentation.  
 - Bugs fixed.  
 
 Version 1.3.1 - 1/30/2016
