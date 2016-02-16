@@ -528,36 +528,36 @@ function [R,Model] = tune_model(var1,var2,var3)
             hold on;
             % plot different types of points in different color
             if max(CHG==C.Stable) == 1
-                plot(X(CHG==C.Stable),TS(i,CHG==C.Stable),'g.','MarkerSize',15);
+                plot(X(CHG==C.Stable),TS(i,CHG==C.Stable),'g.','MarkerSize',8);
             end
             if max(CHG==C.Outlier) == 1
-                plot(X(CHG==C.Outlier),TS(i,CHG==C.Outlier),'k.','MarkerSize',15);
+                plot(X(CHG==C.Outlier),TS(i,CHG==C.Outlier),'k.','MarkerSize',8);
             end
             if max(CHG==C.Break) == 1
-                plot(X(CHG==C.Break),TS(i,CHG==C.Break),'r.','MarkerSize',15);
+                plot(X(CHG==C.Break),TS(i,CHG==C.Break),'r.','MarkerSize',8);
             end
             if max(CHG==C.Changed) == 1
-                plot(X(CHG==C.Changed),TS(i,CHG==C.Changed),'b.','MarkerSize',15);
+                plot(X(CHG==C.Changed),TS(i,CHG==C.Changed),'b.','MarkerSize',8);
             end
             if max(CHG==C.ChgEdge) == 1
-                plot(X(CHG==C.ChgEdge),TS(i,CHG==C.ChgEdge),'c.','MarkerSize',15);
+                plot(X(CHG==C.ChgEdge),TS(i,CHG==C.ChgEdge),'b.','MarkerSize',8);
             end
             if max(CHG==C.NonForest) == 1
-                plot(X(CHG==C.NonForest),TS(i,CHG==C.NonForest),'b.','MarkerSize',15);
+                plot(X(CHG==C.NonForest),TS(i,CHG==C.NonForest),'b.','MarkerSize',8);
             end
             if max(CHG==C.NFEdge) == 1
-                plot(X(CHG==C.NFEdge),TS(i,CHG==C.NFEdge),'c.','MarkerSize',15);
+                plot(X(CHG==C.NFEdge),TS(i,CHG==C.NFEdge),'b.','MarkerSize',8);
             end
             % plot the std lines
             plot([X(1),X(end)],ones(1,2).*(COEF(1,1,i)+nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
             plot([X(1),X(end)],ones(1,2).*(COEF(1,1,i)-nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
             % plot the linear models
-            if CHGFlag == 1
-                plot([X(1),X(R.CHG1==C.Break)],[X(1),X(R.CHG1==C.Break)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
-                plot([X(R.CHG1==C.Break),X(end)],[X(R.CHG1==C.Break),X(end)]*COEF(5,2,i)+COEF(4,2,i),'Color',[0.75,0.75,0.75]);
-            else
-                plot([X(1),X(end)],[X(1),X(end)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
-            end
+            %if CHGFlag == 1
+            %    plot([X(1),X(R.CHG1==C.Break)],[X(1),X(R.CHG1==C.Break)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
+            %    plot([X(R.CHG1==C.Break),X(end)],[X(R.CHG1==C.Break),X(end)]*COEF(5,2,i)+COEF(4,2,i),'Color',[0.75,0.75,0.75]);
+            %else
+            %    plot([X(1),X(end)],[X(1),X(end)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
+            %end
             % adjust captions and axis
             title(['Band ' num2str(bandIncluded(i))]);
             xlim([floor(X(1)),floor(X(end))+1]);
