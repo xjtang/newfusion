@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 2/8/2016
+% Last Update: 2/16/2016
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -72,7 +72,7 @@
 %   2.Improve the false break removal process.
 %   3.Improve outlier removal process in change detection.
 %
-% Updates of Version 1.2.3 - 2/8/2016
+% Updates of Version 1.2.3 - 2/16/2016
 %   1.Adjusted according to a major change in the model.
 %   2.Added false break check. 
 %   3.Added new parameters for false break check.
@@ -552,12 +552,12 @@ function [R,Model] = tune_model(var1,var2,var3)
             plot([X(1),X(end)],ones(1,2).*(COEF(1,1,i)+nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
             plot([X(1),X(end)],ones(1,2).*(COEF(1,1,i)-nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
             % plot the linear models
-            %if CHGFlag == 1
-            %    plot([X(1),X(R.CHG1==C.Break)],[X(1),X(R.CHG1==C.Break)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
-            %    plot([X(R.CHG1==C.Break),X(end)],[X(R.CHG1==C.Break),X(end)]*COEF(5,2,i)+COEF(4,2,i),'Color',[0.75,0.75,0.75]);
-            %else
-            %    plot([X(1),X(end)],[X(1),X(end)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
-            %end
+            if CHGFlag == 1
+                plot([X(1),X(R.CHG1==C.Break)],[X(1),X(R.CHG1==C.Break)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
+                plot([X(R.CHG1==C.Break),X(end)],[X(R.CHG1==C.Break),X(end)]*COEF(5,2,i)+COEF(4,2,i),'Color',[0.75,0.75,0.75]);
+            else
+                plot([X(1),X(end)],[X(1),X(end)]*COEF(5,1,i)+COEF(4,1,i),'Color',[0.75,0.75,0.75]);
+            end
             % adjust captions and axis
             title(['Band ' num2str(bandIncluded(i))]);
             xlim([floor(X(1)),floor(X(end))+1]);
