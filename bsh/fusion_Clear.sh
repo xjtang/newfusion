@@ -8,6 +8,16 @@
 
 if [ $1 = "-a" ]; then
     echo 'Removing all results.'
+    rm $2/MOD09SUB/*
+    rm $2/MOD09FUS/*
+    rm $2/MOD09DIF/*
+    rm -r $2/ETMDIF/*
+    rm $2/CACHE/*
+    rm $2/COEFMAP/*
+    rm $2/CHGMAP/*
+    rm $2/CHGMAT/*
+elif [ $1 = "-f" ]; then
+    echo 'Removing fusion results only.'
     rm $2/MOD09FUS/*
     rm $2/MOD09DIF/*
     rm -r $2/ETMDIF/*
