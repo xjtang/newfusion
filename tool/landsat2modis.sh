@@ -32,7 +32,7 @@ fi
 
 # warp
 echo "warping"
-gdalwarp -t_srs '+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs' -tr 250 250 -r average -srcnodata -9999 -dstnodata -9999 $1 $2 
+gdalwarp -t_srs '+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs' -te $3 $4 $5 $6 -tr 231.656358263958452 231.656358263958339 -r average -srcnodata -9999 -dstnodata -9999 -overwrite $1 $2 
 
 echo "done!"
 
