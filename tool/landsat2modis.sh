@@ -1,16 +1,17 @@
 #!/bin/bash
 # landsat2modis.sh
-# Version 1.0
+# Version 2.0
 # Tools
 #
 # Project: New Fusion
 # By xjtang
 # Created On: 2/15/2016
-# Last Update: 2/15/2016
+# Last Update: 3/1/2016
 #
 # Input Arguments: 
-#   file - the input file
-#   result - the result file 
+#   -i read srs from image
+#   1.Source file
+#   2.Target file
 #   
 # Output Arguments: 
 #   NA
@@ -22,17 +23,68 @@
 # Version 1.0 - 2/15/2016
 #   This script reproject fusion result to MODIS scale.
 #
+# Updates of Version 2.0 - 3/1/2016
+#   1.Added the ability to warp to the srs of a specific file.
+#
 # Released on Github on 2/15/2016, check Github Commits for updates afterwards.
 #------------------------------------------------------------
 
+# check input arguments
+while [[ $# > 0 ]]; do
+
+    InArg="$1"
+    
+    case $InArg in
+        -i)
+            echo 'Read srs from file.'
+            SRSFile=$1
+            shift
+            ;;
+        *)
+            ori=$1
+            des=$2
+            break
+    esac
+
+    shift
+
+done
+
 # check if file exist
-if [ ! -f $1 ]; then
-    echo "Error - $1 does not exist"
+if [ ! -f $ori ]; then
+    echo "Error - $ori does not exist"
 fi
 
-# warp
-echo "warping"
-gdalwarp -t_srs '+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs' -te $3 $4 $5 $6 -tr 231.656358263958452 231.656358263958339 -r average -srcnodata -9999 -dstnodata -9999 -overwrite $1 $2 
+if [ -z $SRSFile ]; then
+    # warp to MODIS
+    echo "warping to default MODIS"
+    gdalwarp -t_srs '+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs' -tr 231.656358263958 231.656358263958 -r average -srcnodata -9999 -dstnodata -9999 -overwrite $1 $2 
+else
+    # warp to file
+    # grab extent
+    EXTENT=$(gdalinfo $1 |\
+        grep "Lower Left\|Upper Right" |\
+        sed "s/Lower Left  //g;s/Upper Right //g;s/).*//g" |\
+        tr "\n" " " |\
+        sed 's/ *$//g' |\
+        tr -d "[(,]")
+    # grab resolution
+    RES=$(gdalinfo $1 |\
+        grep "Pixel Size =" |\
+        sed "s/Pixel Size = //g;s/).*//g" |\
+        tr "\n" " " |\
+        sed 's/ *$//g' |\
+        tr -d "[(]-" |\
+        tr "," " ")
+    # grab srs
+    SRS=$(gdalsrsinfo $1 |\
+        grep "PROJ.4" |\
+        sed "s/PROJ.4 : //g;s/).*//g" |\
+        tr "\n" " " |\
+        sed 's/ *$//g')
+    # warp
+    gdalwarp -t_srs $SRS -tr $RES -te $EXTENT -r average -srcnodata -9999 -dstnodata -9999 -overwrite $1 $2 
+fi
 
 echo "done!"
 
