@@ -62,7 +62,7 @@ fi
 if [ -z $SRSFile ]; then
     # warp to MODIS
     echo "warping to default MODIS"
-    gdalwarp -t_srs '+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs' -tr 231.656358263958 231.656358263958 -r $RESAMP -srcnodata -9999 -dstnodata -9999 -overwrite $1 $2 
+    gdalwarp -t_srs '+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs' -tr 231.656358263958 231.656358263958 -r $RESAMP -srcnodata -9999 -dstnodata -9999 -overwrite $ori $des 
 else
     # warp to file
     # grab extent
@@ -87,7 +87,7 @@ else
         tr "\n" " " |\
         sed 's/ *$//g')
     # warp
-    gdalwarp -t_srs $SRS -tr $RES -te $EXTENT -r $RESAMP -srcnodata -9999 -dstnodata -9999 -overwrite $1 $2 
+    gdalwarp -t_srs $SRS -tr $RES -te $EXTENT -r $RESAMP -srcnodata -9999 -dstnodata -9999 -overwrite $ori $des
 fi
 
 echo "done!"
