@@ -38,12 +38,12 @@ while [[ $# > 0 ]]; do
     case $InArg in
         -i)
             echo 'Read srs from file.'
-            SRSFile=$1
+            SRSFile=$2
             shift
             ;;
         -r)
             echo 'Custom resampling method.'
-            RESAMP=$1
+            RESAMP=$2
             shift
             ;;
         *)
@@ -66,14 +66,14 @@ if [ -z $SRSFile ]; then
 else
     # warp to file
     # grab extent
-    EXTENT=$(gdalinfo $1 |\
+    EXTENT=$(gdalinfo $ori |\
         grep "Lower Left\|Upper Right" |\
         sed "s/Lower Left  //g;s/Upper Right //g;s/).*//g" |\
         tr "\n" " " |\
         sed 's/ *$//g' |\
         tr -d "[(,]")
     # grab resolution
-    RES=$(gdalinfo $1 |\
+    RES=$(gdalinfo $ori |\
         grep "Pixel Size =" |\
         sed "s/Pixel Size = //g;s/).*//g" |\
         tr "\n" " " |\
@@ -81,7 +81,7 @@ else
         tr -d "[(]-" |\
         tr "," " ")
     # grab srs
-    SRS=$(gdalsrsinfo $1 |\
+    SRS=$(gdalsrsinfo $ori |\
         grep "PROJ.4" |\
         sed "s/PROJ.4 : //g;s/).*//g" |\
         tr "\n" " " |\
