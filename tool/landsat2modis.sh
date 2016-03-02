@@ -87,7 +87,7 @@ else
         tr "\n" " " |\
         sed 's/ *$//g')
     # warp
-    gdalwarp -t_srs $SRS -tr $RES -te $EXTENT -r $RESAMP -srcnodata -9999 -dstnodata -9999 -overwrite $ori $des
+    gdalwarp -t_srs $(SRS) -tr $RES -te $EXTENT -r $RESAMP -srcnodata -9999 -dstnodata -9999 -overwrite $ori $des
 fi
 
 echo "done!"
