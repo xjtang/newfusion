@@ -85,7 +85,8 @@ else
         grep "PROJ.4" |\
         sed "s/PROJ.4 : //g;s/).*//g" |\
         tr "\n" " " |\
-        sed 's/ *$//g')
+        sed 's/ *$//g' |\
+        tr -d "'")
     # warp
     gdalwarp -t_srs "$SRS" -tr $RES -te $EXTENT -r $RESAMP -srcnodata -9999 -dstnodata -9999 -overwrite $ori $des
 fi
