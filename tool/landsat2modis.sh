@@ -66,14 +66,14 @@ if [ -z $SRSFile ]; then
 else
     # warp to file
     # grab extent
-    EXTENT=$(gdalinfo $ori |\
+    EXTENT=$(gdalinfo $SRSFile |\
         grep "Lower Left\|Upper Right" |\
         sed "s/Lower Left  //g;s/Upper Right //g;s/).*//g" |\
         tr "\n" " " |\
         sed 's/ *$//g' |\
         tr -d "[(,]")
     # grab resolution
-    RES=$(gdalinfo $ori |\
+    RES=$(gdalinfo $SRSFile |\
         grep "Pixel Size =" |\
         sed "s/Pixel Size = //g;s/).*//g" |\
         tr "\n" " " |\
@@ -81,7 +81,7 @@ else
         tr -d "[(]-" |\
         tr "," " ")
     # grab srs
-    SRS=$(gdalsrsinfo $ori |\
+    SRS=$(gdalsrsinfo $SRSFile |\
         grep "PROJ.4" |\
         sed "s/PROJ.4 : //g;s/).*//g" |\
         tr "\n" " " |\
