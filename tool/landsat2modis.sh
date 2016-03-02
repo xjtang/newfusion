@@ -29,15 +29,21 @@
 # Released on Github on 2/15/2016, check Github Commits for updates afterwards.
 #------------------------------------------------------------
 
+# initialize
+RESAMP=average
+
 # check input arguments
 while [[ $# > 0 ]]; do
-
     InArg="$1"
-    
     case $InArg in
         -i)
             echo 'Read srs from file.'
             SRSFile=$1
+            shift
+            ;;
+        -r)
+            echo 'Custom resampling method.'
+            RESAMP=$1
             shift
             ;;
         *)
@@ -45,9 +51,7 @@ while [[ $# > 0 ]]; do
             des=$2
             break
     esac
-
     shift
-
 done
 
 # check if file exist
@@ -58,7 +62,7 @@ fi
 if [ -z $SRSFile ]; then
     # warp to MODIS
     echo "warping to default MODIS"
-    gdalwarp -t_srs '+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs' -tr 231.656358263958 231.656358263958 -r average -srcnodata -9999 -dstnodata -9999 -overwrite $1 $2 
+    gdalwarp -t_srs '+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs' -tr 231.656358263958 231.656358263958 -r $RESAMP -srcnodata -9999 -dstnodata -9999 -overwrite $1 $2 
 else
     # warp to file
     # grab extent
@@ -83,7 +87,7 @@ else
         tr "\n" " " |\
         sed 's/ *$//g')
     # warp
-    gdalwarp -t_srs $SRS -tr $RES -te $EXTENT -r average -srcnodata -9999 -dstnodata -9999 -overwrite $1 $2 
+    gdalwarp -t_srs $SRS -tr $RES -te $EXTENT -r $RESAMP -srcnodata -9999 -dstnodata -9999 -overwrite $1 $2 
 fi
 
 echo "done!"
