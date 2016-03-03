@@ -52,6 +52,8 @@ while read line; do
   fi
 done < $file
 
-# done
 echo "done!"
+
+# done
+
 

@@ -1,11 +1,11 @@
 % tune_model.m
-% Version 1.2
+% Version 1.2.3
 % Tools
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/29/2015
-% Last Update: 1/19/2016
+% Last Update: 2/16/2016
 %
 % Input Arguments: 
 %   var1 - file - path to config file
@@ -55,11 +55,27 @@
 %   2.Bug fix.
 %   3.Added a change detection threshold on RMSE.
 %
-% Updats of Version 1.2.0 - 1/19/2016
+% Updates of Version 1.2 - 1/19/2016
 %   1.Added sub function for linear model.
 %   2.Added sub function for reading config file in text format.
 %   3.Implemented the sub functions in the main function.
 %   4.Removed unnecessary codes.
+%
+% Updates of Version 1.2.1 - 1/26/2016
+%   1.Adjusted according to a major change in the model.
+%   2.Added nob check for linear model check.
+%   3.Used abs slope instead of slope.
+%   4.Record detection date in results.
+%
+% Updates of Version 1.2.2 - 2/2/2016
+%   1.Adjusted according to a major change in the model.
+%   2.Improve the false break removal process.
+%   3.Improve outlier removal process in change detection.
+%
+% Updates of Version 1.2.3 - 2/16/2016
+%   1.Adjusted according to a major change in the model.
+%   2.Added false break check. 
+%   3.Added new parameters for false break check.
 %
 % Created on Github on 7/29/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -109,6 +125,8 @@ function [R,Model] = tune_model(var1,var2,var3)
         startDate = Model.startDate;
         endDate = Model.endDate;
         nrtDate = Model.nrtDate;
+        lmMinNoB = Model.lmMinNoB;
+        thresFlsBreak = Model.thresFlsBreak;
     else
         disp('invald number of input arguments,abort.');
         return;
@@ -223,15 +241,17 @@ function [R,Model] = tune_model(var1,var2,var3)
         R.initVec = mainVec;
         % remove outliers in the initial vector
         if outlierRemove > 0
-            for i = 1:outlierRemove
                 initMean = mean(mainVec,2);
                 initStd = std(mainVec,0,2);
-                mainVecRes = mainVec-repmat(initMean,1,initNoB+1-i);
-                mainVecNorm = abs(mainVecRes)./repmat(initStd,1,initNoB+1-i);
+                mainVecRes = mainVec-repmat(initMean,1,initNoB);
+                mainVecNorm = abs(mainVecRes)./repmat(initStd,1,initNoB);
                 mainVecDev = bandWeight*mainVecNorm;
+            for i = 1:outlierRemove
                 [~,TSmaxI] = max(mainVecDev);
-                mainVec(:,TSmaxI) = [];
+                mainVec(:,TSmaxI) = -9999;
+                mainVecDev(TSmaxI) = -9999;
             end
+            mainVec = mainVec(:,mainVec(1,:)>-9999);
         end
         initMean = mean(mainVec,2);
         initStd = std(mainVec,0,2);
@@ -335,6 +355,17 @@ function [R,Model] = tune_model(var1,var2,var3)
             R.postBreakD = postBreakD;
             R.prePostComb = prePostComb;
             R.prePostCombD = prePostCombD;
+            % false break check
+            if (sum(CHG==C.ChgEdge)/(sum(CHG>=C.Break)-nSuspect)) >= thresFlsBreak
+                postBreak = TS(:,CHG==C.ChgEdge);
+                postBreakD = TSD(CHG==C.ChgEdge);
+                prePostComb = [preBreak,postBreak];
+                prePostCombD = [preBreakD,postBreakD];
+                R.postBreak2 = postBreak;
+                R.postBreakD2 = postBreakD;
+                R.prePostComb2 = prePostComb;
+                R.prePostCombD2 = prePostCombD;
+            end
         else
             % no break
             preBreak = TS(:,CHG==C.Stable);
@@ -343,29 +374,6 @@ function [R,Model] = tune_model(var1,var2,var3)
             R.preBreak = preBreak;
             R.preBreakD = preBreakD;
         end
-        
-        % linaer model
-        LMCoef = zeros(4,3,nband);
-        for i = 1:nband
-            if CHGFlag == 1
-                LMFit = lm(preBreakD',preBreak(i,:)');
-                LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
-                R.LMFitPre.(['Band' num2str(i)]) = LMFit;
-                LMFit = lm(postBreakD',postBreak(i,:)');
-                LMCoef(:,2,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
-                R.LMFitPost.(['Band' num2str(i)]) = LMFit;
-                LMFit = lm(prePostCombD',prePostComb(i,:)');
-                LMCoef(:,3,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
-                R.LMFitAll.(['Band' num2str(i)]) = LMFit;
-            else
-                LMFit = lm(preBreakD',preBreak(i,:)');
-                LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
-                LMCoef(:,2,i) = LMCoef(:,1,i);
-                LMCoef(:,3,i) = LMCoef(:,1,i);
-                R.LMFit.(['Band' num2str(i)]) = LMFit;
-            end
-        end
-        R.LMCoef = LMCoef;
         
         % record coefficients
         COEF(1,1,:) = [mean(preBreak,2)',bandWeight*abs(mean(preBreak,2))];
@@ -386,6 +394,39 @@ function [R,Model] = tune_model(var1,var2,var3)
             COEF(3,2,:) = COEF(3,1,:);
             COEF(3,3,:) = COEF(3,1,:);
         end
+        
+        % linaer model
+        LMCoef = zeros(4,3,nband);
+        for i = 1:nband
+            if CHGFlag == 1
+                if COEF(3,1,3) >= lmMinNoB
+                    LMFit = lm(preBreakD',preBreak(i,:)');
+                    LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
+                    R.LMFitPre.(['Band' num2str(i)]) = LMFit;
+                end
+                if COEF(3,2,3) >= lmMinNoB
+                    LMFit = lm(postBreakD',postBreak(i,:)');
+                    LMCoef(:,2,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
+                    R.LMFitPost.(['Band' num2str(i)]) = LMFit;
+                end
+                if COEF(3,3,3) >= lmMinNoB
+                    LMFit = lm(prePostCombD',prePostComb(i,:)');
+                    LMCoef(:,3,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
+                    R.LMFitAll.(['Band' num2str(i)]) = LMFit;
+                end
+            else
+                if COEF(3,1,3) >= lmMinNoB
+                    LMFit = lm(preBreakD',preBreak(i,:)');
+                    LMCoef(:,1,i) = [LMFit.b;LMFit.a;LMFit.R2*100;LMFit.RMSE];
+                    LMCoef(:,2,i) = LMCoef(:,1,i);
+                    LMCoef(:,3,i) = LMCoef(:,1,i);
+                    R.LMFit.(['Band' num2str(i)]) = LMFit;
+                end
+            end
+        end
+        R.LMCoef = LMCoef;
+        
+        % record linear model coefs
         COEF(4,:,1:nband) = LMCoef(1,:,:);
         COEF(5,:,1:nband) = LMCoef(2,:,:);
         COEF(6,:,1:nband) = LMCoef(3,:,:);
@@ -398,13 +439,13 @@ function [R,Model] = tune_model(var1,var2,var3)
         
         % assign class to each segment in fusion TS
         if (COEF(1,1,nband+1)<=thresNonFstMean)&&(COEF(2,1,nband+1)<=thresNonFstStd)...
-                &&(COEF(5,1,nband+1)<=thresNonFstSlp)&&(COEF(6,1,nband+1)<=thresNonFstR2)...
+                &&(abs(COEF(5,1,nband+1))<=thresNonFstSlp)&&(COEF(6,1,nband+1)<=thresNonFstR2)...
                 &&(COEF(7,1,nband+1)<=thresNonFstRMSE)
             % pre-break is forest, check if post-break exist
             if CHGFlag == 1
                 % check if post is non-forest
                 if (COEF(1,2,nband+1)<=thresNonFstMean)&&(COEF(2,2,nband+1)<=thresNonFstStd)...
-                        &&(COEF(5,2,nband+1)<=thresNonFstSlp)&&(COEF(6,2,nband+1)<=thresNonFstR2)...
+                        &&(abs(COEF(5,2,nband+1))<=thresNonFstSlp)&&(COEF(6,2,nband+1)<=thresNonFstR2)...
                         &&(COEF(7,1,nband+1)<=thresNonFstRMSE)
                     % post-break is forest, false break
                     CHG(CHG==C.Break) = C.Outlier;
@@ -412,7 +453,7 @@ function [R,Model] = tune_model(var1,var2,var3)
                     CHG(CHG==C.ChgEdge) = C.Stable;
                     % check this pixel as a whole again if this is non-forest
                     if ~((COEF(1,3,nband+1)<=thresNonFstMean)&&(COEF(2,3,nband+1)<=thresNonFstStd)...
-                            &&(COEF(5,3,nband+1)<=thresNonFstSlp)&&(COEF(6,3,nband+1)<=thresNonFstR2)...
+                            &&(abs(COEF(5,3,nband+1))<=thresNonFstSlp)&&(COEF(6,3,nband+1)<=thresNonFstR2)...
                             &&(COEF(7,1,nband+1)<=thresNonFstRMSE))
                         for i = 1:neb
                             x = TS(:,i);
@@ -471,6 +512,7 @@ function [R,Model] = tune_model(var1,var2,var3)
         if max(CHG==C.Break) == 1
             [~,breakPoint] = max(CHG==C.Break);
             R.chgDate = R.Date(breakPoint);
+            R.detDate = R.Date(breakPoint+nConsecutive-1);
         end
         % record result
         R.Class = CLS;
@@ -486,25 +528,25 @@ function [R,Model] = tune_model(var1,var2,var3)
             hold on;
             % plot different types of points in different color
             if max(CHG==C.Stable) == 1
-                plot(X(CHG==C.Stable),TS(i,CHG==C.Stable),'g.','MarkerSize',15);
+                plot(X(CHG==C.Stable),TS(i,CHG==C.Stable),'g.','MarkerSize',8);
             end
             if max(CHG==C.Outlier) == 1
-                plot(X(CHG==C.Outlier),TS(i,CHG==C.Outlier),'k.','MarkerSize',15);
+                plot(X(CHG==C.Outlier),TS(i,CHG==C.Outlier),'k.','MarkerSize',8);
             end
             if max(CHG==C.Break) == 1
-                plot(X(CHG==C.Break),TS(i,CHG==C.Break),'r.','MarkerSize',15);
+                plot(X(CHG==C.Break),TS(i,CHG==C.Break),'r.','MarkerSize',8);
             end
             if max(CHG==C.Changed) == 1
-                plot(X(CHG==C.Changed),TS(i,CHG==C.Changed),'b.','MarkerSize',15);
+                plot(X(CHG==C.Changed),TS(i,CHG==C.Changed),'b.','MarkerSize',8);
             end
             if max(CHG==C.ChgEdge) == 1
-                plot(X(CHG==C.ChgEdge),TS(i,CHG==C.ChgEdge),'c.','MarkerSize',15);
+                plot(X(CHG==C.ChgEdge),TS(i,CHG==C.ChgEdge),'b.','MarkerSize',8);
             end
             if max(CHG==C.NonForest) == 1
-                plot(X(CHG==C.NonForest),TS(i,CHG==C.NonForest),'b.','MarkerSize',15);
+                plot(X(CHG==C.NonForest),TS(i,CHG==C.NonForest),'b.','MarkerSize',8);
             end
             if max(CHG==C.NFEdge) == 1
-                plot(X(CHG==C.NFEdge),TS(i,CHG==C.NFEdge),'c.','MarkerSize',15);
+                plot(X(CHG==C.NFEdge),TS(i,CHG==C.NFEdge),'b.','MarkerSize',8);
             end
             % plot the std lines
             plot([X(1),X(end)],ones(1,2).*(COEF(1,1,i)+nStandDev*COEF(2,1,i)),'Color',[0.5,0.5,0.5]);
@@ -575,7 +617,7 @@ function config = readConfig(file)
         config.(keyName) = keyValue;
     end
     fclose(Fconfig);
-    curVersion = 10112;
+    curVersion = 10200;
     if ~isfield(config,'configVer')
         disp('WARNING!!!!');
         disp('Unknown config file version, unexpected error may occur.');
@@ -669,6 +711,12 @@ function config = readConfig(file)
     end
     if ~isfield(config,'bandWeight')
         config.bandWeight = [1,1];
+    end
+    if ~isfield(config,'lmMinNoB')
+        config.lmMinNoB = 20;
+    end
+    if ~isfield(config,'thresFlsBreak')
+        config.lmMinNoB = 0.8;
     end
 end
 

@@ -1,24 +1,27 @@
 % genMap.m
-% Version 1.2.4
+% Version 1.3
 % Core
 %
 % Project: New fusion
 % By xjtang
 % Created On: 7/7/2015
-% Last Update: 11/11/2015
+% Last Update: 1/27/2016
 %
 % Input Arguments:
 %   X (Vector) - change time series
 %   D (Date) - time series dates
-%   mapType (Integer) - type of change map
-%   edgeThres (Integer) - threshold to determine edge pixel 
+%   sets (Integer) - model settings
+%   C (Structure) - class codes
+%   LC (Structure) - land cover class codes
 %
 % Output Arguments: 
-%   CLS - change class
+%   LCCLass (Integer) - land cover class
+%   CDate (Integer) - date changed
+%   DDate (Integer) - date detected
 %
 % Instruction: 
 %   1.Call by other scripts with correct input and output arguments.
-%
+%  
 % Version 1.0 - 7/7/2015
 %   The script translate change time series to a change class.
 %   Only date of change map is available in this version.
@@ -52,92 +55,68 @@
 %   1.Removed the water class.
 %   2.Get class codes as input parameters.
 %   3.Adjusted the structure of input parameters.
-%   4.Adjusted input parameter names
+%   4.Adjusted input parameter names.
 %   5.Bug fix.
+%
+% Updates of Version 1.3 - 1/27/2016
+%   1.Updated comments and instruction.
+%   2.Generates one single structure for outputs.
+%   3.Added change detection date as part of the output.
+%   4.Bug fix.
 %
 % Released on Github on 7/7/2015, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 
-function CLS = genMap(X,D,mapType,sets,C,LC)
-    
+function [LCclass,Cdate,Ddate] = genMap(X,D,sets,C,LC)
+
     % initilize result
-    CLS = LC.Default;
-
-    % different types of map
-    if mapType == 2 
-        % month of change map
-        CLS = LC.NA;
-        
-    elseif mapType == 3
-        % class map
-        % deal with different types
-            % stable forest
-            if (max(X)==C.Outlier)||(max(X)==C.Stable)
-                CLS = LC.Forest;
-            end
-            % stable non-forest
-            if (max(X)==C.NonForest)||(max(X)==C.NFEdge)
-                CLS = LC.NonForest;
-                % could be non-forest edge
-                if sum(X==C.NFEdge)/(sum(X==C.NonForest)+sum(X==C.NFEdge))>=sets.nonFstEdge
-                    CLS = LC.NFEdge;
-                end
-            end
-            % confirmed changed
-            if max(X==C.Break) == 1
-                CLS = LC.Change;
-                % could be change edge
-                if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgEdge
-                    CLS = LC.CEdge;
-                end
-                % probable change
-                if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.probThres
-                    CLS = LC.Prob;
-                end 
-            end
-
-    elseif mapType == 4
-        % change only map
-        % confirmed changed
-        if max(X==C.Break) == 1
-            CLS = LC.Change;
-            % could be change edge
-            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgEdge
-                CLS = LC.CEdge;
-            end
-            % probable change
-            if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.probThres
-                CLS = LC.Prob;
-            end   
-        else
-            CLS = LC.NA;
-        end
+    LCclass = LC.NA;
+    Cdate = LC.NA;
+    Ddate = LC.NA;
+    
+    % remove invalid observation
+    if sum(X~=C.NA) > 0
+        D = D(X~=C.NA,:);
+        X = X(X~=C.NA);
     else
-        % date of change map (default)
-        % deal with different types of change
-        % stable forest
-        if (max(X)==C.Stable)||(max(X)==C.Outlier)
-            CLS = LC.NA;
-        end
-        % stable non-forest
-        if (max(X)==C.NonForest)||(max(X)==C.NFEdge)
-            CLS = LC.NA;
-        end
-        % confirmed changed
-        if max(X==C.Break) == 1
-            [~,breakPoint] = max(X==C.Break);
-            CLS = D(breakPoint,1);
-            % could be change edge
-            if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgEdge
-                CLS = LC.NA;
-            end
-            % probable change
-            if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.probThres
-                CLS = LC.NA;
-            end 
+        return;
+    end
+        
+    % deal with different types
+    % stable forest
+    if (max(X)==C.Outlier)||(max(X)==C.Stable)
+        LCclass = LC.Forest;
+        Cdate = LC.Default;
+        Ddate = LC.Default;
+    end
+    % stable non-forest
+    if (max(X)==C.NonForest)||(max(X)==C.NFEdge)
+        LCclass = LC.NonForest;
+        Cdate = LC.Default;
+        Ddate = LC.Default;
+        % could be non-forest edge
+        if sum(X==C.NFEdge)/(sum(X==C.NonForest)+sum(X==C.NFEdge))>=sets.nonFstEdge
+            LCclass = LC.NFEdge;
+            Cdate = LC.Default;
+            Ddate = LC.Default;
         end
     end
-    
+    % confirmed changed
+    if max(X==C.Break) == 1
+        LCclass = LC.Change;
+        [~,breakPoint] = max(X==C.Break);
+        Cdate = D(breakPoint,1);
+        Ddate = D(breakPoint+sets.nCosc-1,1);
+        % could be change edge
+        if sum(X==C.ChgEdge)/(sum(X==C.Changed)+sum(X==C.ChgEdge)+1)>=sets.chgEdge
+            LCclass = LC.CEdge;
+        end
+        % probable change
+        if (sum(X==C.Changed)+sum(X==C.ChgEdge)+1) < sets.probThres
+            LCclass = LC.Prob;
+        end 
+    end
+
     % done
     
 end

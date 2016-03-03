@@ -6,7 +6,7 @@
 #$ -S /bin/bash
 
 # Run for 24 hours
-#$ -l h_rt=48:00:00
+#$ -l h_rt=24:00:00
 
 # Forward my current environment
 #$ -V

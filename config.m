@@ -1,11 +1,11 @@
 % config.m
-% Version 1.1.12
+% Version 1.2
 % Configuration File
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 7/2/2015
-% Last Update: 11/29/2015
+% Last Update: 2/4/2016
 %
 % Input Arguments: NA                    
 % 
@@ -74,21 +74,28 @@
 %   1.Added a change detection threshold on rmse.
 %   2.Updated version system.
 %
+% Updates of Version 1.1.13 - 1/26/2016
+%   1.Added a min nob threshold for linear model.
+%
+% Updates of Version 1.2 - 2/4/2016
+%   1.Removed BRDF switch.
+%   2.Changed discard ratio to a internal model parameter.
+%   3.Changed diffMethod to a internal model parameter.
+%   4.Changed bias correction swith to a internal model parameter.
+%   4.Added new threhold for false break control.
+%   5.Adjusted default values.
+%
 % Released on Github on 7/3/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
 %
 % project information
-    configVer = 10112;              % config file version DO NOT CHANGE THIS!!!
+    configVer = 10200;              % config file version DO NOT CHANGE THIS!!!
     modisPlatform = 'ALL';          % MOD for Terra, MYD for Aqua
     landsatScene = [227,65];        % Landsat path and row
     dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
                                     % data path
                                             
 % main settings
-    BRDF = 0;                       % BRDF correction switch
-    BIAS = 1;                       % bias correction switch
-    discardRatio = 0;               % portion of Landsat pixel to be excluded on the edge
-    diffMethod = 1;                 % method used in difference calculation, max(0) or mean(1)
     cloudThres = 80;                % A threshold on percent cloud cover for data filtering.
     startDate = 2013001;            % start date of this analysis
     endDate = 2015001;              % end date of this analysis
@@ -101,17 +108,19 @@
     nConsecutive = 6;               % number of consecutive observation to detect change
     nSuspect = 4;                   % number of suspect to confirm a change
     outlierRemove = 2;              % switch for outlier removing in initialization
-    thresNonFstMean = 200;          % threshold of mean for non-forest detection
+    thresNonFstMean = 150;          % threshold of mean for non-forest detection
     thresNonFstStd = 200;           % threshold of std for non-forest detection
     thresNonFstSlp = 200;           % threshold of slope for non-forest detection
-    thresNonFstR2 = 30;             % threshold of r2 for non-forest detection
-    thresNonFstRMSE = 200;          % threshold of RMSE for non-forest detection
+    thresNonFstR2 = 45;             % threshold of r2 for non-forest detection
+    thresNonFstRMSE = 150;          % threshold of RMSE for non-forest detection
     thresSpecEdge = 100;            % spectral threshold for edge detecting
     thresChgEdge = 0.65;            % threshold of detecting change edging pixel
     thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel
-    thresProbChange = 8;            % threshold for n observation after change to confirm change
+    thresProbChange = 20;           % threshold for n observation after change to confirm change
     bandIncluded = [7,8];           % bands to be included in change detection (band 7/8 are 250m)
     bandWeight = [1,1];             % weight on each band
+    lmMinNoB = 20;                  % minimum number of observations to trigger linear model check
+    thresFlsBreak = 0.8;            % threshold for false break detection
     
 % done
     
