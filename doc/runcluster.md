@@ -1,7 +1,7 @@
 # The New Fusion
 ## Run on Computing Cluster
 
-The demonstration here uses the computing cluster od Boston University. Your working environment might be different so please check with your IT support for more details. Running the New Fusion model on computeing cluster where you have larger storage and computational capacities is always recommended. You will need a [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) shell to submit jobs to process each step of the fusion process.
+The demonstration here uses the computing cluster of Boston University. Your working environment might be different so please check with your IT support for more details. Running the New Fusion model on computeing cluster where you have larger storage and computational capacities is always recommended. You will need a [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) shell to submit jobs to process each step of the fusion process.
 
 You can write your own bash script to run each step or you can also use the [built-in bash scripts](../bsh/). In your Bash shell, you need to change the current folder to where the built-in scripts are stored.
 

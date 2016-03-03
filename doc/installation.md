@@ -1,9 +1,9 @@
 # The New Fusion
 ## Installation
-The installation ofthe New Fusion is quite easy. However you need to make sure you have the proper environment to run it.
+The installation of the New Fusion is quite easy. However you need to make sure you have the proper environment to run it.
 
 #### Environment
-The core of the New Fusion program is writen in [MATLAB](http://matlab.com) and works with just MATLAB alone. The standalone compiled version of fusion only requires MATLAB Compiler Runtime ([MCR](http://www.mathworks.com/products/compiler/mcr/)) and can be run without MATLAB. Part of the BRDF correction process is writen in [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) and uses [gdal](https://http://gdal.org/). Also [hdf](https://hdfeos.org/) support is needed if output of predicted MODIS swath in HDF format is needed. Some standalone tools are writen in [R](https://r-project.org/). 90% of the functions, especially the core functions, of the New Fusion model can be performed in MATLAB. Most users should have no problem using the New Fusion just in MATLAB. You will need [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) shell to submit multiple jobs to run fusion in parallel.  
+The core of the New Fusion program is writen in [MATLAB](http://matlab.com) and works with just MATLAB alone. The standalone compiled version of fusion only requires MATLAB Compiler Runtime ([MCR](http://www.mathworks.com/products/compiler/mcr/)) and can be run without MATLAB. Part of the BRDF correction process is writen in [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) and uses [gdal](https://http://gdal.org/). Also [hdf](https://hdfeos.org/) support is needed if output of predicted MODIS swath in HDF format is needed. Some standalone tools are writen in [R](https://r-project.org/). 90% of the functions, especially the core functions, of the New Fusion model can be performed in MATLAB. Most users should have no problem using the New Fusion just in MATLAB. You will need [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) shell to submit multiple jobs to run fusion in parallel on a computing cluster.  
 
 #### Install Fusion
 There are several ways to install the New Fusion:  
