@@ -3,7 +3,7 @@ Versions and Updates
 
 New Fusion  
 --------------
-Version 1.3.2 - 2/21/2016
+Version 1.3.2 - 3/3/2016
 --------------
 - Export individual class maps for all three major classe.  
 - Improve outlier removal process in change detection.  
