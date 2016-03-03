@@ -6,16 +6,12 @@ The New Fusion model uses a single config file to specify all model settings and
 The config file looks like a MATLAB sript file (xxx.m), but it is actually read as a plain text file. You can find an example config file ([config.m](../config.m)) that comes with the New Fusion program. The easiest way to customize your own config file for your project is just to copy the example config file and edit your copy. You can either edit it in MATLAB or simply in any text editor. Here is what a config file would look like:
 
     % project information
-        configVer = 10110;              % config file version, DO NOT CHANGE THIS!!
-        modisPlatform = 'MOD';          % MOD for Terra, MYD for Aqua
+        configVer = 10200;              % config file version, DO NOT CHANGE THIS!!
+        modisPlatform = 'ALL';          % MOD for Terra, MYD for Aqua
         landsatScene = [227,65];        % Landsat path and row
         dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
                                         % data path
     % main settings
-        BRDF = 0;                       % BRDF correction switch
-        BIAS = 1;                       % bias correction switch
-        discardRatio = 0;               % portion of Landsat pixel to be excluded on the edge
-        diffMethod = 1;                 % method used in difference calculation, max(0) or mean(1)
         cloudThres = 80;                % A threshold on percent cloud cover for data filtering
         startDate = 2013001;            % start date of this analysis
         endDate = 2015001;              % end date of this analysis
@@ -27,30 +23,28 @@ The config file looks like a MATLAB sript file (xxx.m), but it is actually read 
         nConsecutive = 6;               % number of consecutive observation to detect change
         nSuspect = 4;                   % number of suspect to confirm a change
         outlierRemove = 2;              % switch for outlier removing in initialization
-        thresNonFstMean = 200;          % threshold of mean for non-forest detection
+        thresNonFstMean = 150;          % threshold of mean for non-forest detection
         thresNonFstStd = 200;           % threshold of std for non-forest detection
         thresNonFstSlp = 200;           % threshold of slope for non-forest detection
-        thresNonFstR2 = 30;             % threshold of r2 for non-forest detection
+        thresNonFstR2 = 45;             % threshold of r2 for non-forest detection
+        thresNonFstRMSE = 150;          % threshold of RMSE for non-forest detection
         thresSpecEdge = 100;            % spectral threshold for edge detecting
         thresChgEdge = 0.65;            % threshold of detecting change edging pixel
         thresNonFstEdge = 0.35;         % threshold of detecting non-forest edging pixel
-        thresProbChange = 8;            % threshold for n observation after change to confirm change
+        thresProbChange =20;            % threshold for n observation after change to confirm change
         bandIncluded = [7,8];           % bands to be included in change detection (band 7/8 are 250m)
         bandWeight = [1,1];             % weight on each band
+        lmMinNoB = 20;                  % minimum number of observations to trigger linear model check
+        thresFlsBreak = 0.8;            % threshold for false break detection
 
 #### Some Key Settings
 The first two section of the config file tells the model some important information of your project such as the location of the data, some main settings and the type of output that you want. So it is very important that you make sure that the information is correct for your project. Here's a list of key settings and brief explanations:
 
-    configVer = 10110;              % config file version, DO NOT CHANGE THIS!!
-    modisPlatform = 'MOD';          % the MODIS satellite that you are using, MOD (Terra) or MYD (Aqua)
+    configVer = 10200;              % config file version, DO NOT CHANGE THIS!!
+    modisPlatform = 'ALL';          % the MODIS satellite that you are using, MOD (Terra), MYD (Aqua) or ALL
     landsatScene = [227,65];        % Landsat path and row (e.g. path 227 row 65)
     dataPath = '/projectnb/landsat/projects/fusion/amz_site/data/modis/';
                                     % the path of your work folder, absolute path.
-    BRDF = 0;                       % do you want to apply BRDF correction (1 for yes, 0 for no)
-    BIAS = 1;                       % do you want to apply BIAD correction (1 for yes, 0 for no)
-    discardRatio = 0;               % portion of Landsat pixel to be excluded on the edge
-    diffMethod = 1;                 % how to deal with overlap of adjacent MODIS swath observation, either use
-                                      max (0) or mean (1)
     cloudThres = 80;                % threshold for filtering extremely cloudy data
     startDate = 2013001;            % start date of this analysis, data before this date will be discarded
     endDate = 2015001;              % end date of this analysis, data after this date will be discarded
@@ -72,10 +66,12 @@ The model parameters can influence the change detection part of the fusion proce
                               when deciding whether a time series is non-forest (SR*10000).
     thresNonFstStd = 200;   % threshold of std for detecting non-forest, controls how sensitive the model is 
                               when deciding whether a time series is non-forest (SR*10000).
-    thresNonFstSlope = 200; % threshold of slope for detecting non-forest, controls how sensitive the model is 
+    thresNonFstSlp = 200;   % threshold of slope for detecting non-forest, controls how sensitive the model is 
                               when deciding whether a time series is non-forest.
     thresNonFstR2 = 30;     % threshold of R2 for detecting non-forest, controls how sensitive the model is 
                               when deciding whether a time series is non-forest (R2*100, 0-100).
+    thresNonFstRMSE = 150;  % threshold of RMSE for non-forest detection, controls how sensitive the model is 
+                              when deciding whether a time series is non-forest.
     thresSpecEdge = 100;    % threshold of mean for detecting pixel on the edge of two classes, controls how
                               sensitive the model is when detecting observations that might be on the edge
                               (SR*10000).
@@ -85,5 +81,8 @@ The model parameters can influence the change detection part of the fusion proce
     bandIncluded = [7,8];   % bands to be included in change detection (band 1-6 are 500m, band 7/8 are 250m).
     bandWeight = [1,1];     % weight on each band (must have the same number of elements as bandIncluded), the
                               weight will be normalized, so [1,1,1] is the same as [2,2,2].
+    lmMinNoB = 20;          % minimum number of observations to trigger linear model check
+    thresFlsBreak = 0.8;    % threshold for false break detection, higher means less likely to detect false
+                              break (0-1).
 
 Note the unit we are using here is surface reflectance times 10000, some parameters need to be adjusted accordingly if you are using different unit.
