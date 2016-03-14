@@ -71,7 +71,9 @@ else
         sed "s/Lower Left  //g;s/Upper Right //g;s/).*//g" |\
         tr "\n" " " |\
         sed 's/ *$//g' |\
-        tr -d "[(,]")
+        tr -d "[(]" |\
+        tr ', ' ' ' |\
+        tr ',' ' ')
     # grab resolution
     RES=$(gdalinfo $SRSFile |\
         grep "Pixel Size =" |\
