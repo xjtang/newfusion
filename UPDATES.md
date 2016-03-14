@@ -3,6 +3,10 @@ Versions and Updates
 
 New Fusion  
 --------------
+Version 1.3.3 - 3/14/2016
+--------------
+- Bug fix.  
+
 Version 1.3.2 - 3/3/2016
 --------------
 - Export individual class maps for all three major classe.  
