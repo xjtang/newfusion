@@ -6,10 +6,11 @@
 # Project: New Fusion
 # By xjtang
 # Created On: 2/15/2016
-# Last Update: 3/1/2016
+# Last Update: 3/24/2016
 #
 # Input Arguments: 
 #   -i read srs from image
+#   -r specify resample method
 #   1.Source file
 #   2.Target file
 #   
