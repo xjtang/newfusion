@@ -1,12 +1,12 @@
 % fusion_Inputs.m
-% Version 2.4.2
+% Version 2.5.1
 % Step 0
 % Main Inputs and Settings
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 9/16/2013
-% Last Update: 2/5/2016
+% Last Update: 6/30/2017
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -156,6 +156,9 @@
 %   4.Changed bias correction swith to a internal model parameter.
 %   5.Reistated check for config file version.
 %   6.Reistated check for Parameters completion.
+%
+% Updates of Version 2.5.1 - 6/30/2017
+%   1.Added a new folder for csv files of swath footprint
 %
 % Released on Github on 11/15/2014, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -405,6 +408,11 @@ function main = fusion_Inputs(file,job)
         main.output.vault = [main.outpath 'VAULT/'];
         if exist(main.output.vault,'dir') == 0 
             mkdir([main.outpath 'VAULT']);
+        end
+        % a folder for csv files of the swath footprints
+        main.output.csv = [main.outpath 'CSVSUB/'];
+        if exist(main.output.csv,'dir') == 0
+            mkdir([main.outpath 'CSVSUB']);
         end
         
         % log files
