@@ -1,12 +1,12 @@
 % fusion_Run.m
-% Version 1.0.1
+% Version 1.0.2
 % Step 0
 % Main Shell
 %
 % Project: New Fusion
 % By xjtang
 % Created On: 1/11/2016
-% Last Update: 1/17/2016
+% Last Update: 7/1/2017
 %
 % Input Arguments: 
 %   file (String) - full path and file name to the config file
@@ -27,6 +27,9 @@
 % Updates of Version 1.0.1 - 1/17/2016
 %   1.Used a switch instead of str2func, better support compiling.
 %   2.Added a exit in the end.
+%
+% Updates of Version 1.0.2 - 7/1/2017
+%   1.Added new function for generating csv.
 %
 % Released on Github on 1/11/2016, check Github Commits for updates afterwards.
 %----------------------------------------------------------------
@@ -70,7 +73,9 @@ function fusion_Run(file,job,njob,func)
         case 'Change'
             fusion_Change(main);
         case 'GenMap'
-            fusion_GenMap(main);            
+            fusion_GenMap(main);  
+        case 'WriteCSV'
+            fusion_WriteCSV(main);
         otherwise
             disp('can not recognize the function, please check inputs.')
     end
