@@ -29,6 +29,9 @@ function fusion_WriteCSV(main)
     % start timer
     tic;
     
+    % format
+    format long g
+    
     % set file path
     FileName.MOD09SUB = main.output.modsub;
     
