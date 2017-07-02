@@ -67,7 +67,7 @@ function fusion_WriteCSV(main)
             MOD09SUB = load([FileName.MOD09SUB,File.MOD09SUB(I_TIME).name]);
 
             % get data for csv
-            csv = swath2csv(MOD09SUB,250);
+            csv = swath2csv(MOD09SUB,250,main.etm.utm);
 
             % write csv
             csvwrite([main.output.csv,thisPlat,'09CSV.','250m.',DayStr,'.',TimeStr,'.csv'],csv)

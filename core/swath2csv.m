@@ -22,7 +22,7 @@
 %
 %----------------------------------------------------------------
 
-function csv = swath2csv(MOD09SUB, res)
+function csv = swath2csv(MOD09SUB, res, utm)
 
     % grab inputs
     if res == 250
@@ -41,8 +41,11 @@ function csv = swath2csv(MOD09SUB, res)
         error('Invalid resolution');
     end
 
+    % convert lat lon to utm
+    [East,North,~] = deg2utm(Lat,Lon,utm);
+    
     % initialize output
-    csv = zeros(numel(Lat),8);
+    csv = zeros(numel(Lat),10);
     count = 1;
 
     % loop through the entire swath
@@ -55,10 +58,12 @@ function csv = swath2csv(MOD09SUB, res)
             % center location and bearing
             csv(count,4) = Lat(Index_Row,Index_Col);
             csv(count,5) = Lon(Index_Row,Index_Col);
-            csv(count,6) = MODBear(Index_Row,Index_Col);
+            csv(count,6) = East(Index_Row,Index_Col);
+            csv(count,7) = North(Index_Row,Index_Col);
+            csv(count,8) = MODBear(Index_Row,Index_Col);
             % A and B for a oval shape
-            csv(count,7) = SizeAlongScan(Index_Row,Index_Col);
-            csv(count,8) = SizeAlongTrack(Index_Row,Index_Col)/2;
+            csv(count,9) = SizeAlongScan(Index_Row,Index_Col);
+            csv(count,10) = SizeAlongTrack(Index_Row,Index_Col)/2;
             % increment
             count = count + 1;
         end
