@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 6/28/2017
-% Last Update: 7/1/2017
+% Last Update: 7/3/2017
 %
 % Input Arguments:
 %   MOD09SUB (Structure) - Subset of MODIS swath data over the area of the ETM image and the corresponding geometry information.
@@ -17,12 +17,12 @@
 % Instruction:
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 1.0 - 7/1/2017
+% Version 1.0 - 7/3/2017
 %   Function to convert swath image to a table of actual coordinates and axis of the observation footprints
 %
 %----------------------------------------------------------------
 
-function csv = swath2csv(MOD09SUB, res, utm)
+function [header, csv] = swath2csv(MOD09SUB, res, utm)
 
     % grab inputs
     if res == 250
@@ -47,6 +47,7 @@ function csv = swath2csv(MOD09SUB, res, utm)
     % initialize output
     csv = zeros(numel(Lat),10);
     count = 1;
+    header = {'id','row','col','lat','lon','x','y','r','a','b'};
 
     % loop through the entire swath
     for Index_Row=1:size(Lat,1)
