@@ -5,7 +5,7 @@
 % Project: New Fusion
 % By xjtang
 % Created On: 6/28/2017
-% Last Update: 7/6/2017
+% Last Update: 7/10/2017
 %
 % Input Arguments:
 %   MOD09SUB (Structure) - Subset of MODIS swath data over the area of the ETM image and the corresponding geometry information.
@@ -17,7 +17,7 @@
 % Instruction:
 %   1.Call by other scripts with correct input and output arguments.
 %
-% Version 1.0 - 7/6/2017
+% Version 1.0 - 7/10/2017
 %   Function to convert swath image to a table of actual coordinates and axis of the observation footprints
 %
 %----------------------------------------------------------------
@@ -43,9 +43,10 @@ function [header, csv] = swath2csv(MOD09SUB, res, utm)
     [East,North,~] = deg2utm(Lat,Lon,utm);
     
     % calculate bearing
+    dEast = East(:,1:end-1) - East(:,2:end);
+    dNorth = North(:,1:end-1) - North(:,2:end);
     Bearing = nan(size(East));
-    [~, Bearing(:,1:end-1)] = pos2dist(East(:,1:end-1),North(:,1:end-1),...
-        East(:,2:end),North(:,2:end));
+    Bearing(:,1:end-1) = radtodeg(atan2(dEast, dNorth));
     Bearing(:,end) = 2*Bearing(:,end-1)-Bearing(:,end-2);
     
     % initialize output
